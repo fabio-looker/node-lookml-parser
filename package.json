@@ -1,0 +1,32 @@
+{
+  "name": "lookml-parser",
+  "version": "1.0.0",
+  "description": "Parse LookML",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "lookml-parser": "./cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabio-looker/node-lookml-parser.git"
+  },
+  "keywords": [
+    "Looker",
+    "LookML"
+  ],
+  "author": "Fabio Beltramini",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/fabio-looker/node-lookml-parser/issues"
+  },
+  "homepage": "https://github.com/fabio-looker/node-lookml-parser#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "glob": "^7.1.2",
+    "minimist": "^1.2.0",
+    "pegjs": "^0.10.0"
+  }
+}
