@@ -1,29 +1,47 @@
 {
-	function groupDeclarations(arr){
-			return arr.reduce((accum,x,i)=>{
-					if(x.name){
-							var valWName=Object.assign({},x.value,{_name:x.name})
-							if(!accum[x.type]){ accum[x.type]={}; accum[x.type+'s']=[] }
-							accum[x.type+'s'].push(valWName)
-							accum[x.type][x.name]=valWName
-					} else {
-							if  (!accum[x.type])
-							{accum[x.type] = x.value}
-							else
-							if  (accum[x.type].push)
-							{accum[x.type].push(x.value) }
-							else
-							{accum[x.type] = [accum[x.type]]
-							 accum[x.type].push(x.value) }
-						}
-					return accum;
-				},{})
+	function assignSuper(obj,type,name){
+			if(!isObject(obj) || !type || !name){return {}}
+			obj["_"+type]=name
+			Object.values(obj).forEach(subObj => assignSuper(subObj, type, name))
+			return obj;
 		}
+	function groupDeclarations(params){
+			var collection = {};
+			params.forEach((p,i)=>{
+					assignSuper(p.value,p.type,p.name)
+					if(isObject(p.value)){p.value._type=p.type;}
+					if(p.name){ //Named Parameter, use an object/hashmap
+							if(!collection[p.type]){
+									collection[p.type]={};
+									collection[p.type+'s']=[];
+								}
+							p.value._n=collection[p.type+'s'].length;
+							collection[p.type+'s'].push(p.value);
+							collection[p.type][p.name]=p.value;
+						} else { //Unnamed parameter, use a single value or array of values
+							if (!	collection[p.type]){ //No parameters of the same type already exist
+									collection[p.type] = p.value
+								}
+							else if(collection[p.type].push){ //>1 parameters of the same type already exist
+									if(isObject(p.value)){p.value._n=collection[p.type+'s'].length;}
+									collection[p.type].push(p.value)
+								}
+							else{	// Exactly one parameter of the same type already exists
+									if(isObject(collection[p.type])){collection[p.type]._n = 0;} //Assign the first one an index
+									collection[p.type] = [collection[p.type]] //Put it into an array
+									if(isObject(p.value)){p.value._n=collection[p.type+'s'].length;} //Assign the new one an index
+									collection[p.type].push(p.value)
+							}
+						}
+				})
+			return collection
+		}
+	function isObject(o){return typeof o=="object" && !o.push}
 }
 
 declarationSet = ds:(declaration)* {return groupDeclarations(ds);}
 
-declaration  = _ d:( 
+declaration  = _ d:(
 					labeledObject
                     / unlabeledObject
                     / sqlAttribute
@@ -45,7 +63,7 @@ atomAttribute   = type:atom _ ":" _ 			val:atom    {return {type:type,name:undef
 object = "{" _ d:declarationSet _ "}" {return d}
 
 emptyList = "[" _ "]" {return [] }
-atomStarList = "[" _ first:atomStar rest:(_ "," _ atomStar)* _ "]" {return [first].concat(rest.map(r=>r[3]))}  
+atomStarList = "[" _ first:atomStar rest:(_ "," _ atomStar)* _ "]" {return [first].concat(rest.map(r=>r[3]))}
 stringList = "[" _ first:string rest:(_ "," _ string)* _ "]" {return [first].concat(rest.map(r=>r[3]))}
 
 atom = chars:[-_a-zA-Z0-9.]+ {return chars.join('')}
