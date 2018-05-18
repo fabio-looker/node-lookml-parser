@@ -49,7 +49,7 @@ atomStarList = "[" _ first:atomStar rest:(_ "," _ atomStar)* _ "]" {return [firs
 stringList = "[" _ first:string rest:(_ "," _ string)* _ "]" {return [first].concat(rest.map(r=>r[3]))}
 
 atom = chars:[-_a-zA-Z0-9.]+ {return chars.join('')}
-atomStar = chars:[-_a-zA-Z0-9.]+"*"? {return chars.join('')}
+atomStar = chars:[-_a-zA-Z0-9.]+"*"? {return chars.join('')+"*"}
 sqlAtom = "sql" chars:[-_a-zA-Z0-9]* {return "sql"+chars.join('')}
 htmlAtom = "html" chars:[-_a-zA-Z0-9]* {return "html"+chars.join('')}
 

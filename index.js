@@ -30,16 +30,43 @@ exports.parseFiles = async function parse({
 				catch(e){result = {error:e}}
 				return Object.assign(result,{
 						_file_path:filepath
+						_file_rel:path.relative(globOptions.cwd||process.cwd(),filepath)
 						,_file_name:(path.basename(filepath).match(/([^.]+)\.([a-z]+)\.lkml/)||[])[1]
 						,_file_type:(path.basename(filepath).match(/([^.]+)\.([a-z]+)\.lkml/)||[])[2]
 					})
 			},{concurrency: readFileConcurrency})
+		const models = files.filter(f=>f._file_type=="model").map(m=>(
+				{..}
+			))
+		
+		const model = models..
 		return {
 				files,
 				file: {
 						model:   files.filter(f=>f._file_type=="model"  ).reduce(indexBy("_file_name"),{})
 						,view:   files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_name"),{})
 						,explore:files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_name"),{})
-					}
+					},
+				models:files.filter(f=>f._file_type=="model"  ),
+				model:
 			}
+	}
+
+function recurIncludes(prior={}, include=[],included=[],files=[]){
+		const current = include[0]
+		if(!current){return prior)
+		const newInclusions = coerceArray(current.include)
+				.map(pattern=>files.filter(f=>lookerpattern2Regex(pattern).match(f._file_name))
+				.reduce(flatten)
+		return {...file, 
+	}
+
+function coerceArray(x){
+	if(x===undefined){return []}
+	if(!x instanceOf Array){ return [x]}
+	return x
+}
+function lookerpattern2Regex(str){
+		// Not sure what the official spec is for Looker file match patterns, but I know *, so that will do for now
+		return new RegExp("^"+str.replace(/./g,"\\.").replace(/\*/g,".*")+"$", "gu")
 	}
