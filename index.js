@@ -33,7 +33,7 @@ exports.parseFiles = async function parse({
 				const _file_rel = path.relative(globOptions.cwd||process.cwd(),_file_path) //To be used for pattern matching
 				return {...result,
 						_file_path, _file_rel, _file_name, _file_type,
-						...(_file_type=="model"?{_model:_file_name}:{})
+						...(_file_type=="model"?{_type:"model",_model:_file_name}:{})
 					}
 			},{concurrency: readFileConcurrency})
 		const modelFiles = files.filter(f=>f._file_type=="model"   )
