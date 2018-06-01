@@ -30,10 +30,26 @@ lookmlParser.parseFiles({
 	})
 ```
 
-# Output
+# Output & Features
 
 At the moment, parseFiles outputs a collection of files, each with their
 own parsed contents, as well as models resulting from following `include`s from model files.
+
+## Conditional Comments
+If you want to leverage LookML syntax to embed arbitrary other markup/objects that would
+be rejected by the native IDE, the CLI and parseFiles function now allow this
+ with conditional comments:
+
+```
+view: foo {
+	# PARSE-ME!
+	# owner: "Fabio"
+	# version: {major:1 minor:4 date:"2018-01-01"}
+	dimension: bar {}
+}
+
+> lookml-parser --conditional-comment="PARSE-ME!"
+```
 
 # Changelog
 
