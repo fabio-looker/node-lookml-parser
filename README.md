@@ -45,3 +45,6 @@ own parsed contents, as well as models resulting from following `include`s from 
 - v2.2
 	- The return now contains model objects which have recursively included other referenced files' contents
 	- In interactive mode, the output is slightly more compact
+- v3.0
+	- Breaking change: yesno fields are now mapped to true/false
+	- Added conditional comment feature. The CLI flag is --conditional-comment=FOO or -c FOO
