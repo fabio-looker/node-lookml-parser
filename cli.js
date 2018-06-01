@@ -11,6 +11,7 @@ var r
 
 parser.parseFiles({
 		source: cliArgs.input || cliArgs.i,
+		conditionalCommentString: cliArgs['conditional-comment'] || cliArgs.c,
 		console
 	}).then((result)=>{
 		if(repl){

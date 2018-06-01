@@ -15,16 +15,31 @@ exports.parseFiles = async function parse({
 		,globOptions = {}
 		,readFileOptions = {encoding:'utf-8'}
 		,readFileConcurrency = 4
+		,conditionalCommentString
 		,console = console
 	}){
 		const inputFilePaths = await globp(source,globOptions)
 		if(!inputFilePaths.length){
 				console.warn("Warning: No input files were matched. (Use argument --input=... )")
 			}
+		if(conditionalCommentString){
+				// Should this be available in the string version too? Maybe...
+				var insertRegex = new RegExp(
+						"(\\n|^)\\s*#[ \\t]*"
+						+conditionalCommentString
+						+"[ \\t]*((\\n\\s*#[^\\n]*)*)","g"
+					)
+			}
 		const files = await Promise.map(inputFilePaths, async (filepath,fp)=>{
 				var file,result;
 				try{
 						file = await readp(filepath,readFileOptions)
+						if(insertRegex){
+								file = file.replace(
+										insertRegex,
+										(match,start,block)=>block.replace(/\n\s*#/g,"\n")
+									)
+							}
 						result = lookmlParser.parse(file)
 					}
 				catch(e){result = {error:e}}
