@@ -18,11 +18,15 @@ parser.parseFiles({
 				r = repl.start({writer:x=>
 						util
 						.inspect(x,{depth:1,colors:true})
+						// Truncate long strings
 						.replace(/: "([^"]{60})[^"]+"/,': "$1..."')
+						//Collapse some levels
+						.replace(/(\n\s+([_a-zA-Z$][_0-9a-zA-Z$]*)?:)\s+([_a-zA-Z$][_0-9a-zA-Z$]* {)/g,"$1 $2")
 					})
-				r.context.files = result.files
-				r.context.file = result.file
-				console.info("Success. Evaluate `files` for an array or `file` for an object...")
+				Object.assign(r.context,result)
+				console.info("\x1b[32mSuccess!\x1b[0m Evaluate any of the following \x1b[2m(plurals are arrays, singular are keyed objects)\x1b[0m"
+						+"\n\t"+Object.keys(result).join(", ")
+					)
 			}else{
 				console.log(JSON.stringify(result, undefined, cliArgs.whitespace))
 			}
@@ -30,7 +34,7 @@ parser.parseFiles({
 		if(repl){
 				r = repl.start()
 				r.context.error = result
-				console.info("Error. Evaluate `error` for details")
+				console.info("\x1b[31mError.\x1b[0m Evaluate `error` for details")
 			}else{
 				console.error(JSON.stringify(result, undefined, cliArgs.whitespace))
 			}

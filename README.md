@@ -33,9 +33,7 @@ lookmlParser.parseFiles({
 # Output
 
 At the moment, parseFiles outputs a collection of files, each with their
-own parsed contents.
-
-In the future, these file records may be merged into consolidated objects.
+own parsed contents, as well as models resulting from following `include`s from model files.
 
 # Changelog
 
@@ -44,3 +42,6 @@ In the future, these file records may be merged into consolidated objects.
 	- Added a `_type` property on all objects
 	- As a replacement for `_name`, added multiple `_<type>: <name>` properties (e.g. `{ ... , "_type": "join", "_join": "users", "_explore": "orders"}` )
 	- Added a `_n` property which gives the lexical position of the object in the original text
+- v2.2
+	- The return now contains model objects which have recursively included other referenced files' contents
+	- In interactive mode, the output is slightly more compact
