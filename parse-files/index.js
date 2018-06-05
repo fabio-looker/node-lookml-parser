@@ -59,7 +59,6 @@
 					}
 				return twoStates[i].prior
 				function recurIncludes(args){const {include=[], prior={}, /*included=[]*/} = args;
-						console.log(include)
 						const includes = coerceArray(include)
 						const current = includes[0]
 						if(current==undefined){return args}
