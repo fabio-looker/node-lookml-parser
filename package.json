@@ -25,8 +25,10 @@
   "homepage": "https://github.com/fabio-looker/node-lookml-parser#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
+    "dot-wild": "^3.0.1",
     "glob": "^7.1.2",
     "minimist": "^1.2.0",
-    "pegjs": "^0.10.0"
+    "pegjs": "^0.10.0",
+    "tape": "^4.9.0"
   }
 }
