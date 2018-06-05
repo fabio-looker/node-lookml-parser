@@ -57,8 +57,6 @@
 				for(var i=0;twoStates[i]!=twoStates[not(i)];i=not(i)){
 						twoStates[not(i)] = recurIncludes(twoStates[i])
 					}
-				console.log(i)
-				console.log(twoStates[i])
 				return twoStates[i].prior
 				function recurIncludes(args){const {include=[], prior={}, /*included=[]*/} = args;
 						console.log(include)
