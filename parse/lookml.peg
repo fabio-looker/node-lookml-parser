@@ -55,7 +55,6 @@ declaration  = _ d:(
                     / htmlAttribute
                     / arrayAttribute
                     / stringAttribute
-					/ yesnoAttribute
                     / atomAttribute
                     ) _ {return d}
 
@@ -65,8 +64,7 @@ sqlAttribute 	= type:sqlAtom _ ":" _ 	        val:doubleSemiBlock   {return {typ
 htmlAttribute 	= type:htmlAtom _ ":" _ 		val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
 arrayAttribute  = type:atom _ ":" _  			val: (emptyList / atomStarList / stringList) {return {type:type,name:undefined,value:val}}
 stringAttribute = type:atom _ ":" _ 			val:string    {return {type:type,name:undefined,value:val}}
-yesnoAttribute  = type:atom _ ":" _				val:yesno	{return {type:type,name:undefined,value:val}}
-atomAttribute   = type:atom _ ":" _ 			val:atom    {return {type:type,name:undefined,value:val}}
+atomAttribute   = type:atom _ ":" _ 			val:(yesno / yes / no / atom ) {return {type:type,name:undefined,value:val}}
 
 
 object = "{" _ d:declarationSet _ "}" {return d}
@@ -79,7 +77,7 @@ atom = chars:[-_a-zA-Z0-9.]+ {return chars.join('')}
 atomStar = chars:[-_a-zA-Z0-9.]+"*"? {return chars.join('')+"*"}
 sqlAtom = "sql" chars:[-_a-zA-Z0-9]* {return "sql"+chars.join('')}
 htmlAtom = "html" chars:[-_a-zA-Z0-9]* {return "html"+chars.join('')}
-yesno = yes / no
+yesno = "yesno" {return "yesno"}
 yes = "yes" {return true}
 no = "no" {return false}
 
