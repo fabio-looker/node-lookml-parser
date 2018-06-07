@@ -6,7 +6,7 @@
 		const path = require("path")
 		const readp = Promise.promisify(fs.readFile)
 		const globp = Promise.promisify(glob)
-		
+
 		exports = module.exports = async function lookmlParser_parseFiles({
 				source =  "*.{view,model,explore}.lkml"
 				,globOptions = {}
@@ -36,7 +36,7 @@
 							}
 					},{concurrency: readFileConcurrency})
 				const modelFiles = files.filter(f=>f._file_type=="model" && f.models)
-				const models = modelFiles.map(f=>f.models[0]).map(m=>iterateIncludes(m))
+				const models = modelFiles.map(mf=>iterateIncludes(mf, files))
 
 				return {
 						...(files.some(f=>f.error)?{errors:files.filter(f=>f.error)}:{}),
@@ -51,48 +51,67 @@
 					}
 			}
 
-		function iterateIncludes(model){
-				//Note: TC Recursion is not optimized by V8, so I made this thing :-/
-				var twoStates=[{include:model, prior:model}]
-				for(var i=0;twoStates[i]!=twoStates[not(i)];i=not(i)){
-						twoStates[not(i)] = recurIncludes(twoStates[i])
-					}
-				return twoStates[i].prior
-				function recurIncludes(args){const {include=[], prior={}, /*included=[]*/} = args;
-						const includes = coerceArray(include)
-						const current = includes[0]
-						if(current==undefined){return args}
-						const rest = includes.slice(1)
-						const nextIncludes =
-								coerceArray(current.include)
-								.map(pattern=>files.filter(f=>lookerpattern2Regex(pattern).match(f._file_name)))
-								.reduce(flatten)
-								.concat(rest)
-								.filter(unique)
-								//TODO: Filter already included for corner-case circular includes
-						return {//recurIncludes(
-								include:nextIncludes,
-								prior:{
-									...prior,
-									...(current._file_type=="model" && current.models ? current.models[0]:current)
-								}
-								//included:included.concat(current) // included
+		function iterateIncludes(modelFile, files){
+				var toMerge = []
+				var remaining = [modelFile]
+				var included =[]
+				while(remaining.length){
+						let current = remaining.shift()
+						if( typeof current == "string"){
+								let pattern = lookerpattern2Regex(current)
+								//console.log("Searching:",pattern)
+								let matchedFiles = 
+										files
+										.filter(f=>f._file_path.match(pattern))
+										.filter(f=>!included.includes(f._file_path))
+								//console.log("Matched: ",matchedFiles.map(f=>f._file_path))
+								remaining.unshift(...matchedFiles)
+							}
+						if( typeof current == "object" ){
+								let file = current
+								if(included.includes(file._file_path)){continue}
+								included.push(file._file_path)
+								//console.log("Added: ",file._file_path)
+								if(file._file_type=="model" && file.models){
+										file={...file,...file.models[0]}
+										delete file.models
+									}
+								let includes = coerceArray(file.include)
+								//console.log("Includes: ", includes)
+								remaining.unshift(...coerceArray(includes))
+								toMerge.push(file)	
 							}
 					}
-				function not(i){return (i+1)%2}
-			}
-
+			
+			return merge(...toMerge)
+		}
 		function coerceArray(x){
 			if(x===undefined){return []}
-			if(!x instanceof Array){ return [x]}
-			return x
+			if(x instanceof Array){return x.slice()}
+			return [x]
 		}
 		function lookerpattern2Regex(str){
 				// Not sure what the official spec is for Looker file match patterns, but I know *, so that will do for now
-				return new RegExp("^"+str.replace(/./g,"\\.").replace(/\*/g,".*")+"$", "gu")
+				return new RegExp("^"+str.replace(/\./g,"\\.").replace(/\*/g,".*")+"$", "gu")
 			}
 		function unique(x,i,arr){return arr.indexOf(x)==i}
 		function flatten(a,b){return a.concat(b)}
 		function indexBy(key){return (obj,x,i) => ({...obj, [x[key]]:x})}
-	}()
+		function peek(x){console.log(x); return x}
+		function merge(...objs){
+				const has = key => obj => obj[key]!==undefined
+				return objs
+				.map(o=>Object.keys(o))
+				.reduce(flatten,[])
+				.filter(unique)
+				.reduce((merged,key)=>({
+						...merged,
+						[key]: objs.filter(has(key)).length==1
+								? objs.find(has(key))[key]
+								: objs.filter(has(key)).every(o=>o[key].isMergeable)
+									? merge(...objs.filter(has(key)).map(o=>o[key]))
+									: objs.filter(has(key)).map(o=>o[key]).reduce(flatten,[])
+					}),{})
+			}
 
+	}()

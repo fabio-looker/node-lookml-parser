@@ -1,4 +1,6 @@
 {
+	const mergeable_proto = {isMergeable:true}
+	function mergeable(o){return Object.assign(Object.create(mergeable_proto),o)}
 	function assignSuper(obj,type,name){
 			if(!type || type=="_proto__" || !name){return}
 			if(isObject(obj)){
@@ -18,7 +20,7 @@
 					if(isObject(p.value)){p.value._type=p.type;}
 					if(p.name){ //Named Parameter, use an object/hashmap
 							if(!collection[p.type]){
-									collection[p.type]={};
+									collection[p.type]=mergeable({});
 									collection[p.type+'s']=[];
 								}
 							p.value._n=collection[p.type+'s'].length;
