@@ -1,6 +1,6 @@
 {
   "name": "lookml-parser",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Parse LookML",
   "main": "index.js",
   "scripts": {
