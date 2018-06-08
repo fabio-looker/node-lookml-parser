@@ -6,7 +6,7 @@
 		module.exports = function lookmlParser_parse(stringToParse, {
 				conditionalCommentString,
 				model
-			}) {
+			} = {}) {
 				if(conditionalCommentString){
 						var insertRegex = new RegExp(
 								"(\\n|^)\\s*#[ \\t]*"
@@ -25,9 +25,12 @@
 				try{
 				return lookmlParser.parse(stringToParse)
 				}catch(e){
-					throw {...e, ...(e.location?{
-							context:stringToParse.split("\n").map((l,i)=>''+(i+1)+":	"+l).slice(e.location.start.line-4,e.location.end.line+2).join("\n")
-						}:{})}
+					throw {	toString:()=>"Parse error@"+(e.location && e.location.start.offset)+" "+e.message,
+							...e, 
+							...(e.location?{
+								context:stringToParse.split("\n").map((l,i)=>''+(i+1)+":	"+l).slice(e.location.start.line-4,e.location.end.line+2).join("\n")
+								}:{})
+							}
 				}
 			}
 	}()
