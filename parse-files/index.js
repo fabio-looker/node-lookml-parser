@@ -92,7 +92,12 @@
 		}
 		function lookerpattern2Regex(str){
 				// Not sure what the official spec is for Looker file match patterns, but I know *, so that will do for now
-				return new RegExp("^"+str.replace(/\./g,"\\.").replace(/\*/g,".*")+"$", "gu")
+				return new RegExp("^"+str
+									.replace(/\./g,"\\.") //Dots are literals
+									.replace(/\*/g,".*") //* is splat
+									.replace(/\.(view|model|explore)$/,".$1.lkml") //Types that are implicitly .lkml
+									// I assume dashboards get an explict extension too, but they're out of scope here
+									+"$", "gu")
 			}
 		function unique(x,i,arr){return arr.indexOf(x)==i}
 		function flatten(a,b){return a.concat(b)}
