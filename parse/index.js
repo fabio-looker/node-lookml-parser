@@ -25,7 +25,7 @@
 				try{
 				return lookmlParser.parse(stringToParse)
 				}catch(e){
-					throw {	toString:()=>"Parse error@"+(e.location && e.location.start.offset)+" "+e.message,
+					throw {	toString:()=>"Parse error@"+(e.location && e.location.start.line+","+e.location.start.column)+" "+e.message,
 							...e, 
 							...(e.location?{
 								context:stringToParse.split("\n").map((l,i)=>''+(i+1)+":	"+l).slice(e.location.start.line-4,e.location.end.line+2).join("\n")

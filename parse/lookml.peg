@@ -90,7 +90,7 @@ string
   = "\"" chars:( stringLiteralCharacter / stringEscapedCharacter )* "\""
     {return chars.join('')}
   stringLiteralCharacter = [^"\\]
-  stringEscapedCharacter = "\\" ch:[\"\\] {return ch;}
+  stringEscapedCharacter = "\\" ch:. {return ch;}
 
 
 

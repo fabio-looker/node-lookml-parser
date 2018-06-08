@@ -29,6 +29,9 @@ parser.parseFiles({
 						+"\n\t"
 						+Object.keys(result)
 						.map(s=>s.match(/error|warning/)?"\x1b[33m"+s+"\x1b[0m":s)
+						.map(s=> typeof result[s] == "function"
+								? s+(result[s].toString().match(/\([^)]*\)/)||[""])[0]
+								: s)
 						.join(", ")
 					)
 			}else{

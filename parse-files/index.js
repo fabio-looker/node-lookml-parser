@@ -40,7 +40,14 @@
 				const models = modelFiles.map(mf=>iterateIncludes(mf, files, trace))
 
 				return {
-						...(files.some(f=>f.error)?{errors:files.filter(f=>f.error)}:{}),
+						...(files.some(f=>f.error)?{
+							errors:files.filter(f=>f.error),
+							errorReport:()=>console.log(files.filter(f=>f.error).map(f=>
+								 "\n"+f._file_path
+								+"\n"+f.error.toString()
+								+"\n"+(f.error.context||"")
+								).join("\n"))
+							}:{}),
 						files,
 						file: {
 								model:   modelFiles.reduce(indexBy("_file_name"),{})
