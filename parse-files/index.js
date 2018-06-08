@@ -14,6 +14,7 @@
 				,readFileConcurrency = 4
 				,conditionalCommentString
 				,console = console
+				,trace = {}
 			}){
 				const inputFilePaths = await globp(source,globOptions)
 				if(!inputFilePaths.length){
@@ -36,7 +37,7 @@
 							}
 					},{concurrency: readFileConcurrency})
 				const modelFiles = files.filter(f=>f._file_type=="model" && f.models)
-				const models = modelFiles.map(mf=>iterateIncludes(mf, files))
+				const models = modelFiles.map(mf=>iterateIncludes(mf, files, trace))
 
 				return {
 						...(files.some(f=>f.error)?{errors:files.filter(f=>f.error)}:{}),
@@ -51,33 +52,41 @@
 					}
 			}
 
-		function iterateIncludes(modelFile, files){
+		function iterateIncludes(modelFile, files, trace){
 				var toMerge = []
 				var remaining = [modelFile]
 				var included =[]
 				while(remaining.length){
 						let current = remaining.shift()
 						if( typeof current == "string"){
+								if(trace.includes){console.log("Searching: "+current)}
 								let pattern = lookerpattern2Regex(current)
-								//console.log("Searching:",pattern)
 								let matchedFiles = 
 										files
 										.filter(f=>f._file_path.match(pattern))
+								let toAdd = matchedFiles
 										.filter(f=>!included.includes(f._file_path))
-								//console.log("Matched: ",matchedFiles.map(f=>f._file_path))
-								remaining.unshift(...matchedFiles)
+								if(trace.includes){console.log("  > New matches: "+toAdd.length)}
+								let dupes = matchedFiles
+										.filter(f=> included.includes(f._file_path))
+								if(trace.includes && dupes.length){console.log("  > \x1b[33mDupe matches\x1b[0m: ",dupes.map(f=>f._file_path))}
+								remaining.unshift(...toAdd)
 							}
 						if( typeof current == "object" ){
+								if(trace.includes){console.log("\x1b[2mIncluding\x1b[0m: "+current._file_path)}
 								let file = current
-								if(included.includes(file._file_path)){continue}
+								if(included.includes(file._file_path)){
+										if(trace.includes){console.log("  > \x1b[33mSkipping as duplicate\x1b[0m")}
+										continue
+									}
 								included.push(file._file_path)
-								//console.log("Added: ",file._file_path)
+								//if(trace.includes){console.log("  > Included: "+file._file_path)}
 								if(file._file_type=="model" && file.models){
 										file={...file,...file.models[0]}
 										delete file.models
 									}
 								let includes = coerceArray(file.include)
-								//console.log("Includes: ", includes)
+								if(trace.includes && includes.length){console.log("  > Queued: ", includes)}
 								remaining.unshift(...coerceArray(includes))
 								toMerge.push(file)	
 							}

@@ -6,13 +6,14 @@ const cliArgs = require('minimist')(process.argv.slice(
 	))
 const parser = require("./index.js")
 const util = require("util")
-var repl = cliArgs.interactive && require("repl")
-var r
+var r,repl = cliArgs.interactive && require("repl")
+var trace = (cliArgs.trace || cliArgs.t || '').split(",").reduce((idx,x)=>({...idx, [x]:true}),{})
 
 parser.parseFiles({
 		source: cliArgs.input || cliArgs.i,
 		conditionalCommentString: cliArgs['conditional-comment'] || cliArgs.c,
-		console
+		console,
+		trace
 	}).then((result)=>{
 		if(repl){
 				r = repl.start({writer:x=>
@@ -25,7 +26,10 @@ parser.parseFiles({
 					})
 				Object.assign(r.context,result)
 				console.info("\x1b[32mSuccess!\x1b[0m Evaluate any of the following \x1b[2m(plurals are arrays, singular are keyed objects)\x1b[0m"
-						+"\n\t"+Object.keys(result).join(", ")
+						+"\n\t"
+						+Object.keys(result)
+						.map(s=>s.match(/error|warning/)?"\x1b[33m"+s+"\x1b[0m":s)
+						.join(", ")
 					)
 			}else{
 				console.log(JSON.stringify(result, undefined, cliArgs.whitespace))
