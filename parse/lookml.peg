@@ -64,6 +64,7 @@ labeledObject   = type:atom _ ":" _ name:atom _ val:object {return {type:type,na
 unlabeledObject = type:atom _ ":" _             val:object {return {type:type,name:undefined,value:val}}
 sqlAttribute 	= type:sqlAtom _ ":" _ 	        val:doubleSemiBlock   {return {type:type,name:undefined,value:val}}
 htmlAttribute 	= type:htmlAtom _ ":" _ 		val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
+exprAttribute	= type:exprAtom _ ":" _ 		val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
 arrayAttribute  = type:atom _ ":" _  			val: (emptyList / atomStarList / stringList) {return {type:type,name:undefined,value:val}}
 stringAttribute = type:atom _ ":" _ 			val:string    {return {type:type,name:undefined,value:val}}
 atomAttribute   = type:atom _ ":" _ 			val:(atom) {return {type:type,name:undefined,value:(val=="yes"?true:val=="no"?false:val)}}
@@ -79,6 +80,7 @@ atom = chars:[-_a-zA-Z0-9\.]+ {return chars.join('')}
 atomStar = chars:[-_a-zA-Z0-9\.]+"*"? {return chars.join('')+"*"}
 sqlAtom = "sql" chars:[-_a-zA-Z0-9]* {return "sql"+chars.join('')}
 htmlAtom = "html" chars:[-_a-zA-Z0-9]* {return "html"+chars.join('')}
+exprAtom = "expr" chars:[-_a-zA-Z0-9]* {return "expr"+chars.join('')}
 
 doubleSemiBlock = chars:([^;] / ( ";" [^;] ))*  ";;" {return chars.join('')}
 //Hmm: Is a block whose last character is a ';' accepted by native parser?
