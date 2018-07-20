@@ -94,4 +94,4 @@ string
 _ = (whitespace / comment)* {return [];}
 
 whitespace = [ \t\n\r]+ {return undefined;}
-comment = "#" chars:[^\n\r]* [\n\r]+
+comment = "#" chars:[^\n\r]* [\n\r]*
