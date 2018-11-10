@@ -8,7 +8,7 @@
 		const globp = Promise.promisify(glob)
 
 		exports = module.exports = async function lookmlParser_parseFiles({
-				source =  "*.{view,model,explore}.lkml"
+				source =  "{*.model,*.explore,*.view,manifest}.lkml"
 				,globOptions = {}
 				,readFileOptions = {encoding:'utf-8'}
 				,readFileConcurrency = 4
@@ -21,8 +21,8 @@
 						console.warn("Warning: No input files were matched. (Use argument --input=... )")
 					}
 				const files = await Promise.map(inputFilePaths, async (_file_path,fp)=>{
-						const _file_name = path.basename(_file_path).replace(/\.([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i,'')
-						const _file_type = (path.basename(_file_path) .match(/\.([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i)||[])[1]
+						const _file_name = path.basename(_file_path).replace(/\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i,'')
+						const _file_type = (path.basename(_file_path) .match(/\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i)||[])[1]
 						const _file_rel = path.relative(globOptions.cwd||process.cwd(),_file_path) //To be used for pattern matching
 						var file,result;
 						try{
@@ -53,6 +53,7 @@
 								model:   modelFiles.reduce(indexBy("_file_name"),{})
 								,view:   files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_name"),{})
 								,explore:files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_name"),{})
+								,manifest:files.find(f=>f._file_type=="manifest")
 							},
 						models,
 						model: models.reduce(indexBy("_model"),{})
