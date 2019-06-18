@@ -6,19 +6,24 @@
 		const path = require("path")
 		const readp = Promise.promisify(fs.readFile)
 		const globp = Promise.promisify(glob)
+		const defaultConsole = console
+		const defaultSource = "{*.model,*.explore,*.view,manifest}.lkml"
 
 		exports = module.exports = async function lookmlParser_parseFiles({
-				source =  "{*.model,*.explore,*.view,manifest}.lkml"
+				source
 				,globOptions = {}
 				,readFileOptions = {encoding:'utf-8'}
 				,readFileConcurrency = 4
 				,conditionalCommentString
-				,console = console
+				,console = defaultConsole
 				,trace = {}
-			}){
-				const inputFilePaths = await globp(source,globOptions)
+			}={}){
+				
+				const inputFilePaths = await globp(source||defaultSource,globOptions)
+				if(Array.isArray(console)){console = mockConsole(console)}
 				if(!inputFilePaths.length){
-						console.warn("Warning: No input files were matched. (Use argument --input=... )")
+						if(source){console.warn("Warning: No input files were matched for pattern "+source)}
+						else{console.warn("Warning: No input files were matched. (Use argument --input=... or source)")}
 					}
 				const files = await Promise.map(inputFilePaths, async (_file_path,fp)=>{
 						const _file_name = path.basename(_file_path).replace(/\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i,'')
@@ -135,5 +140,4 @@
 									: objs.filter(has(key)).map(o=>o[key]).reduce(flatten,[])
 					}),{})
 			}
-
 	}()

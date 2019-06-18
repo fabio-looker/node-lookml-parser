@@ -1,0 +1,24 @@
+{
+	"expected":{
+		"file":{
+			"model":{
+				"simple":{}
+				},
+			"view":{
+				"facts":{
+					"view":{
+						"facts":{
+							}
+						}
+					}
+				}
+			},
+		"model":{
+			"simple":{
+					"explore":{
+						"facts":{}
+						}
+				}
+			}
+		}
+	}
