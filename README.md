@@ -64,3 +64,6 @@ view: foo {
 - v3.0
 	- Breaking change: yesno fields are now mapped to true/false
 	- Added conditional comment feature. The CLI flag is --conditional-comment=FOO or -c FOO
+- v4.0
+	- Breaking change: The grammar now recognizes attributes whose type starts with 'expr' as doubleSemiBlock-valued. If you were previously using such a naming convention in conditional-comment based LookML, you will need to use a new naming convention, or use doubleSemiBlock syntax. E.g. `expression_custom_filter: ${field} ;;`
+	- Breaking change: The grammar no longer ignores leading whitespace in a doubleSemiBlock. E.g. `sql_table_name: foo ;;` now has a valye of ` foo ` rather than `foo `

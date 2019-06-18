@@ -55,6 +55,7 @@ declaration  = _ d:(
                     / unlabeledObject
                     / sqlAttribute
                     / htmlAttribute
+					/ exprAttribute
                     / arrayAttribute
                     / stringAttribute
                     / atomAttribute
@@ -62,9 +63,9 @@ declaration  = _ d:(
 
 labeledObject   = type:atom _ ":" _ name:atom _ val:object {return {type:type,name:name,value:val}}
 unlabeledObject = type:atom _ ":" _             val:object {return {type:type,name:undefined,value:val}}
-sqlAttribute 	= type:sqlAtom _ ":" _ 	        val:doubleSemiBlock   {return {type:type,name:undefined,value:val}}
-htmlAttribute 	= type:htmlAtom _ ":" _ 		val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
-exprAttribute	= type:exprAtom _ ":" _ 		val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
+sqlAttribute 	= type:sqlAtom _ ":"	        val:doubleSemiBlock   {return {type:type,name:undefined,value:val}}
+htmlAttribute 	= type:htmlAtom _ ":"			val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
+exprAttribute	= type:exprAtom _ ":"			val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
 arrayAttribute  = type:atom _ ":" _  			val: (emptyList / atomStarList / stringList) {return {type:type,name:undefined,value:val}}
 stringAttribute = type:atom _ ":" _ 			val:string    {return {type:type,name:undefined,value:val}}
 atomAttribute   = type:atom _ ":" _ 			val:(atom) {return {type:type,name:undefined,value:(val=="yes"?true:val=="no"?false:val)}}
