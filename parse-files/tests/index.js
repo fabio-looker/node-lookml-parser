@@ -19,6 +19,7 @@ const getSpec = function read(path){
 const paths = fs
 	.readdirSync(__dirname,{withFileTypes:true})
 	.filter(ent=>ent.isDirectory())
+	.filter(ent=>ent.name && ent.name[0]!=='.')
 	.map(ent=>ent.name)
 
 const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
