@@ -41,7 +41,7 @@
 								_file_path, _file_rel, _file_name, _file_type
 							}
 					},{concurrency: readFileConcurrency})
-				const modelFiles = files.filter(f=>f._file_type=="model" && f.models)
+				const modelFiles = files.filter(f=>f._file_type=="model" && f.model)
 				const models = modelFiles.map(mf=>iterateIncludes(mf, files, trace))
 
 				return {
@@ -53,15 +53,13 @@
 								+"\n"+(f.error.context||"")
 								).join("\n"))
 							}:{}),
-						files,
 						file: {
 								model:   modelFiles.reduce(indexBy("_file_name"),{})
 								,view:   files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_name"),{})
 								,explore:files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_name"),{})
 								,manifest:files.find(f=>f._file_type=="manifest")
 							},
-						models,
-						model: models.reduce(indexBy("_model"),{})
+						model: Object.values(models).reduce(indexBy("_model"),{})
 					}
 			}
 
@@ -94,9 +92,9 @@
 									}
 								included.push(file._file_path)
 								//if(trace.includes){console.log("  > Included: "+file._file_path)}
-								if(file._file_type=="model" && file.models){
-										file={...file,...file.models[0]}
-										delete file.models
+								if(file._file_type=="model" && file.model){
+										file={...file,...Object.values(file.model)[0]}
+										delete file.model
 									}
 								let includes = coerceArray(file.include)
 								if(trace.includes && includes.length){console.log("  > Queued: ", includes)}

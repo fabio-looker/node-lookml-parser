@@ -15,9 +15,9 @@
 			},
 		"model":{
 			"simple":{
-					"explore":{
-						"facts":{}
-						}
+				"explore":{
+					"facts":{}
+					}
 				}
 			}
 		}

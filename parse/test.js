@@ -15,7 +15,7 @@ const tests = [
 	},
 {	name:	"plain view", 
 	input:	"view: foo {}",
-	exp:	{view:{foo:{_view:"foo",_type:"view",_n:0}},views:[{_view:"foo",_type:"view",_n:0}]}
+	exp:	{view:{foo:{_view:"foo",_type:"view",_n:0}}}
 	}
 ]
 const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }

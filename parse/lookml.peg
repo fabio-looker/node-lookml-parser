@@ -21,10 +21,8 @@
 					if(p.name){ //Named Parameter, use an object/hashmap
 							if(!collection[p.type]){
 									collection[p.type]=mergeable({});
-									collection[p.type+'s']=[];
 								}
-							p.value._n=collection[p.type+'s'].length;
-							collection[p.type+'s'].push(p.value);
+							p.value._n=Object.keys(collection[p.type]).length;
 							collection[p.type][p.name]=p.value;
 						} else { //Unnamed parameter, use a single value or array of values
 							if (!	collection[p.type]){ //No parameters of the same type already exist
