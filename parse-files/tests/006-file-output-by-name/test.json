@@ -1,0 +1,44 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"model":{
+			"foobar":{
+				"explore":{
+					"foo_view":{},
+					"bar":{}
+				}
+			}
+		},
+		"file":{
+			"manifest":{
+				"project_name":"proj"
+			},
+			"foo.view": {
+				"view": {
+					"foo_view": {}
+				}
+			},
+			"foobar.model": {
+				"model": {
+					"foobar": {
+						"connection":"conn",
+						"include":["*.view.lkml","bar.explore.lkml"],
+						"explore":{
+							"foo_view": {}
+						}
+					}
+				}
+			},
+			"bar.explore":{
+				"explore":{
+					"bar":{}
+				},
+				"view":{
+					"bar":{}
+				}
+			}
+		}
+	}
+}
