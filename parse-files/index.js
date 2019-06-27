@@ -17,6 +17,7 @@
 				,conditionalCommentString
 				,console = defaultConsole
 				,trace = {}
+				,fileOutput
 			}={}){
 				
 				const inputFilePaths = await globp(source||defaultSource,globOptions)
@@ -44,6 +45,26 @@
 				const modelFiles = files.filter(f=>f._file_type=="model" && f.model)
 				const models = modelFiles.map(mf=>iterateIncludes(mf, files, trace))
 
+				let filesOut
+				switch(fileOutput){
+					case 'by-name':
+						filesOut = {file:files.reduce(indexBy(f=>[f._file_name,f._file_type].filter(Boolean).join('.')), {})}
+						break
+					case 'array':
+						filesOut = {files}
+						break
+					case 'by-type': 
+					case undefined:
+						filesOut={file:{
+							model:		modelFiles.reduce(indexBy("_file_name"),{})
+							,view:		files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_name"),{})
+							,explore:	files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_name"),{})
+							,manifest:	files.find(f=>f._file_type=="manifest")
+							}}
+						break
+					default: throw new Error("Unrecognized file output argument: "+fileOutput);
+					}
+
 				return {
 						...(files.some(f=>f.error)?{
 							errors:files.filter(f=>f.error),
@@ -53,12 +74,7 @@
 								+"\n"+(f.error.context||"")
 								).join("\n"))
 							}:{}),
-						file: {
-								model:   modelFiles.reduce(indexBy("_file_name"),{})
-								,view:   files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_name"),{})
-								,explore:files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_name"),{})
-								,manifest:files.find(f=>f._file_type=="manifest")
-							},
+						...filesOut,
 						model: Object.values(models).reduce(indexBy("_model"),{})
 					}
 			}
@@ -121,7 +137,12 @@
 			}
 		function unique(x,i,arr){return arr.indexOf(x)==i}
 		function flatten(a,b){return a.concat(b)}
-		function indexBy(key){return (obj,x,i) => ({...obj, [x[key]]:x})}
+		function indexBy(key){
+			return (typeof key=="function"
+				? (obj,x,i) => ({...obj, [key(x)]:x})
+				: (obj,x,i) => ({...obj, [x[key]]:x})
+				)
+			}
 		function peek(x){console.log(x); return x}
 		function merge(...objs){
 				const has = key => obj => obj[key]!==undefined

@@ -12,6 +12,7 @@ var trace = (cliArgs.trace || cliArgs.t || '').split(",").reduce((idx,x)=>({...i
 parser.parseFiles({
 		source: cliArgs.input || cliArgs.i,
 		conditionalCommentString: cliArgs['conditional-comment'] || cliArgs.c,
+		fileOutput: cliArgs['file-output'] || cliArgs.f,
 		console,
 		trace
 	}).then((result)=>{

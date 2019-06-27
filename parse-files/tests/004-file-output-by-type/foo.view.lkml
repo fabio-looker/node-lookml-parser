@@ -1,0 +1,1 @@
+view: foo_view {}

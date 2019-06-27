@@ -1,5 +1,5 @@
 const TestRunner = require('test-runner')
-const runner = new TestRunner()
+const runner = new TestRunner({sequential:true})
 const differ = require("deep-object-diff")
 const lookmlParser_parseFiles = require("../index.js")
 const util = require("util")
@@ -26,10 +26,10 @@ const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
 for(let path of paths){
 		let test = getSpec(path)
 		let opts = test.parseFileOptions||{}
-		if(!opts.source){opts.source = __dirname+'/'+path+'/{*.model,*.explore,*.view,manifest}.lkml'}
 		if(opts.console){opts.console = mockConsole(opts.console)}
 		
 		runner.test(test.name||path, async () => {
+				process.chdir(__dirname+'/'+path)
 				let project = await lookmlParser_parseFiles(opts)
 				if(project.error){throw "Parse error: "+util.inspect(project.error)}
 				if(test.expected){

@@ -1,0 +1,3 @@
+explore: bar {}
+
+view: bar {}

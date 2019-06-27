@@ -1,0 +1,48 @@
+{
+	"expected":{
+		"model":{
+			"foobar":{
+				"explore":{
+					"foo_view":{},
+					"bar":{}
+				}
+			}
+		},
+		"file":{
+			"manifest":{
+				"project_name":"proj"
+			},
+			"view": {
+				"foo": {
+					"view": {
+						"foo_view": {}
+					}
+				}
+			},
+			"model": {
+				"foobar": {
+					"model": {
+						"foobar": {
+							"connection":"conn",
+							"include":["*.view.lkml","bar.explore.lkml"],
+							"explore":{
+								"foo_view": {}
+							}
+						}
+					}
+				}
+			},
+			"explore":{
+				"bar":{
+					"explore":{
+						"bar":{}
+					},
+					"view":{
+						"bar":{}
+					}
+					
+				}
+			}
+		}
+	}
+}

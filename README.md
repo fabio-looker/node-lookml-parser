@@ -23,6 +23,7 @@ const lookmlParser = require('lookml-parser')
 lookmlParser.parse("view: foo{}")
 lookmlParser.parseFiles({
 		source:  "*.{view,model,explore}.lkml",
+		fileOutput: "by-type" // or "array" or "by-name"
 		globOptions: {},
 		readFileOptions: {encoding:"utf-8"},
 		readFileConcurrency: 4,
@@ -34,6 +35,9 @@ lookmlParser.parseFiles({
 
 At the moment, parseFiles outputs a collection of files, each with their
 own parsed contents, as well as models resulting from following `include`s from model files.
+
+The collection of files is an object by default, keyed by type, then by name, but can be requested as
+either an array or an object keyed by the name of the file including type.
 
 ## Conditional Comments
 If you want to leverage LookML syntax to embed arbitrary other markup/objects that would
@@ -69,3 +73,5 @@ view: foo {
 	- Breaking change: The grammar no longer ignores leading whitespace in a doubleSemiBlock.
 - v5.0
 	- Breaking change: For simplicity and reduced output size, the output no longer includes the array version of collections of named objects. Only the object version, keyed by name, is returned.
+-v5.1
+	- Added the ability to control the output format of the files collection
