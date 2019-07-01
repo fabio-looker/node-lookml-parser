@@ -53,25 +53,41 @@ function recurse(obj) {
 											'order_by_field',
 											'required_fields',
 											'list_field',
-											'field'];
+											'filters'];
 		let references;
 		for (const [key, val] of Object.entries(obj)) {
 			if (propertiesThatAreFields.includes(key)) {
-				references = (references||[]).concat(val)
-			} 
-			else if (key === 'filters') {
-				if (Array.isArray(obj['filters'])) {
-					for (const filter of obj['filters']) {
-						references = (references||[]).concat(filter.field)
+				if (key === 'filters') {
+					// Iterate through array of filters when there is more than one. Example:
+					// 	{ type: 'count',
+					// 	 	 filters: [ [Object], [Object] ],
+					// 	 	 _measure: 'count',
+					// 	 	 _type: 'measure',
+					// 	 	 _n: 1,
+					// 	 	 _view: 'foo' }
+					if (Array.isArray(obj['filters'])) {
+						for (const filter of obj['filters']) {
+							references = (references||[]).concat(filter.field)
+						}
+					} else {
+						// if one filter, reference is in 'field'
+						references = (references||[]).concat(obj['filters'].field)
 					}
 				} else {
-					references = (references||[]).concat(obj['filters'].field)
+					// for properties that are fields but not filters the value is a list
+					references = (references||[]).concat(val)
+				}
+			} else if (propertiesThatMayContainFields.test(key)) {
+				let pattern = /\s*(?:\$\{|\{\{|\{%)+\s*((?!TABLE)([^.{}]+)(\.[^.{}]+)*)\s*(?:$|%\}|\})+/g
+				let match;
+				while ((match = pattern.exec(val)) !== null) {
+					references = (references||[]).concat(match[1])
 				}
 			}
 		}
 
 		obj._references = references
-}
+	}
 
 	for (const val of Object.values(obj)) {
 		recurse(val);
