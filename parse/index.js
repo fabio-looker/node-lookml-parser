@@ -85,8 +85,12 @@ function recurse(obj) {
 				}
 			}
 		}
-
-		obj._references = references
+		
+		if (Array.isArray(references)) {
+			obj._references = references.filter((el, index, arr) => {
+				return arr.indexOf(el) === index;
+			})
+		}
 	}
 
 	for (const val of Object.values(obj)) {
