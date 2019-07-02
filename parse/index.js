@@ -43,7 +43,7 @@ function recurse(obj) {
 		return
 	}
 	
-	if (['dimension', 'measure'].includes(obj._type)) {
+	if (['dimension', 'measure', 'dimension_group'].includes(obj._type)) {
 		let propertiesThatMayContainFields = /^(sql|html|sql_start|sql_end|sql_longitude|sql_latitude)/
 		let propertiesThatAreFields = ['label_from_parameter', 
 											'drill_fields', 
