@@ -42,7 +42,7 @@
 					"model": {
 						"foobar": {
 							"connection":"conn",
-							"include":["**/*.view.lkml","bar.explore.lkml"],
+							"include":["/**/*.view.lkml","bar.explore.lkml"],
 							"explore":{
 								"foo_view": {}
 							}
