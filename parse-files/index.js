@@ -7,7 +7,7 @@
 		const readp = Promise.promisify(fs.readFile)
 		const globp = Promise.promisify(glob)
 		const defaultConsole = console
-		const defaultSource = "{*.model,*.explore,*.view,manifest}.lkml"
+		const defaultSource = "**/{*.model,*.explore,*.view,manifest}.lkml"
 
 		exports = module.exports = async function lookmlParser_parseFiles({
 				source
@@ -19,17 +19,20 @@
 				,trace = {}
 				,fileOutput
 			}={}){
-				
-				const inputFilePaths = await globp(source||defaultSource,globOptions)
+				const inputFilePaths = await globp(source||defaultSource, {
+					...globOptions
+					})
 				if(Array.isArray(console)){console = mockConsole(console)}
 				if(!inputFilePaths.length){
 						if(source){console.warn("Warning: No input files were matched for pattern "+source)}
 						else{console.warn("Warning: No input files were matched. (Use argument --input=... or source)")}
 					}
 				const files = await Promise.map(inputFilePaths, async (_file_path,fp)=>{
-						const _file_name = path.basename(_file_path).replace(/\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i,'')
-						const _file_type = (path.basename(_file_path) .match(/\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i)||[])[1]
-						const _file_rel = path.relative(globOptions.cwd||process.cwd(),_file_path) //To be used for pattern matching
+						let typeRegex = /\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i
+						const _file_name = path.basename(_file_path).replace(typeRegex,'')
+						const _file_type = (path.basename(_file_path) .match(typeRegex)||[])[1]
+						const _file_rel = path.relative(globOptions.cwd||process.cwd(),_file_path)
+						 	.replace(typeRegex,'')
 						var file,result;
 						try{
 								file = await readp(_file_path,readFileOptions)
@@ -43,12 +46,17 @@
 							}
 					},{concurrency: readFileConcurrency})
 				const modelFiles = files.filter(f=>f._file_type=="model" && f.model)
+				
+				if(trace.includes){console.log("Files: ",files.map(f=>f._file_path))}
 				const models = modelFiles.map(mf=>iterateIncludes(mf, files, trace))
 
 				let filesOut
 				switch(fileOutput){
+					case 'none':
+						filesOut = {}
+						break;
 					case 'by-name':
-						filesOut = {file:files.reduce(indexBy(f=>[f._file_name,f._file_type].filter(Boolean).join('.')), {})}
+						filesOut = {file:files.reduce(indexBy(f=>[f._file_rel,f._file_type].filter(Boolean).join('.')), {})}
 						break
 					case 'array':
 						filesOut = {files}
@@ -56,9 +64,9 @@
 					case 'by-type': 
 					case undefined:
 						filesOut={file:{
-							model:		modelFiles.reduce(indexBy("_file_name"),{})
-							,view:		files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_name"),{})
-							,explore:	files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_name"),{})
+							model:		modelFiles.reduce(indexBy("_file_rel"),{})
+							,view:		files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_rel"),{})
+							,explore:	files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_rel"),{})
 							,manifest:	files.find(f=>f._file_type=="manifest")
 							}}
 						break
@@ -83,14 +91,15 @@
 				var toMerge = []
 				var remaining = [modelFile]
 				var included =[]
+				if(trace.includes){console.log("Starting from model: ",modelFile._file_name)}
 				while(remaining.length){
 						let current = remaining.shift()
 						if( typeof current == "string"){
+								let currentPattern = current
 								if(trace.includes){console.log("Searching: "+current)}
-								let pattern = lookerpattern2Regex(current)
 								let matchedFiles = 
 										files
-										.filter(f=>f._file_path.match(pattern))
+										.filter(f=>f._file_path.match(new RegExp(currentPattern,"u")))
 								let toAdd = matchedFiles
 										.filter(f=>!included.includes(f._file_path))
 								if(trace.includes){console.log("  > New matches: "+toAdd.length)}
@@ -100,22 +109,28 @@
 								remaining.unshift(...toAdd)
 							}
 						if( typeof current == "object" ){
-								if(trace.includes){console.log("\x1b[2mIncluding\x1b[0m: "+current._file_path)}
-								let file = current
-								if(included.includes(file._file_path)){
+								let currentFile = current
+								let currentPath = currentFile._file_path
+								if(included.includes(currentPath)){
 										if(trace.includes){console.log("  > \x1b[33mSkipping as duplicate\x1b[0m")}
 										continue
 									}
-								included.push(file._file_path)
+								if(trace.includes){console.log("\x1b[2mIncluding\x1b[0m: "+currentPath)}
+								included.push(currentPath)
 								//if(trace.includes){console.log("  > Included: "+file._file_path)}
-								if(file._file_type=="model" && file.model){
-										file={...file,...Object.values(file.model)[0]}
-										delete file.model
+								if(currentFile._file_type=="model" && currentFile.model){
+										currentFile={...currentFile,...Object.values(currentFile.model)[0]}
+										delete currentFile.model
 									}
-								let includes = coerceArray(file.include)
-								if(trace.includes && includes.length){console.log("  > Queued: ", includes)}
-								remaining.unshift(...coerceArray(includes))
-								toMerge.push(file)	
+								let includes = coerceArray(currentFile.include)
+								let patterns = includes
+									.map(inc=>lookerpattern2Regex(inc,path.dirname(currentPath)))
+								if(trace.includes && includes.length){
+									console.log("  > Includes:", includes )
+									console.log("  > Queued: ", patterns)
+									}
+								remaining.unshift(...patterns)
+								toMerge.push(currentFile)	
 							}
 					}
 			
@@ -126,14 +141,18 @@
 			if(x instanceof Array){return x.slice()}
 			return [x]
 		}
-		function lookerpattern2Regex(str){
+		function lookerpattern2Regex(str, from){
 				// Not sure what the official spec is for Looker file match patterns, but I know *, so that will do for now
-				return new RegExp("^"+str
-									.replace(/\./g,"\\.") //Dots are literals
-									.replace(/\*/g,".*") //* is splat
+				return "^"+str
+									.replace(/^(?!\/)/,(from=='.')?'':from+'/') // If no leading slash, then relative match
+									.replace(/^\//,'') //Leading slash not needed in regex
+									.replace(/[.${}^[\]]/g,ch=>('\\'+ch)) //Things which would be literals
+									.replace(/\*/g,"[^/]*") //* is splat, but not for directories
+									.replace(/\[\^\/\]\*\[\^\/\]\*(\/\[\^\/\]\*|\/\[\^\/\]\*\[\^\/\]\*)*/g,".*") 
+										//** is splat, including directories
 									.replace(/\.(view|model|explore)$/,".$1.lkml") //Types that are implicitly .lkml
-									// I assume dashboards get an explict extension too, but they're out of scope here
-									+"$", "gu")
+									// I assume dashboards get an implict extension too, but they're out of scope here
+									+"$"
 			}
 		function unique(x,i,arr){return arr.indexOf(x)==i}
 		function flatten(a,b){return a.concat(b)}
