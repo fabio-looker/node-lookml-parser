@@ -4,7 +4,7 @@
 	function assignSuper(obj,type,name){
 			if(!type || type=="_proto__" || !name){return}
 			if(isObject(obj)){
-				obj["_"+type]=name
+				if(obj._type){obj["_"+type]=name}
 				Object.values(obj).forEach(subObj => assignSuper(subObj, type, name))
 				}
 			if(obj.forEach){
@@ -16,8 +16,8 @@
 			var collection = {};
 			params.forEach((p,i)=>{
 					try{
-					assignSuper(p.value,p.type,p.name)
 					if(isObject(p.value)){p.value._type=p.type;}
+					assignSuper(p.value,p.type,p.name)
 					if(p.name){ //Named Parameter, use an object/hashmap
 							if(!collection[p.type]){
 									collection[p.type]=mergeable({});
