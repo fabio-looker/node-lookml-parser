@@ -21,7 +21,7 @@
 				,fileOutput
 			}={}){
 				const inputFilePaths = await globp(source||defaultSource, {
-					cwd,
+					...cwd?{cwd}:{},
 					...globOptions
 					})
 				if(Array.isArray(console)){console = mockConsole(console)}
