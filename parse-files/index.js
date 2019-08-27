@@ -11,6 +11,7 @@
 
 		exports = module.exports = async function lookmlParser_parseFiles({
 				source
+				,cwd
 				,globOptions = {}
 				,readFileOptions = {encoding:'utf-8'}
 				,readFileConcurrency = 4
@@ -20,6 +21,7 @@
 				,fileOutput
 			}={}){
 				const inputFilePaths = await globp(source||defaultSource, {
+					cwd,
 					...globOptions
 					})
 				if(Array.isArray(console)){console = mockConsole(console)}
@@ -31,11 +33,10 @@
 						let typeRegex = /\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i
 						const _file_name = path.basename(_file_path).replace(typeRegex,'')
 						const _file_type = (path.basename(_file_path) .match(typeRegex)||[])[1]
-						const _file_rel = path.relative(globOptions.cwd||process.cwd(),_file_path)
-						 	.replace(typeRegex,'')
+						const _file_rel = _file_path.replace(typeRegex,'')
 						var file,result;
 						try{
-								file = await readp(_file_path,readFileOptions)
+								file = await readp(path.join(cwd||process.cwd(),_file_path),readFileOptions)
 								result = lookmlParser.parse(file,{
 										conditionalCommentString,
 										model:_file_type=="model"?_file_name:undefined

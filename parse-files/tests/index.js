@@ -25,11 +25,11 @@ const paths = fs
 const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
 for(let path of paths){
 		let test = getSpec(path)
-		let opts = test.parseFileOptions||{}
+		let opts = {cwd: __dirname+'/'+path, ...test.parseFileOptions||{}}
 		if(opts.console){opts.console = mockConsole(opts.console)}
 		
 		runner.test(test.name||path, async () => {
-				process.chdir(__dirname+'/'+path)
+				//process.chdir(__dirname+'/'+path)
 				let project = await lookmlParser_parseFiles(opts)
 				if(project.error){throw "Parse error: "+util.inspect(project.error)}
 				if(test.expected){
