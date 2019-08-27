@@ -47,9 +47,10 @@
 							}
 					},{concurrency: readFileConcurrency})
 				const modelFiles = files.filter(f=>f._file_type=="model" && f.model)
-				
+				const manifest = files.find(f=>f._file_type=="manifest")
 				if(trace.includes){console.log("Files: ",files.map(f=>f._file_path))}
 				const models = modelFiles.map(mf=>iterateIncludes(mf, files, trace))
+				
 
 				let filesOut
 				switch(fileOutput){
@@ -68,7 +69,7 @@
 							model:		modelFiles.reduce(indexBy("_file_rel"),{})
 							,view:		files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_rel"),{})
 							,explore:	files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_rel"),{})
-							,manifest:	files.find(f=>f._file_type=="manifest")
+							,manifest
 							}}
 						break
 					default: throw new Error("Unrecognized file output argument: "+fileOutput);
@@ -84,7 +85,8 @@
 								).join("\n"))
 							}:{}),
 						...filesOut,
-						model: Object.values(models).reduce(indexBy("_model"),{})
+						model: Object.values(models).reduce(indexBy("_model"),{}),
+						manifest
 					}
 			}
 
