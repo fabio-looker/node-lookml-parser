@@ -64,7 +64,7 @@ unlabeledObject = type:atom _ ":" _             val:object {return {type:type,na
 sqlAttribute 	= type:sqlAtom _ ":"	        val:doubleSemiBlock   {return {type:type,name:undefined,value:val}}
 htmlAttribute 	= type:htmlAtom _ ":"			val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
 exprAttribute	= type:exprAtom _ ":"			val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
-arrayAttribute  = type:atom _ ":" _  			val: (emptyList / atomStarList / stringList) {return {type:type,name:undefined,value:val}}
+arrayAttribute  = type:atom _ ":" _  			val: (emptyList / atomStarList / stringList / mapList) {return {type:type,name:undefined,value:val}}
 stringAttribute = type:atom _ ":" _ 			val:string    {return {type:type,name:undefined,value:val}}
 atomAttribute   = type:atom _ ":" _ 			val:(atom) {return {type:type,name:undefined,value:(val=="yes"?true:val=="no"?false:val)}}
 
@@ -74,6 +74,14 @@ object = "{" _ d:declarationSet _ "}" {return d}
 emptyList = "[" _ "]" {return [] }
 atomStarList = "[" _ first:atomStar rest:(_ "," _ atomStar)* _ ","? _ "]" {return [first].concat(rest.map(r=>r[3]))}
 stringList = "[" _ first:string rest:(_ "," _ string)* _ ","? _ "]" {return [first].concat(rest.map(r=>r[3]))}
+mapList = "[" _ firstKey:atom _ ":" _ firstVal:string rest:(
+		 _ "," _ atom _ ":" _ string
+		)* 
+		_ ","? _ "]" 
+		{return rest.reduce(
+			(obj,[_1,comma,_2,key,_3,colon,_4,value])=>({...obj, [key]:value}),
+			{[firstKey]:firstVal}
+			)}
 
 atom = chars:[-_a-zA-Z0-9\.]+ {return chars.join('')}
 atomStar = chars:[-_a-zA-Z0-9\.]+ maybeStar:"*"? {return chars.join('') + (maybeStar||'') }
