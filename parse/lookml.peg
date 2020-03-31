@@ -22,22 +22,35 @@
 							if(!collection[p.type]){
 									collection[p.type]=mergeable({});
 								}
-							p.value._n=Object.keys(collection[p.type]).length;
-							collection[p.type][p.name]=p.value;
-						} else { //Unnamed parameter, use a single value or array of values
-							if (!	collection[p.type]){ //No parameters of the same type already exist
-									collection[p.type] = p.value
+							if(p.name[0]==='+'){ //Refinement
+									if(!collection[p.type][p.name]){
+											collection[p.type][p.name] = [];
+										}
+									p.value._n=collection[p.type][p.name].length;
+									collection[p.type][p.name].push(p.value);
+									return
 								}
-							else if(collection[p.type].push){ //>1 parameters of the same type already exist
-									if(isObject(p.value)){p.value._n=collection[p.type].length;}
-									collection[p.type].push(p.value)
+							else {
+								p.value._n=Object.keys(collection[p.type]).length;
+								collection[p.type][p.name]=p.value;
+								return
 								}
-							else{	// Exactly one parameter of the same type already exists
-									if(isObject(collection[p.type])){collection[p.type]._n = 0;} //Assign the first one an index
-									collection[p.type] = [collection[p.type]] //Put it into an array
-									if(isObject(p.value)){p.value._n=collection[p.type].length;} //Assign the new one an index
-									collection[p.type].push(p.value)
-							}
+						}
+					//Unnamed parameter, use a single value or array of values
+					if (!	collection[p.type]){ //No parameters of the same type already exist
+							collection[p.type] = p.value
+							return
+						}
+					if(collection[p.type].push){ //>1 parameters of the same type already exist
+							if(isObject(p.value)){p.value._n=collection[p.type].length;}
+							collection[p.type].push(p.value)
+							return
+						}
+					else{	// Exactly one parameter of the same type already exists
+							if(isObject(collection[p.type])){collection[p.type]._n = 0;} //Assign the first one an index
+							collection[p.type] = [collection[p.type]] //Put it into an array
+							if(isObject(p.value)){p.value._n=collection[p.type].length;} //Assign the new one an index
+							collection[p.type].push(p.value)
 						}
 					}catch(exception){throw {params, p, collection, exception}}
 				})
@@ -83,8 +96,8 @@ mapList = "[" _ firstKey:atom _ ":" _ firstVal:string rest:(
 			{[firstKey]:firstVal}
 			)}
 
-atom = chars:[-_a-zA-Z0-9\.]+ {return chars.join('')}
-atomStar = chars:[-_a-zA-Z0-9\.]+ maybeStar:"*"? {return chars.join('') + (maybeStar||'') }
+atom = chars:[-+_a-zA-Z0-9\.]+ {return chars.join('')}
+atomStar = chars:[-+_a-zA-Z0-9\.]+ maybeStar:"*"? {return chars.join('') + (maybeStar||'') }
 sqlAtom = "sql" chars:[-_a-zA-Z0-9]* {return "sql"+chars.join('')}
 htmlAtom = "html" chars:[-_a-zA-Z0-9]* {return "html"+chars.join('')}
 exprAtom = "expr" chars:[-_a-zA-Z0-9]* {return "expr"+chars.join('')}
