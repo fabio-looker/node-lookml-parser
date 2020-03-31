@@ -1,0 +1,18 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"file":{
+			"facts.view":{
+				"view":{
+					"facts": {"label":"Foo"},
+					"+facts":[
+						{"label":"Bar"},
+						{"label":"Baz"}
+						]
+					}
+				}
+			}
+		}
+	}
