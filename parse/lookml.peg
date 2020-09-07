@@ -2,107 +2,190 @@
 	const mergeable_proto = {isMergeable:true}
 	function mergeable(o){return Object.assign(Object.create(mergeable_proto),o)}
 	function assignSuper(obj,type,name){
-			if(!type || type=="_proto__" || !name){return}
-			if(isObject(obj)){
-				if(obj._type){obj["_"+type]=name}
-				Object.values(obj).forEach(subObj => assignSuper(subObj, type, name))
-				}
-			if(obj.forEach){
-				obj.forEach(subObj => assignSuper(subObj, type, name))
+		if(!type || type=="_proto__" || !name){return}
+		if(isObject(obj)){
+			if(obj._type){obj["_"+type]=name}
+			Object.values(obj).forEach(subObj => assignSuper(subObj, type, name))
 			}
-			return;
+		if(obj.forEach){
+			obj.forEach(subObj => assignSuper(subObj, type, name))
+			}
+		return
 		}
-	function groupDeclarations(params){
-			var collection = {};
-			params.forEach((p,i)=>{
+	function groupDeclarations(declarations){
+			const unnamedTypeCardinality = {}
+			declarations.forEach( p => {
+				if(p.type && !p.name){
+					unnamedTypeCardinality[p.type] = (unnamedTypeCardinality[p.type]||0) + 1
+					}
+				})
+			
+			const strings = []
+			declarations.forEach( p => {
+				try{
+				if(!Array.isArray(p.strings)){
+					//Not a parameter, i.e. whitespace & comments
+					strings.push(p)
+					return
+					}
+				if(p.name){ //Named parameter, i.e. an object
+					strings.push(`$${p.type}:${p.name}`)
+					return
+					}
+				//Unnamed parameter
+				if(unnamedTypeCardinality[p.type]===1){
+					strings.push(...p.strings.map(s=>s.replace(/^\$/,`$${p.type}`))) //TODO
+					}
+				strings.push(...p.strings.map(str=>str)) //TODO
+				}catch(exception){console.error({declarations, p, strings, exception})}
+				})
+			
+			const collection = {}
+			declarations.forEach((p,i)=>{
+					//if(p===undefined){return} //TODO remove this
 					try{
-					if(isObject(p.value)){p.value._type=p.type;}
-					assignSuper(p.value,p.type,p.name)
+					if(!p.type){
+						return
+						}
+					if(isObject(p.value)){
+						p.value._type=p.type; //To be replaced with separate insert-types step
+						}
+					assignSuper(p.value,p.type,p.name)//To be replaced with separate tree-insert-ancestors step
 					if(p.name){ //Named Parameter, use an object/hashmap
-							if(!collection[p.type]){
-									collection[p.type]=mergeable({});
-								}
-							if(p.name[0]==='+'){ //Refinement
-									if(!collection[p.type][p.name]){
-											collection[p.type][p.name] = [];
-										}
-									p.value._n=collection[p.type][p.name].length;
-									collection[p.type][p.name].push(p.value);
-									return
-								}
-							else {
-								p.value._n=Object.keys(collection[p.type]).length;
-								collection[p.type][p.name]=p.value;
-								return
-								}
+						collection[p.type] = collection[p.type] || mergeable({});
+						if(p.name[0]==='+'){ //Refinement
+							collection[p.type][p.name] = collection[p.type][p.name] || [];
+							collection[p.type][p.name].push(p.value);
+							return
+							}
+							collection[p.type][p.name]=p.value;
+							return
 						}
 					//Unnamed parameter, use a single value or array of values
-					if (!	collection[p.type]){ //No parameters of the same type already exist
-							collection[p.type] = p.value
-							return
+					if(unnamedTypeCardinality[p.type]==1){
+						collection[p.type] = p.value
+						return
 						}
-					if(collection[p.type].push){ //>1 parameters of the same type already exist
-							if(isObject(p.value)){p.value._n=collection[p.type].length;}
-							collection[p.type].push(p.value)
-							return
-						}
-					else{	// Exactly one parameter of the same type already exists
-							if(isObject(collection[p.type])){collection[p.type]._n = 0;} //Assign the first one an index
-							collection[p.type] = [collection[p.type]] //Put it into an array
-							if(isObject(p.value)){p.value._n=collection[p.type].length;} //Assign the new one an index
-							collection[p.type].push(p.value)
-						}
-					}catch(exception){throw {params, p, collection, exception}}
+					collection[p.type] = collection[p.type] || []
+					collection[p.type].push(p.value)
+
+					}catch(exception){console.error({declarations, p, collection, exception})}
 				})
-			return collection
+			return {$strings:strings, ...collection}
 		}
 	function isObject(o){return typeof o=="object" && !o.push}
+	function flatten(a,b){return a.concat(b)}
 }
 
 declarationSet = ds:(declaration)* {return groupDeclarations(ds);}
 
-declaration  = _ d:(
-					labeledObject
-                    / unlabeledObject
-                    / sqlAttribute
-                    / htmlAttribute
-					/ exprAttribute
-                    / arrayAttribute
-                    / stringAttribute
-                    / atomAttribute
-                    ) _ {return d}
+declaration  = 
+	whitespace
+	/ comment
+	/ objectDeclaration
+	/ blockDeclaration
+	/ arrayDeclaration
+	/ stringDeclaration
+	/ atomDeclaration
 
-labeledObject   = type:atom _ ":" _ name:atom _ val:object {return {type:type,name:name,value:val}}
-unlabeledObject = type:atom _ ":" _             val:object {return {type:type,name:undefined,value:val}}
-sqlAttribute 	= type:sqlAtom _ ":"	        val:doubleSemiBlock   {return {type:type,name:undefined,value:val}}
-htmlAttribute 	= type:htmlAtom _ ":"			val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
-exprAttribute	= type:exprAtom _ ":"			val:doubleSemiBlock    {return {type:type,name:undefined,value:val}}
-arrayAttribute  = type:atom _ ":" _  			val: (emptyList / atomStarList / stringList / mapList) {return {type:type,name:undefined,value:val}}
-stringAttribute = type:atom _ ":" _ 			val:string    {return {type:type,name:undefined,value:val}}
-atomAttribute   = type:atom _ ":" _ 			val:(atom) {return {type:type,name:undefined,value:(val=="yes"?true:val=="no"?false:val)}}
+objectDeclaration =
+	type:atom _1:_ ":" _2:_ name:atom? _3:_ "{" _4:_ ds:declarationSet _5:_ "}"
+	{
+	const {$strings, ...value} = ds
+	return {
+		strings:["$type", ..._1, ":", ..._2, name?"$name":"", ..._3, "{", ..._4, ...$strings, ..._5, "}"].filter(Boolean),
+		type,
+		name,
+		value
+		}}
+/* unlabeledObject = type:atom _ ":" _             val:object {return {type:type,name:undefined,value:val}} */
 
+blockDeclaration =
+	type:blockAtom _1:_ ":" value:doubleSemiBlock
+	{return{
+		strings: [type, ..._1, ":", "$", ";;"].filter(Boolean),
+		type,
+		value
+		}}
+arrayDeclaration = 
+	type:atom _1:_ ":" _2:_ array: (emptyList / atomStarList / stringList / mapList)
+	{return {
+		strings:[type, ..._1, ":", ..._2, ...array.strings].filter(Boolean),
+		type,
+		value: array.value
+		}}
+stringDeclaration =
+	type:atom _1:_ ":" _2:_ value:string
+	{return {
+		strings:[type, ..._1, ":", ..._2, '"', "$", '"'].filter(Boolean),
+		type,
+		value
+		}}
+atomDeclaration =
+	type:atom _1:_ ":" _2:_ value:atom
+	{return {
+		strings:[type, ..._1, ":", ..._2, "$"].filter(Boolean),
+		type,
+		value: value=="yes"?true : value=="no"?false : value
+		}}
 
-object = "{" _ d:declarationSet _ "}" {return d}
+/*
+object = "{" _1:_ d:declarationSet _2:_ "}" 
+	{return {
+		strings:["{", _1, ...d.strings, _2, "}"]
+		value: d
+		}}
+*/
 
-emptyList = "[" _ "]" {return [] }
-atomStarList = "[" _ first:atomStar rest:(_ "," _ atomStar)* _ ","? _ "]" {return [first].concat(rest.map(r=>r[3]))}
-stringList = "[" _ first:string rest:(_ "," _ string)* _ ","? _ "]" {return [first].concat(rest.map(r=>r[3]))}
-mapList = "[" _ firstKey:atom _ ":" _ firstVal:string rest:(
+emptyList = 
+	"[" _:_ "]" 
+	{return {
+		strings: ["[", ..._, "]"].filter(Boolean),
+		value: []
+		}}
+
+atomStarList =
+	"[" _1:_ first:atomStar rest:(_ "," _ atomStar)* _2:_ comma:","? _3:_ "]" 
+	{return {
+		strings:["[", ..._1, "$.0",
+			...rest.map(([r_1, rcomma, r_2, atomStar], r)=>[...r_1, ",", ...r_2, `$.${r+1}`]).reduce(flatten,[]),
+			..._2, comma, ..._3, "]"
+			].filter(Boolean),
+		value:[first, ...rest.map(([r_1,rcomma,r_2,atomStar])=>atomStar)]
+		}}
+
+stringList = 
+	"[" _1:_ first:string rest:(_ "," _ string)* _2:_ comma:","? _3:_ "]" 
+	{return {
+		strings:["[", ..._1, '"', "$.0", '"',
+			...rest.map(([r_1,rcomma,r_2,string],r)=>[...r_1,",",...r_2,'"',`$.${r+1}`,'"']).reduce(flatten,[]),
+			..._2, comma, ..._3, "]"
+			].filter(Boolean),
+		value: [first, ...rest.map(r=>r[3])]
+		}}
+
+mapList = 
+	"[" _1:_ firstKey:atom _2:_ ":" _3:_ firstVal:string rest:(
 		 _ "," _ atom _ ":" _ string
-		)* 
-		_ ","? _ "]" 
-		{return rest.reduce(
-			(obj,[_1,comma,_2,key,_3,colon,_4,value])=>({...obj, [key]:value}),
-			{[firstKey]:firstVal}
-			)}
+		)* _4:_ comma:","? _5:_ "]" 
+		{return {
+			strings:["[",..._1,"$.k0",..._2,":",..._3,"$.v0",
+				...rest.map(([r_1,rcomma,r_2,rkey,r_3,rcolon,r_4,rval],r)=>
+					[...r_1,",",...r_2,`$.k${r+1}`,...r_3,":",...r_4,`$.v${r+1}`])
+					.reduce(flatten,[]),
+				..._4,comma,..._5,"]"
+				].filter(Boolean),
+			value: rest.reduce(
+				(obj,[_1,comma,_2,key,_3,colon,_4,value])=>({...obj, [key]:value}),
+				{[firstKey]:firstVal}
+				)
+			}}
 
 atom = chars:[-+_a-zA-Z0-9\.]+ {return chars.join('')}
 atomStar = chars:[-+_a-zA-Z0-9\.]+ maybeStar:"*"? {return chars.join('') + (maybeStar||'') }
-sqlAtom = "sql" chars:[-_a-zA-Z0-9]* {return "sql"+chars.join('')}
-htmlAtom = "html" chars:[-_a-zA-Z0-9]* {return "html"+chars.join('')}
-exprAtom = "expr" chars:[-_a-zA-Z0-9]* {return "expr"+chars.join('')}
+blockAtom = blockType:("sql"/"html"/"expr") chars:[-_a-zA-Z0-9]* {return blockType+chars.join('')}
 
-doubleSemiBlock = chars:([^;] / ( ";" [^;] ))*  ";;" {return chars.join('')}
+doubleSemiBlock = chars:([^;] / ( ";" [^;] ))* ";;" {return chars.join('')}
 //Hmm: Is a block whose last character is a ';' accepted by native parser?
 
 string
@@ -113,7 +196,7 @@ string
 
 
 
-_ = (whitespace / comment)* {return [];}
+_  = strings:(whitespace / comment)* //{return {strings};}
 
-whitespace = [ \t\n\r]+ {return undefined;}
-comment = "#" chars:[^\n\r]* [\n\r]*
+whitespace = chars:[ \t\n\r]+ {return chars.join('');}
+comment = "#" chars:[^\n\r]* newline:[\n\r]? {return "#" + chars.join('') + (newline||'')}

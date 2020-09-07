@@ -23,31 +23,36 @@ const paths = fs
 	.map(ent=>ent.name)
 
 const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
-for(let path of paths){
-		let test = getSpec(path)
-		let opts = {cwd: __dirname+'/'+path, ...test.parseFileOptions||{}}
-		if(opts.console){opts.console = mockConsole(opts.console)}
-		
-		runner.test(test.name||path, async () => {
-				//process.chdir(__dirname+'/'+path)
-				let project = await lookmlParser_parseFiles(opts)
-				if(project.error){throw "Parse error: "+util.inspect(project.error)}
-				if(test.expected){
-					let diff = differ.detailedDiff(project,test.expected)
-					let hasAdded = Object.keys(diff.added).length
-					let hasUpdated = Object.keys(diff.updated).length
-					if(!hasAdded && !hasUpdated){
+
+!async function(){
+	for(let path of paths){
+			let test = getSpec(path)
+			let opts = {cwd: __dirname+'/'+path, ...test.parseFileOptions||{}}
+			if(opts.console){opts.console = mockConsole(opts.console)}
+			try{
+				runner.test(test.name||path, async () => {
+						//process.chdir(__dirname+'/'+path)
+						let project = await lookmlParser_parseFiles(opts)
+						if(project.error){throw "Parse error: "+util.inspect(project.error)}
+						if(test.expected){
+							let diff = differ.detailedDiff(project,test.expected)
+							let hasAdded = Object.keys(diff.added).length
+							let hasUpdated = Object.keys(diff.updated).length
+							if(!hasAdded && !hasUpdated){
+								return "ok"
+							}
+							//console.log(project.model)
+							throw ("Missing or mismatched properties"
+									+(hasAdded?"\n  Missing: "+util.inspect(diff.added,utOpt):"")
+									+(hasUpdated?"\n  Mismatched: "+util.inspect(diff.updated,utOpt):"")
+								)
+						}
 						return "ok"
-					}
-					throw ("Missing or mismatched properties"
-							+(hasAdded?"\n  Missing: "+util.inspect(diff.added,utOpt):"")
-							+(hasUpdated?"\n  Mismatched: "+util.inspect(diff.updated,utOpt):"")
-						)
+					})
 				}
-				return "ok"
-			})
-	}
-	
+			catch(e){console.error(e)}
+		}
+	}()
 	
 function mockConsole(consoleSpec){
 	let allowedMethods = consoleSpec
