@@ -29,26 +29,26 @@
 						if(source){console.warn("Warning: No input files were matched for pattern "+source)}
 						else{console.warn("Warning: No input files were matched. (Use argument --input=... or source)")}
 					}
-				const files = await Promise.map(inputFilePaths, async (_file_path,fp)=>{
+				const files = await Promise.map(inputFilePaths, async ($file_path,fp)=>{
 						let typeRegex = /\.?([-_a-zA-Z0-9]+)(\.lkml|\.lookml)?$/i
-						const _file_name = path.basename(_file_path).replace(typeRegex,'')
-						const _file_type = (path.basename(_file_path) .match(typeRegex)||[])[1]
-						const _file_rel = _file_path.replace(typeRegex,'')
+						const $file_name = path.basename($file_path).replace(typeRegex,'')
+						const $file_type = (path.basename($file_path) .match(typeRegex)||[])[1]
+						const $file_rel = $file_path.replace(typeRegex,'')
 						var file,result;
 						try{
-								file = await readp(path.join(cwd||process.cwd(),_file_path),readFileOptions)
+								file = await readp(path.join(cwd||process.cwd(),$file_path),readFileOptions)
 								result = lookmlParser.parse(file,{
 										conditionalCommentString,
-										model:_file_type=="model"?_file_name:undefined
+										model:$file_type=="model"?$file_name:undefined
 									})
 							}catch(e){result = {error:e}}
 						return {...result,
-								_file_path, _file_rel, _file_name, _file_type
+								$file_path, $file_rel, $file_name, $file_type
 							}
 					},{concurrency: readFileConcurrency})
-				const modelFiles = files.filter(f=>f._file_type=="model" && f.model)
-				const manifest = files.find(f=>f._file_type=="manifest")
-				if(trace.includes){console.log("Files: ",files.map(f=>f._file_path))}
+				const modelFiles = files.filter(f=>f.$file_type=="model" && f.model)
+				const manifest = files.find(f=>f.$file_type=="manifest")
+				if(trace.includes){console.log("Files: ",files.map(f=>f.$file_path))}
 				const models = modelFiles.map(mf=>iterateIncludes(mf, files, trace))
 				
 
@@ -58,7 +58,7 @@
 						filesOut = {}
 						break;
 					case 'by-name':
-						filesOut = {file:files.reduce(indexBy(f=>[f._file_rel,f._file_type].filter(Boolean).join('.')), {})}
+						filesOut = {file:files.reduce(indexBy(f=>[f.$file_rel,f.$file_type].filter(Boolean).join('.')), {})}
 						break
 					case 'array':
 						filesOut = {files}
@@ -66,9 +66,9 @@
 					case 'by-type': 
 					case undefined:
 						filesOut={file:{
-							model:		modelFiles.reduce(indexBy("_file_rel"),{})
-							,view:		files.filter(f=>f._file_type=="view"   ).reduce(indexBy("_file_rel"),{})
-							,explore:	files.filter(f=>f._file_type=="explore").reduce(indexBy("_file_rel"),{})
+							model:		modelFiles.reduce(indexBy("$file_rel"),{})
+							,view:		files.filter(f=>f.$file_type=="view"   ).reduce(indexBy("$file_rel"),{})
+							,explore:	files.filter(f=>f.$file_type=="explore").reduce(indexBy("$file_rel"),{})
 							,manifest
 							}}
 						break
@@ -79,13 +79,13 @@
 						...(files.some(f=>f.error)?{
 							errors:files.filter(f=>f.error),
 							errorReport:()=>console.log(files.filter(f=>f.error).map(f=>
-								 "\n"+f._file_path
+								 "\n"+f.$file_path
 								+"\n"+f.error.toString()
 								+"\n"+(f.error.context||"")
 								).join("\n"))
 							}:{}),
 						...filesOut,
-						model: Object.values(models).reduce(indexBy("_model"),{}),
+						model: Object.values(models).reduce(indexBy("$name"),{}),
 						manifest
 					}
 			}
@@ -94,7 +94,7 @@
 				var toMerge = []
 				var remaining = [modelFile]
 				var included =[]
-				if(trace.includes){console.log("Starting from model: ",modelFile._file_name)}
+				if(trace.includes){console.log("Starting from model: ",modelFile.$file_name)}
 				while(remaining.length){
 						let current = remaining.shift()
 						if( typeof current == "string"){
@@ -102,26 +102,26 @@
 								if(trace.includes){console.log("Searching: "+current)}
 								let matchedFiles = 
 										files
-										.filter(f=>f._file_path.match(new RegExp(currentPattern,"u")))
+										.filter(f=>f.$file_path.match(new RegExp(currentPattern,"u")))
 								let toAdd = matchedFiles
-										.filter(f=>!included.includes(f._file_path))
+										.filter(f=>!included.includes(f.$file_path))
 								if(trace.includes){console.log("  > New matches: "+toAdd.length)}
 								let dupes = matchedFiles
-										.filter(f=> included.includes(f._file_path))
-								if(trace.includes && dupes.length){console.log("  > \x1b[33mDupe matches\x1b[0m: ",dupes.map(f=>f._file_path))}
+										.filter(f=> included.includes(f.$file_path))
+								if(trace.includes && dupes.length){console.log("  > \x1b[33mDupe matches\x1b[0m: ",dupes.map(f=>f.$file_path))}
 								remaining.unshift(...toAdd)
 							}
 						if( typeof current == "object" ){
 								let currentFile = current
-								let currentPath = currentFile._file_path
+								let currentPath = currentFile.$file_path
 								if(included.includes(currentPath)){
 										if(trace.includes){console.log("  > \x1b[33mSkipping as duplicate\x1b[0m")}
 										continue
 									}
 								if(trace.includes){console.log("\x1b[2mIncluding\x1b[0m: "+currentPath)}
 								included.push(currentPath)
-								//if(trace.includes){console.log("  > Included: "+file._file_path)}
-								if(currentFile._file_type=="model" && currentFile.model){
+								//if(trace.includes){console.log("  > Included: "+file.$file_path)}
+								if(currentFile.$file_type=="model" && currentFile.model){
 										currentFile={...currentFile,...Object.values(currentFile.model)[0]}
 										delete currentFile.model
 									}

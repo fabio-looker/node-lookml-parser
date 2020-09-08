@@ -14,8 +14,8 @@
 		},
 		"files":[
 			{
-				"_file_type":"explore",
-				"_file_name":"bar",
+				"$file_type":"explore",
+				"$file_name":"bar",
 				"explore":{
 					"bar":{}
 				},
@@ -24,15 +24,15 @@
 				}
 			},
 			{
-				"_file_type":"view",
-				"_file_name":"foo",
+				"$file_type":"view",
+				"$file_name":"foo",
 				"view": {
 					"foo_view": {}
 				}
 			},
 			{
-				"_file_type":"model",
-				"_file_name":"foobar",	
+				"$file_type":"model",
+				"$file_name":"foobar",	
 				"model": {
 					"foobar": {
 						"connection":"conn",
@@ -44,7 +44,7 @@
 				}
 			},
 			{
-				"_file_type":"manifest",
+				"$file_type":"manifest",
 				"project_name":"proj"
 			}
 		]
