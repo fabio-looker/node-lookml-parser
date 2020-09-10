@@ -8,6 +8,7 @@
 		const globp = Promise.promisify(glob)
 		const defaultConsole = console
 		const defaultSource = "**/{*.model,*.explore,*.view,manifest}.lkml"
+		const recursiveRemoveProperty = require("../lib/transformations/recursive-remove-property.js")
 
 		exports = module.exports = async function lookmlParser_parseFiles({
 				source
@@ -120,7 +121,13 @@
 									}
 								if(trace.includes){console.log("\x1b[2mIncluding\x1b[0m: "+currentPath)}
 								included.push(currentPath)
-								//if(trace.includes){console.log("  > Included: "+file.$file_path)}
+
+								// Remove $strings (from cloned contents) before assembling
+								// (could be kept in the future, but need to think through corner cases)
+								currentFile = recursiveRemoveProperty(
+									JSON.parse(JSON.stringify(currentFile)),
+									"$strings"
+									)
 								if(currentFile.$file_type=="model" && currentFile.model){
 										currentFile={...currentFile,...Object.values(currentFile.model)[0]}
 										delete currentFile.model
@@ -176,9 +183,13 @@
 						...merged,
 						[key]: objs.filter(has(key)).length==1
 								? objs.find(has(key))[key]
-								: objs.filter(has(key)).every(o=>o[key].isMergeable)
+								: objs.filter(has(key)).every(o=>objectIsMergeable(o[key]))
 									? merge(...objs.filter(has(key)).map(o=>o[key]))
 									: objs.filter(has(key)).map(o=>o[key]).reduce(flatten,[])
 					}),{})
+			}
+		function objectIsMergeable(obj){
+			//Make sure the object is not a value (like a `view:foo {}` or `derived_table: {...}` )
+			return obj && typeof obj == "object" && !obj.$type
 			}
 	}()

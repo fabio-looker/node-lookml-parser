@@ -1,6 +1,4 @@
 {
-	const mergeable_proto = {isMergeable:true} //Used in ../parse-files to merge collections within a model
-	function mergeable(o){return Object.assign(Object.create(mergeable_proto),o)}
 	function assignSuper(obj,type,name){
 		//Recursive calls inside forEach seems intensive. Deep trees could scale poorly. Refactor at some point.
 		if(!type || type=="_proto__" || !name){return}
@@ -85,7 +83,7 @@
 					assignSuper(annotatedValue,$type,$name)
 					}
 				if($name){ //Named Parameter, use an object/hashmap
-					collection[$type] = collection[$type] || mergeable({});
+					collection[$type] = collection[$type] || {};
 					if($name[0]==='+'){ //Refinement
 						collection[$type][$name] = collection[$type][$name] || [];
 						collection[$type][$name].push(annotatedValue);

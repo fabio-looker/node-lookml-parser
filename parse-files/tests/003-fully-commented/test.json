@@ -1,0 +1,42 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"file": {
+			"user_order_fact.view": {
+				"$strings": [
+					"# view: user_order_facts {\n",
+					"#   derived_table: {\n",
+					"#	 sql:\n",
+					"#	   SELECT\n",
+					"#		 user_id as 1pk_user_id,\n",
+					"#		 ---\n",
+					"#		 MIN(DATE(created_at)) AS first_order_date\n",
+					"#	   FROM\n",
+					"#		 orders\n",
+					"#	   GROUP BY\n",
+					"#		 user_id ;;\n",
+					"#   }\n",
+					"\n",
+					"#   dimension: 1pk_user_id {\n",
+					"#	 type: number\n",
+					"#	 primary_key: yes\n",
+					"#	 hidden: yes\n",
+					"#   }\n",
+					"\n",
+					"#   dimension: first_order_date {\n",
+					"#	 description: \"Date of first order\"\n",
+					"#	 type: date\n",
+					"#	 sql: ${TABLE}.first_order_date ;;\n",
+					"#   }\n",
+					"# }"
+				],
+				"$file_path": "user_order_fact.view.lkml",
+				"$file_rel": "user_order_fact",
+				"$file_name": "user_order_fact",
+				"$file_type": "view"
+			}
+		}
+	}
+}

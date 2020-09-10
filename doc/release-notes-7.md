@@ -3,18 +3,14 @@
 ## High-level themes
 
 - Capturing whitespace and comments to enable round-tripping, with the option to mutate
-- Abstraction to support in-browser use
 - Metadata tweaks for reduced collisions and improved file representation
 
 ## Breaking changes
 
-- All interfaces
-	- All "added" metadata is now prefixed with `$` instead of with `_` to reduce the possibility of clashes, since `_` is a common character in LookML names
-	- An object's own name is now always listed under `$name` (instead of under a property that varies according to the object's type, like `$view`).
-		- The names of its parent objects are still accessed with a type-based property name. So, from within a dimension, `$view` is still the way to get the name of the view that it belongs to
-	- [TODO] The default file output mode is now `by-name` instead of `by-type`
-- Javascript API only
-	- [TODO] The parseFiles function no longer bundles filesystem operations. You must now pass in functions that implement `listFiles(fileGlob)->filePathAray` and `readFile(filePath)->fileContents`. Functions that imlement the existing functionality are provided in `nodejsListFiles` and `nodejsReadFile`
+- All "added" metadata is now prefixed with `$` instead of with `_` to reduce the possibility of clashes, since `_` is a common character in LookML names
+- An object's own name is now always listed under `$name` (instead of under a property that varies according to the object's type, like `$view`).
+- The names of its parent objects are still accessed with a type-based property name. So, from within a dimension, `$view` is still the way to get the name of the view that it belongs to
+- [TODO] The default file output mode is now `by-name` instead of `by-type`
 
 ## New Functionality
 
