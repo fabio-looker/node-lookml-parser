@@ -15,9 +15,6 @@
 ## New Functionality
 
 - Unassembled collections (files, objects within files, and objects from LookML strings) now contain an added `$strings` property, which can be used for whitespace and comment preserving mutations/roundtrips
-- [TODO] Assembled models now implement exends and refinements 
-- [TODO] The Javascript API is now usable in-browser
-
 
 ## Bug Fixes
 
