@@ -4,7 +4,7 @@
   "description": "Parse LookML",
   "main": "index.js",
   "scripts": {
-    "test": "node parse/test.js && node parse-files/tests"
+    "test": "node lib/parse/test.js && node lib/parse-files/test.js"
   },
   "bin": {
     "lookml-parser": "./cli.js"
