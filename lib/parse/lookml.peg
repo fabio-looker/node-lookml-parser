@@ -47,17 +47,18 @@
 						return
 						}
 					}
-				//Array or Primitive parameter, keep strings at the collection level
+				//Array or Primitive parameter, group strings into a sub-array for atomic handling
 				else{
 					
-					//Cardinality 1
+					//Cardinality 1 / Primitive
 					if(unnamedTypeCardinality[p.$type]===1){
-						$strings.push(...p.$strings.map(s=>s.replace(/^!/,`!${p.$type}.`))) //TODO
+						$strings.push([`!${p.$type}`, ...p.$strings])
 						return
 						}
 					//Cardinality 2+
 					else {
-						$strings.push(...p.$strings.map(str=>str)) //TODO
+						const count = unnamedTypeCount[p.$type] = (unnamedTypeCount[p.$type]||0) + 1
+						$strings.push([`!${p.$type}.${count-1}`, ...p.$strings])
 						return
 						}
 					}

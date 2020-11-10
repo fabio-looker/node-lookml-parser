@@ -1,5 +1,5 @@
 
 exports = module.exports = {
-		parse: require('./parse'),
-		parseFiles: require('./parse-files')
+		parse: require('./lib/parse'),
+		parseFiles: require('./lib/parse-files')
 	}
