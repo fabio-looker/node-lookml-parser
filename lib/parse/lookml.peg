@@ -32,18 +32,18 @@
 				//Value is its own collection, it will have strings within it and we just want to reference it
 				if(isObject(p.$value)){
 					if(p.$name){ //Named parameter, e.g. a view or dimension
-						$strings.push([`!${p.$type}.${p.$name}`])
+						$strings.push([`${p.$type}.${p.$name}`])
 						return
 						}
 					//Cardinality 1
 					if(unnamedTypeCardinality[p.$type]===1){
-						$strings.push([`!${p.$type}`])
+						$strings.push([`${p.$type}`])
 						return
 						}
 					//Cardinality 2+
 					else {
 						const count = unnamedTypeCount[p.$type] = (unnamedTypeCount[p.$type]||0) + 1
-						$strings.push([`!${p.$type}.${count-1}`])
+						$strings.push([`${p.$type}.${count-1}`])
 						return
 						}
 					}
@@ -58,13 +58,13 @@
 					
 					//Cardinality 1 / Primitive
 					if(unnamedTypeCardinality[p.$type]===1){
-						$strings.push([`!${p.$type}`, ...p.$strings])
+						$strings.push([`${p.$type}`, ...p.$strings])
 						return
 						}
 					//Cardinality 2+
 					else {
 						const count = unnamedTypeCount[p.$type] = (unnamedTypeCount[p.$type]||0) + 1
-						$strings.push([`!${p.$type}.${count-1}`, ...p.$strings])
+						$strings.push([`${p.$type}.${count-1}`, ...p.$strings])
 						return
 						}
 					}
@@ -133,7 +133,7 @@ objectDeclaration =
 	{
 	const {$strings, ...innerValue} = $value
 	return {
-		$strings:[["!$type"], ..._1, ":", ..._2, ($name?[`!$name`]:""), ..._3, "{", ..._4, ...$strings, ..._5, "}"].filter(Boolean),
+		$strings:[["$type"], ..._1, ":", ..._2, ($name?["$name"]:""), ..._3, "{", ..._4, ...$strings, ..._5, "}"].filter(Boolean),
 		$type,
 		...($name?{$name}:{}),
 		$value:innerValue
@@ -143,7 +143,7 @@ objectDeclaration =
 blockDeclaration =
 	$type:blockAtom _1:_ ":" $value:doubleSemiBlock
 	{return{
-		$strings: [$type, ..._1, ":", ["!"], ";;"].filter(Boolean),
+		$strings: [$type, ..._1, ":", [], ";;"].filter(Boolean),
 		$type,
 		$value
 		}}
@@ -157,14 +157,14 @@ arrayDeclaration =
 stringDeclaration =
 	$type:atom _1:_ ":" _2:_ $value:string
 	{return {
-		$strings:[$type, ..._1, ":", ..._2, '"', ["!"], '"'].filter(Boolean),
+		$strings:[$type, ..._1, ":", ..._2, '"', [], '"'].filter(Boolean),
 		$type,
 		$value
 		}}
 atomDeclaration =
 	$type:atom _1:_ ":" _2:_ $value:atom
 	{return {
-		$strings:[$type, ..._1, ":", ..._2, ["!"]].filter(Boolean),
+		$strings:[$type, ..._1, ":", ..._2, []].filter(Boolean),
 		$type,
 		$value: $value=="yes"?true : $value=="no"?false : $value
 		}}
@@ -187,8 +187,8 @@ emptyList =
 atomStarList =
 	"[" _1:_ first:atomStar rest:(_ "," _ atomStar)* _2:_ comma:","? _3:_ "]" 
 	{return {
-		$strings:["[", ["!.0",..._1, ["!"]],
-			...rest.map(([r_1, rcomma, r_2, atomStar], r)=>[`!.${r+1}`,...r_1, ",", ...r_2, ["!"]]),
+		$strings:["[", ["0",..._1, []],
+			...rest.map(([r_1, rcomma, r_2, atomStar], r)=>[`${r+1}`,...r_1, ",", ...r_2, []]),
 			..._2, comma, ..._3, "]"
 			].filter(Boolean),
 		$value:[first, ...rest.map(([r_1,rcomma,r_2,atomStar])=>atomStar)]
@@ -197,8 +197,8 @@ atomStarList =
 stringList = 
 	"[" _1:_ first:string rest:(_ "," _ string)* _2:_ comma:","? _3:_ "]" 
 	{return {
-		$strings:["[", ["!.0",..._1, '"', ["!"], '"'],
-			...rest.map(([r_1,rcomma,r_2,string],r)=>[`!.${r+1}`,...r_1,",",...r_2,'"',["!"],'"']),
+		$strings:["[", ["0",..._1, '"', [], '"'],
+			...rest.map(([r_1,rcomma,r_2,string],r)=>[`${r+1}`,...r_1,",",...r_2,'"',[],'"']),
 			..._2, comma, ..._3, "]"
 			].filter(Boolean),
 		$value: [first, ...rest.map(r=>r[3])]
@@ -209,9 +209,9 @@ mapList =
 		 _ "," _ atom _ ":" _ string
 		)* _4:_ comma:","? _5:_ "]" 
 		{return {
-			$strings:["[", [`!${firstKey}`,..._1,firstKey,..._2,":",..._3,'"',["!"],'"'],
+			$strings:["[", [`${firstKey}`,..._1,firstKey,..._2,":",..._3,'"',[],'"'],
 				...rest.map(   ([   r_1,rcomma,   r_2,rkey,   r_3,rcolon,   r_4, rval])=>
-					[`!${rkey}`, ...r_1,rcomma,...r_2,rkey,...r_3,rcolon,...r_4,'"',["!"],'"'  ]
+					[`${rkey}`, ...r_1,rcomma,...r_2,rkey,...r_3,rcolon,...r_4,'"',[],'"'  ]
 					),
 				..._4,comma,..._5,"]"
 				].filter(Boolean),
