@@ -113,6 +113,21 @@
 		
 		return {$strings, ...collection}
 		}
+	function makeMapList(type, _1, _2, _3, _4, _5, firstKey, firstVal, comma, rest) {
+		var buff = type == "string" ? ['"', [], '"'] : [[]]
+		return {
+			$strings:["[", [`${firstKey}`,..._1,firstKey,..._2,":",..._3, ...buff],
+				...rest.map(   ([   r_1,rcomma,   r_2,rkey,   r_3,rcolon,   r_4, rval])=>
+					[`${rkey}`, ...r_1,rcomma,...r_2,rkey,...r_3,rcolon,...r_4, ...buff]
+					),
+				..._4,comma,..._5,"]"
+				].filter(Boolean),
+			$value: rest.reduce(
+				(obj,[_1,comma,_2,key,_3,colon,_4,value])=>({...obj, [key]:value}),
+				{[firstKey]:firstVal}
+				)
+		}
+	}
 	function isObject(o){return o && typeof o=="object" && !o.push}
 	function flatten(a,b){return a.concat(b)}
 }
@@ -148,7 +163,7 @@ blockDeclaration =
 		$value
 		}}
 arrayDeclaration = 
-	$type:atom _1:_ ":" _2:_ array: (emptyList / atomStarList / stringList / mapList)
+	$type:atom _1:_ ":" _2:_ array: (emptyList / atomStarList / stringList / atomMapList / stringMapList)
 	{return {
 		$strings:[$type, ..._1, ":", ..._2, ...array.$strings].filter(Boolean),
 		$type,
@@ -204,22 +219,17 @@ stringList =
 		$value: [first, ...rest.map(r=>r[3])]
 		}}
 
-mapList = 
+atomMapList =
+	"[" _1:_ firstKey:atom _2:_ ":" _3:_ firstVal:atom rest:(
+		 _ "," _ atom _ ":" _ atom
+		)* _4:_ comma:","? _5:_ "]" 
+		{return makeMapList("atom", _1, _2, _3, _4, _5, firstKey, firstVal, comma, rest)}
+
+stringMapList = 
 	"[" _1:_ firstKey:atom _2:_ ":" _3:_ firstVal:string rest:(
 		 _ "," _ atom _ ":" _ string
 		)* _4:_ comma:","? _5:_ "]" 
-		{return {
-			$strings:["[", [`${firstKey}`,..._1,firstKey,..._2,":",..._3,'"',[],'"'],
-				...rest.map(   ([   r_1,rcomma,   r_2,rkey,   r_3,rcolon,   r_4, rval])=>
-					[`${rkey}`, ...r_1,rcomma,...r_2,rkey,...r_3,rcolon,...r_4,'"',[],'"'  ]
-					),
-				..._4,comma,..._5,"]"
-				].filter(Boolean),
-			$value: rest.reduce(
-				(obj,[_1,comma,_2,key,_3,colon,_4,value])=>({...obj, [key]:value}),
-				{[firstKey]:firstVal}
-				)
-			}}
+		{return makeMapList("string", _1, _2, _3, _4, _5, firstKey, firstVal, comma, rest)}
 
 atom = chars:[-+_a-zA-Z0-9\.]+ {return chars.join('')}
 atomStar = chars:[-+_a-zA-Z0-9\.]+ maybeStar:"*"? {return chars.join('') + (maybeStar||'') }
