@@ -16,6 +16,17 @@ parser.parseFiles({
 		console,
 		trace
 	}).then((result)=>{
+		let transformationFlags = cliArgs.transform || cliArgs.x || 's'
+		if(typeof transformationFlags === 'string'){
+			for(let flag of transformationFlags.split('')){
+				const transformation = parser.transformations.byCliFlags[flag]
+				if(!transformation){
+					result.warnings = (result.warnings||[]).concat(`Requested transformation '${flag}' not recognized and ignored.'`)
+					continue
+					}
+				result = transformation(result)
+			}
+		}
 		if(repl){
 				r = repl.start({writer:x=>
 						util
