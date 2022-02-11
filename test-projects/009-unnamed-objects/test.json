@@ -1,0 +1,49 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"file": {
+			"single.view": {
+				"view": {
+					"single": {
+						"dimension": {
+							"id": {
+								"$type": "dimension",
+								"$name": "id",
+								"link": {
+									"$type": "link",
+									"label": "View in app",
+									"url": "https://myapp.example.com/thing/{{ value }}",
+									"icon_url": "https://myapp.example.com/favicon.ico"
+								}
+							}
+						}
+					}
+				}
+			},
+			"multi.view": {
+				"view": {
+					"multi": {
+						"dimension": {
+							"id": {
+								"link": [
+									{
+										"$type": "link",
+										"label": "Thing 1",
+										"url": "https://thing1.example.com/thing/{{ value }}"
+									},
+									{
+										"$type": "link",
+										"label": "Thing 2",
+										"url": "https://thing2.exampke.com/thing/{{ value }}"
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		}			
+	}
+}
