@@ -166,39 +166,43 @@ emptyListElement =
 
 listElement =
 	"[" _0:_ln
-	body:( _ stringOrAtomElement _ "," _ln )*
-	_1:_ tailEl:stringOrAtomElement _2:_ comma:","? _3:_ 
+	body:( _ stringOrAtomElement _ ","  _ln )*
+	tail:( _ stringOrAtomElement _ ","? _   )?
+	_last:_
 	"]" 
 	{return {
-		$value:[...body.map(([_,el])=>el.$value), tailEl.$value],
+		$value: body
+			.concat(tail?[tail]:[])
+			.map(([_,el])=>el.$value),
 		$strings:[
 			"[",
 			..._0,
-			...body.map(([_1, bodyEl, _2, comma, _3], i) =>
+			...body.concat(tail?[tail]:[]).map(([_1, bodyEl, _2, comma, _3], i) =>
 				[`${i}`, 		..._1, ...bodyEl.$strings, ..._2, comma, ..._3].filter(Boolean)
 				),
-			[`${body.length}`,	..._1, ...tailEl.$strings, ..._2, comma, ..._3].filter(Boolean),
-			 "]"
+			..._last,
+			"]"
 			].filter(Boolean)
 		}}
 
 mapElement = 
 	"[" _0:_ln
-	body:( _ atom _ ":" _ stringOrAtomElement _ "," _ln )*
-	_1:_ tailKey:atom _2:_ colon:":" _3:_ tailEl:stringOrAtomElement _4:_ comma:","? _5:_ 
+	body:( _ atom _ ":" _ stringOrAtomElement _ ","  _ln )*
+	tail:( _ atom _ ":" _ stringOrAtomElement _ ","? _   )? 
+	_last:_
 	"]" 
 	{return {
-		$value: Object.fromEntries([
-			...body.map(([_1,key,_2,colon,_3,el])=>[key,el.$value]),
-			[tailKey,tailEl.$value]
-			]),
+		$value: body
+			.concat(tail?[tail]:[])
+			.map(([_1,key,_2,colon,_3,el])=>[key,el.$value])
+			.reduce((obj,[k,v])=>({...obj, [k]:v}),{}),
 		$strings:[
 			"[",
 			..._0,
-			...body.map(([_1, key, _2, colon, _3, bodyEl, _4, comma, _5], i) =>
+			...body.concat(tail?[tail]:[]).map(([_1, key, _2, colon, _3, bodyEl, _4, comma, _5], i) =>
 				[`${key}`,	..._1, key,		..._2, colon, ..._3, ...bodyEl.$strings, ..._4, comma, ..._5 ].filter(Boolean)
 				),
-			[`${tailKey}`,	..._1, tailKey,	..._2, colon, ..._3, ...tailEl.$strings, ..._4, comma, ..._5 ].filter(Boolean),
+			..._last,
 			"]"
 			].filter(Boolean)
 		}}
