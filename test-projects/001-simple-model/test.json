@@ -1,24 +1,72 @@
 {
 	"expected":{
-		"file":{
-			"model":{
-				"simple":{}
-				},
-			"view":{
-				"facts":{
-					"view":{
-						"facts":{
+		"file": {
+			"model": {
+				"simple": {
+					"model": {
+						"simple": {
+							"$type": "model",
+							"$name": "simple",
+							"include": [
+								"*.view.lkml",
+								"*.dashboard.lkml"
+							],
+							"explore": {
+								"facts": {
+									"$type": "explore",
+									"$name": "facts",
+									"$model": "simple"
+								}
 							}
 						}
-					}
+					},
+					"$file_path": "simple.model.lkml",
+					"$file_rel": "simple",
+					"$file_name": "simple",
+					"$file_type": "model"
 				}
 			},
-		"model":{
-			"simple":{
-				"explore":{
-					"facts":{}
+			"view": {
+				"facts": {
+					"view": {
+						"facts": {
+							"$type": "view",
+							"$name": "facts",
+							"sql_table_name": " my_schema.facts "
+						}
+					},
+					"$file_path": "facts.view.lkml",
+					"$file_rel": "facts",
+					"$file_name": "facts",
+					"$file_type": "view"
+				}
+			},
+			"explore": {}
+		},
+		"model": {
+			"simple": {
+				"$type": "model",
+				"$name": "simple",
+				"include": [
+					"*.view.lkml",
+					"*.dashboard.lkml"
+					],
+				"explore": {
+					"facts": {
+						"$type": "explore",
+						"$name": "facts",
+						"$model": "simple"
+						}
+					},
+				"view": {
+					"facts": {
+						"$type": "view",
+						"$name": "facts",
+						"sql_table_name": " my_schema.facts "
+						}
 					}
 				}
 			}
 		}
+	
 	}

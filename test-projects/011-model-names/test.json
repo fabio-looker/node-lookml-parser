@@ -1,0 +1,34 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"file":{
+			"hyphens-allowed.model": {
+				"model": {
+					"hyphens-allowed": {
+						"include":"hyphens-allowed.view.lkml",
+						"explore":{
+							"hyphens": {}
+							}
+						}
+					}
+				},
+			"hyphens.view": {
+				"view": {
+					"hyphens": {}
+					}
+				}
+			},
+		"model":{
+			"hyphens-allowed":{
+				"explore":{
+					"hyphens": {}
+					},
+				"view":{
+					"hyphens": {}
+					}
+				}
+			}
+		}
+	}
