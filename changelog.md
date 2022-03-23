@@ -24,3 +24,19 @@
 	- ⚡ The _file_rel property has changed slightly and no longer includes the file's extension
 	- Added a 'none' file output mode for use cases that only care about assembled models
 	- Added support for subdirectories and corresponding include statements (Does not yet support remote imports)
+- v6.1
+	- Added a `cwd` parameter to conveniently run the parser relative to a specified working directory
+- v6.2
+	- More consistent handling of manifest file across `file-output` modes
+- v6.3
+	- Support for new LookML syntax: refinements, and maplists (e.g. `filters:[field:">0"]`)
+- v6.4 (should have been major change)
+	- ⚡ "metadata" naming convention changed. Metadata properties now start with `$` rather than `_`
+	- ⚡ Nodes in the JSON representation no longer contain their own name in a variadic property name, it is now always in `$name`
+	- The parser can now capture text metadata into the `$strings` property, supporting use cases such as comment analysis, whitespace analysis and round-tripping/generation. Strings metadata is removed by default for the CLI, but can be exposed with the `transform` parameter.
+	- [beta] Ability to generate LookML strings from JSON data containing the captured string metadata. Only exposed as a module export from the `generate` subdirectory
+- v6.5
+	- More permissive model file naming. Any character now accepted in model names.
+	- Added guards against prototype pollution
+- To be published
+	- NPM ignore test-projects, which was growing in size and is normally not useful to consumers of the package
