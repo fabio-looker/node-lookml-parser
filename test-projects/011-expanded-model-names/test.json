@@ -1,0 +1,193 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"file": {
+			"__proto__.model": {
+				"model": {
+					"$__proto__": {
+						"$type": "model",
+						"$name": "__proto__",
+						"polluted": "is_it",
+						"explore": {
+							"$__proto__": {
+								"$type": "explore",
+								"$name": "__proto__",
+								"polluted": "is_it",
+								"$model": "__proto__"
+							}
+						}
+					}
+				},
+				"$file_path": "__proto__.model.lkml",
+				"$file_rel": "__proto__",
+				"$file_name": "__proto__",
+				"$file_type": "model"
+			},
+			"$$money.model": {
+				"model": {
+					"$$money": {
+						"cash": "money",
+						"$type": "model",
+						"$name": "$money"
+					}
+				},
+				"$file_path": "$money.model.lkml",
+				"$file_rel": "$money",
+				"$file_name": "$money",
+				"$file_type": "model"
+			},
+			"constructor.model": {
+				"model": {
+					"$constructor": {
+						"$type": "model",
+						"$name": "constructor",
+						"polluted": "is_it",
+						"$prototype": {
+							"polluted": {
+								"$type": "prototype",
+								"$name": "polluted",
+								"$model": "constructor"
+							}
+						}
+					}
+				},
+				"$file_path": "constructor.model.lkml",
+				"$file_rel": "constructor",
+				"$file_name": "constructor",
+				"$file_type": "model"
+			},
+			"hyphens-allowed.model": {
+				"model": {
+					"hyphens-allowed": {
+						"$type": "model",
+						"$name": "hyphens-allowed",
+						"explore": {
+							"hyphens": {
+								"$type": "explore",
+								"$name": "hyphens",
+								"$model": "hyphens-allowed"
+							}
+						}
+					}
+				},
+				"$file_path": "hyphens-allowed.model.lkml",
+				"$file_rel": "hyphens-allowed",
+				"$file_name": "hyphens-allowed",
+				"$file_type": "model"
+			},
+			"prototype.model": {
+				"model": {
+					"$prototype": {
+						"$type": "model",
+						"$name": "prototype"
+					}
+				},
+				"$file_path": "prototype.model.lkml",
+				"$file_rel": "prototype",
+				"$file_name": "prototype",
+				"$file_type": "model"
+			},
+			"日本.model": {
+				"model": {
+					"日本": {
+						"explore": {
+							"still_alphanumeric": {
+								"$type": "explore",
+								"$name": "still_alphanumeric"
+							}
+						},
+						"$type": "model",
+						"$name": "日本"
+					}
+				},
+				"$file_path": "日本.model.lkml",
+				"$file_rel": "日本",
+				"$file_name": "日本",
+				"$file_type": "model"
+			}
+		},
+		"model": {
+			"$__proto__": {
+				"$file_path": "__proto__.model.lkml",
+				"$file_rel": "__proto__",
+				"$file_name": "__proto__",
+				"$file_type": "model",
+				"$type": "model",
+				"$name": "__proto__",
+				"polluted": "is_it",
+				"explore": {
+					"$__proto__": {
+						"$type": "explore",
+						"$name": "__proto__",
+						"polluted": "is_it",
+						"$model": "__proto__"
+					}
+				}
+			},
+			"$$money": {
+				"$file_path": "$money.model.lkml",
+				"$file_rel": "$money",
+				"$file_name": "$money",
+				"$file_type": "model",
+				"cash": "money",
+				"$type": "model",
+				"$name": "$money"
+			},
+			"$constructor": {
+				"$file_path": "constructor.model.lkml",
+				"$file_rel": "constructor",
+				"$file_name": "constructor",
+				"$file_type": "model",
+				"$type": "model",
+				"$name": "constructor",
+				"polluted": "is_it",
+				"$prototype": {
+					"polluted": {
+						"$type": "prototype",
+						"$name": "polluted",
+						"$model": "constructor"
+					}
+				}
+			},
+			"hyphens-allowed": {
+				"$file_path": "hyphens-allowed.model.lkml",
+				"$file_rel": "hyphens-allowed",
+				"$file_name": "hyphens-allowed",
+				"$file_type": "model",
+				"$type": "model",
+				"$name": "hyphens-allowed",
+				"explore": {
+					"hyphens": {
+						"$type": "explore",
+						"$name": "hyphens",
+						"$model": "hyphens-allowed"
+					}
+				}
+			},
+			"$prototype": {
+				"$file_path": "prototype.model.lkml",
+				"$file_rel": "prototype",
+				"$file_name": "prototype",
+				"$file_type": "model",
+				"$type": "model",
+				"$name": "prototype"
+			},
+			"日本": {
+				"$file_path": "日本.model.lkml",
+				"$file_rel": "日本",
+				"$file_name": "日本",
+				"$file_type": "model",
+				"explore": {
+					"still_alphanumeric": {
+						"$type": "explore",
+						"$name": "still_alphanumeric"
+					}
+				},
+				"$type": "model",
+				"$name": "日本"
+			}
+		}
+	}	
+	}

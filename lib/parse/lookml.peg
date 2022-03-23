@@ -1,7 +1,18 @@
 {
+	/* encodeProperty should match definition in lib/common/encode-property.js */
+	function encodeProperty(prop){
+		if(typeof prop !== 'string' && prop !== parseInt(prop)){
+			throw "Property ("+prop+") must be a string or integer"
+			}
+		if(prop[0]==='$'
+		|| ['__proto__', 'prototype', 'constructor'].includes(prop)
+		){return '$'+prop}
+		return prop
+		}
+
 	function assignSuper(obj,type,name){
 		//Recursive calls inside forEach seems intensive. Deep trees could scale poorly. Refactor at some point.
-		if(!type || type=="_proto__" || !name){return}
+		if(!type || !name){return}
 		if(isObject(obj)){
 			if(obj.$type && obj.$type!=type){obj["$"+type]=name}
 			Object.values(obj).forEach(subObj => assignSuper(subObj, type, name))
@@ -17,11 +28,11 @@
 			if(declaration.$name){return counts}
 			return {
 				...counts,
-				[declaration.$type]: (counts[declaration.$type]||0) + 1
+				[encodeProperty(declaration.$type)]: (counts[encodeProperty(declaration.$type)]||0) + 1
 				}
 			}, {})
 		const $strings = []
-		const unnamedTypeCount = {}
+		const unnamedTypeCount = new Map()
 		declarations.forEach(function addDeclarationStringsToStrings(p){
 			try{
 				if(!Array.isArray(p.$strings)){
@@ -37,19 +48,20 @@
 						return
 						}
 					//Cardinality 1
-					if(unnamedTypeCardinality[p.$type]===1){
+					if(unnamedTypeCardinality[encodeProperty(p.$type)]===1){
 						$strings.push(`@${p.$type}`)
 						return
 						}
 					//Cardinality 2+
 					else {
-						const count = unnamedTypeCount[p.$type] = (unnamedTypeCount[p.$type]||0) + 1
+						const count = (unnamedTypeCount.get(p.$type) || 0) + 1
+						unnamedTypeCount.set(p.$type, count)
 						$strings.push(`@${p.$type}.${count-1}`)
 						return
 						}
 					}
 				if(Array.isArray(p.$value)){
-					if(unnamedTypeCardinality[p.$type]>1){
+					if(unnamedTypeCardinality[encodeProperty(p.$type)]>1){
 						//Not allowed in LookML AFAIK, and not representable by our AST
 					}
 
@@ -58,13 +70,14 @@
 				{
 					
 					//Cardinality 1 / Primitive
-					if(unnamedTypeCardinality[p.$type]===1){
+					if(unnamedTypeCardinality[encodeProperty(p.$type)]===1){
 						$strings.push([`${p.$type}`, ...p.$strings])
 						return
 						}
 					//Cardinality 2+
 					else {
-						const count = unnamedTypeCount[p.$type] = (unnamedTypeCount[p.$type]||0) + 1
+						const count = (unnamedTypeCount.get(p.$type) || 0) + 1
+						unnamedTypeCount.set(p.$type, count)
 						$strings.push([`${p.$type}.${count-1}`, ...p.$strings])
 						return
 						}
@@ -74,9 +87,10 @@
 		
 		const collection = {}
 		declarations.forEach(function addParamValueToCollection(param){
-				//if(p===undefined){return} //TODO remove this
-				try{
+			try{
 				const {$strings, $type, $name, $value} = param
+				const safeType = $type && encodeProperty($type)
+				const safeName = $name && encodeProperty($name)
 				if(!$type){
 					return
 					}
@@ -91,25 +105,26 @@
 					assignSuper(annotatedValue,$type,$name)
 					}
 				if($name){ //Named Parameter, use an object/hashmap
-					collection[$type] = collection[$type] || {};
+					collection[safeType] = collection[safeType] || {};
 					if($name[0]==='+'){ //Refinement
-						collection[$type][$name] = collection[$type][$name] || [];
-						collection[$type][$name].push(annotatedValue);
+						collection[safeType][safeName] = collection[safeType][safeName] || [];
+						collection[safeType][safeName].push(annotatedValue);
 						return
 						}
 					//Non-refinement
-					collection[$type][$name]=annotatedValue;
+					collection[safeType][safeName]=annotatedValue;
 					return
 					}
 				//Unnamed parameter, use a single value or array of values
-				if(unnamedTypeCardinality[$type]==1){
-					collection[$type] = annotatedValue
+				if(unnamedTypeCardinality[safeType]==1){
+					collection[safeType] = annotatedValue
 					return
 					}
-				collection[$type] = collection[$type] || []
-				collection[$type].push(annotatedValue)
+				collection[safeType] = collection[safeType] || []
+				collection[safeType].push(annotatedValue)
 
-				}catch(exception){console.error({declarations, param, collection, exception})}
+				}
+			catch(exception){console.error({declarations, param, collection, exception})}
 			})
 		return {...collection, $strings}
 		}
