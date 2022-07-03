@@ -4,7 +4,7 @@
   "description": "Parse LookML",
   "main": "index.js",
   "scripts": {
-    "test": "node lib/parse/test.js && node lib/parse-files/test.js"
+    "test": "node test/parse.js && node test/parse-files.js"
   },
   "bin": {
     "lookml-parser": "./cli.js"
@@ -25,7 +25,6 @@
   "homepage": "https://github.com/fabio-looker/node-lookml-parser#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
-    "deep-object-diff": "^1.1.0",
     "glob": "^7.1.2",
     "minimist": "^1.2.0",
     "pegjs": "^0.10.0"

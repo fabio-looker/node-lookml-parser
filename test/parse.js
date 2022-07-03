@@ -1,7 +1,7 @@
 const TestRunner = require('test-runner')
 const runner = new TestRunner()
-const differ = require("deep-object-diff")
-const lookmlParser_parse = require("./index.js")
+const deepExpect = require("./lib/deep-expect.js")
+const lookmlParser_parse = require("../lib/parse/index.js")
 const util = require("util")
 
 const tests = [
@@ -17,15 +17,15 @@ const tests = [
 	input:	'include: "a"',
 	exp:	{include:"a"}
 	},
-{	name:	"top-level includes", 
-	input:	'include: "a" include: "b"', 
+{	name:	"top-level includes",
+	input:	'include: "a" include: "b"',
 	exp:	{include:["a","b"]}
 	},
-{	name:	"plain view", 
+{	name:	"plain view",
 	input:	"view: foo {}",
 	exp:	{view:{foo:{}}}
 	},
-{	name:	"explore in a model", 
+{	name:	"explore in a model",
 	input:	"explore: bar {}",
 	options: {model: "foo"},
 	exp:	{model:{foo:{explore:{bar:{}}}}}
@@ -37,16 +37,16 @@ console.log("\n### parse ###")
 tests.forEach( test =>
 		runner.test(test.name, () =>{
 				var parsed = lookmlParser_parse(test.input, test.options)
-				var diff = differ.detailedDiff(parsed,test.exp)
-				var hasAdded = Object.keys(diff.added).length
-				var hasUpdated = Object.keys(diff.updated).length
-				if(!hasAdded && !hasUpdated){
-					return "ok"
+				var results = deepExpect(test.exp)(parsed)
+				if(results.length){
+					throw ("\n"+results.join("\n")
+							+"\n\n## Received: ##\n"
+							+util.inspect(parsed,utOpt)
+							+"\n\n## Expected: ##\n"
+							+util.inspect(test.exp,utOpt)
+						)
 				}
-				console.log(parsed)
-				throw ("Missing or mismatched properties"
-						+(hasAdded?"\n  Missing: "+util.inspect(diff.added,utOpt):"")
-						+(hasUpdated?"\n  Mismatched: "+util.inspect(diff.updated,utOpt):"")
-					)
+				return "ok"
+
 			})
 	)
