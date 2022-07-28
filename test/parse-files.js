@@ -1,12 +1,12 @@
 const TestRunner = require('test-runner')
 const runner = new TestRunner({sequential:true})
-const differ = require("deep-object-diff")
-const lookmlParser_parseFiles = require("./index.js")
+const deepExpect = require("./lib/deep-expect.js")
+const lookmlParser_parseFiles = require("../lib/parse-files/index.js")
 const util = require("util")
 const fs = require('fs')
 const pathLib = require('path')
 const defaultConsole = console
-const testProjectsLocation = pathLib.join(__dirname,'../../test-projects')
+const testProjectsLocation = pathLib.join(__dirname,'../test-projects')
 
 const getSpec = function read(path){
 	try{
@@ -24,7 +24,7 @@ const paths = fs
 	.filter(ent=>ent.name && ent.name[0]!=='.')
 	.map(ent=>ent.name)
 
-const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
+const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 
 !async function(){
 
@@ -36,29 +36,30 @@ const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
 			try{
 				runner.test(test.name||path, async () => {
 						let project = await lookmlParser_parseFiles(opts)
-						if(project.error){throw "Parse error: "+util.inspect(project.error)}
-						if(test.expected){
-							let diff = differ.detailedDiff(project,test.expected)
-							let hasAdded = Object.keys(diff.added).length
-							let hasUpdated = Object.keys(diff.updated).length
-							if(hasAdded || hasUpdated){
-								console.log(project)
-								throw ("Missing or mismatched properties"
-									+(hasAdded?"\n  Missing: "+util.inspect(diff.added,utOpt):"")
-									+(hasUpdated?"\n  Mismatched: "+util.inspect(diff.updated,utOpt):"")
-									)
+						if(project.error){
+							throw "Parse error: "+util.inspect(project.error)
 							}
-						}
 						if({}.polluted !== undefined){
 							throw "Prototype pollution occurred"
 							}
+						if(test.expected){
+							let results = deepExpect(test.expected)(project)
+							if(results.length){
+								throw ("\n"+results.join("\n")
+										+"\n\n## Received: ##\n"
+										+util.inspect(parsed,utOpt)
+										+"\n\n## Expected: ##\n"
+										+util.inspect(test.exp,utOpt)
+									)
+							}
+						}
 						return "ok"
 					})
 				}
 			catch(e){console.error(e)}
 		}
 	}()
-	
+
 function mockConsole(consoleSpec){
 	let allowedMethods = consoleSpec
 	let console = {}
