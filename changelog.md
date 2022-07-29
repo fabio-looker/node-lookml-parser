@@ -41,3 +41,4 @@
 	- Since rule T2 effectively introduces and summarizes rules T3-T10, exempting T2 now exempts all of T3-T10. Errors formerly reported as T2 errors, are now reported as T3 errors.
 - To be published
 	- NPM ignore test-projects, which was growing in size and is normally not useful to consumers of the package
+	- Update tests which were broken by a change in a dev dependency (deep-object-diff)
