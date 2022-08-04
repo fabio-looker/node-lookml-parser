@@ -22,7 +22,7 @@ function deepExpect(expected){
 					}
 				if(typeof expVal === "object" || typeof expVal === "array"){
 					if(	typeof actVal !== typeof expVal){
-						return [`${path.join('.')} : Expected ${typeof expVal}, received ${typeof actVal}`]
+						return [`${pathToString(path)} : Expected ${typeof expVal}, received ${typeof actVal}`]
 					}
 					return deepExpect(expVal)(actVal,path)
 				}
@@ -35,10 +35,17 @@ function deepExpect(expected){
 
 function snippet(val, max=20){
 	let str
-	try {str = JSON.stringify(val)}
+	try {str = JSON.stringify(val) || 'undefined'}
 	catch(e){str = ''+val}
-	if(str.length<=max){return string}
-	else{return string.slice(0,max-3)+"..."}
+	if(str.length<=max){return str}
+	else{return str.slice(0,max-3)+"..."}
+	}
+
+function pathToString(path){
+	return path
+		.filter(part=>part!=='')
+		.map(p=>(''+p).replace(/\\/g,"\\\\").replace(/\./g,"\\."))
+		.join('.')
 	}
 
 module.exports = deepExpect

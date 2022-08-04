@@ -46,10 +46,10 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 							let results = deepExpect(test.expected)(project)
 							if(results.length){
 								throw ("\n"+results.join("\n")
-										+"\n\n## Received: ##\n"
-										+util.inspect(parsed,utOpt)
-										+"\n\n## Expected: ##\n"
-										+util.inspect(test.exp,utOpt)
+									+"\n\n\n## Expected: ##\n"
+									+util.inspect(test.expected,utOpt)
+									+"\n\n\n## Received: ##\n"
+									+util.inspect(project,utOpt)
 									)
 							}
 						}
