@@ -38,5 +38,6 @@
 - v6.5
 	- More permissive model file naming. Any character now accepted in model names.
 	- Added guards against prototype pollution
-- To be published
+- v6.6
 	- NPM ignore test-projects, which was growing in size and is normally not useful to consumers of the package
+	- Added the ability to resolve extensions/refinements within models, by passing `transformations:{applyRefinementsExtensions:true}` to parseFiles
