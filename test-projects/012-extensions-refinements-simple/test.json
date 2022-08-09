@@ -1,0 +1,36 @@
+{
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true
+			}
+		},
+	"expected":{
+		"file":{
+			"facts.view":{
+				"view":{"facts": {"label":"Foo"}}
+				},
+			"facts-refinement.view":{
+				"view":{"+facts":[{"label":"Bar"}]}
+				},
+			"model1.model":{
+				"model":{"model1":{"include":"facts.view.lkml"}}
+				},
+			"model2.model":{
+				"model":{"model2":{"include":["facts.view.lkml","facts-refinement.view.lkml"]}}
+				}
+			},
+		"model":{
+			"model1":{
+				"view":{
+					"facts":{"label":"Foo"}
+					}
+				},
+			"model2":{
+				"view":{
+					"facts":{"label":"Bar"}
+					}
+				}
+			}
+		}
+	}

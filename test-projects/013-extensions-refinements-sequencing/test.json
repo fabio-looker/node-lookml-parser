@@ -1,0 +1,28 @@
+{
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true
+			}
+		},
+	"expected":{
+		"model":{
+			"fun-with-extensions":{
+				"view":{
+					"my_view":{}
+					},
+				"explore":{
+					"a_before_b":{"label":"B"},
+					"b_before_a":{"label":"A"},
+					"a_plus_before_b":{"label":"B"},
+					"b_before_a_plus":{"label":"A+"},
+					"a_plus_before_b_plus_c":{"label":"C+"},
+					"a_plus_before_b_plus_d":{"label":"D+"},
+					"b_plus_a":{"label":"A"},
+					"b_plus_a_then_b":{"label":"A"},
+					"a_plus_a_then_b":{"label":"B"}
+					}
+				}
+			}
+		}
+	}
