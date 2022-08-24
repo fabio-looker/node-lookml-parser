@@ -8,18 +8,35 @@
 				"view":{
 					"test":{
 						"set":{
-							"no_trailing_comma_start":		{"fields":["id","user.id"]},
-							"no_trailing_comma_end":		{"fields":["id","user.id"]},
-							"trailing_comma_start":			{"fields":["id","user.id"]},
-							"trailing_comma_end":			{"fields":["id","user.id"]},
-							"trailing_comma_start_abrupt":	{"fields":["id","user.id"]},
-							"trailing_comma_end_abrupt":	{"fields":["id","user.id"]}
+							"short_none":		{"fields":["id"]},
+							"short_leading":	{"fields":["id"]},
+							"short_trailing":	{"fields":["id"]},
+							"short_both":		{"fields":["id"]},
+							"endofline_none":				{"fields":["id","user.id"]},
+							"endofline_leading":			{"fields":["id","user.id"]},
+							"endofline_trailing":			{"fields":["id","user.id"]},
+							"endofline_trailing_nopadding":	{"fields":["id","user.id"]},
+							"endofline_both":				{"fields":["id","user.id"]},
+							"startofline_none":					{"fields":["id","user.id"]},
+							"startofline_leading":				{"fields":["id","user.id"]},
+							"startofline_trailing":				{"fields":["id","user.id"]},
+							"startofline_trailing_nopadding":	{"fields":["id","user.id"]},
+							"startofline_both":					{"fields":["id","user.id"]}
 						},
 						"measure":{
-							"short_no_trailing":	{"filters":{"state":"done"}},
-							"short_trailing":		{"filters":{"state":"done"}},
-							"no_trailing":			{"filters":{"state":"done","duration":">5"}},
-							"trailing":				{"filters":{"state":"done","duration":">5"}}
+							"short_none":		{"filters":{"state":"done"}},
+							"short_leading":	{"filters":{"state":"done"}},
+							"short_trailing":	{"filters":{"state":"done"}},
+							"short_both":		{"filters":{"state":"done"}},
+							"endofline_none":		{"filters":{"state":"done","duration":">5"}},
+							"endofline_leading":	{"filters":{"state":"done","duration":">5"}},
+							"endofline_trailing":	{"filters":{"state":"done","duration":">5"}},
+							"endofline_both":		{"filters":{"state":"done","duration":">5"}},
+							"startofline_none":					{"filters":{"state":"done","duration":">5"}},
+							"startofline_leading":				{"filters":{"state":"done","duration":">5"}},
+							"startofline_trailing":				{"filters":{"state":"done","duration":">5"}},
+							"startofline_trailing_nopadding":	{"filters":{"state":"done","duration":">5"}},
+							"startofline_both":					{"filters":{"state":"done","duration":">5"}}
 						}
 					}
 				}
