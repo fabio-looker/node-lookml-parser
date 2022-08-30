@@ -4,6 +4,7 @@ const deepExpect = require("./lib/deep-expect.js")
 const lookmlParser_parseFiles = require("../lib/parse-files/index.js")
 const util = require("util")
 const fs = require('fs')
+const { performance } = require('node:perf_hooks');
 const pathLib = require('path')
 const defaultConsole = console
 const testProjectsLocation = pathLib.join(__dirname,'../test-projects')
@@ -30,12 +31,24 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 
 	console.log("\n### parse-files ###")
 	for(let path of paths){
-			let test = getSpec(path)
-			let opts = {cwd: pathLib.join(testProjectsLocation,path), ...test.parseFileOptions||{}}
+			const test = getSpec(path)
+			const name = test.name||path
+			const opts = {cwd: pathLib.join(testProjectsLocation,path), ...test.parseFileOptions||{}}
 			if(opts.console){opts.console = mockConsole(opts.console)}
 			try{
-				runner.test(test.name||path, async () => {
+				runner.test(name, async () => {
+						const perfStart = performance.now()
+
 						let project = await lookmlParser_parseFiles(opts)
+						
+						const perfDuration = performance.now() - perfStart
+						//Uncomment for a quick way to get a sense of performance across each test
+						//console.log({name, perfDuration})
+						if(test.maxTimeMs && perfDuration>test.maxTimeMs){
+							// Performance tests should really be isolated from parseFiles which involves I/O, but this is a
+							// 'good enough' interim check, as long as the maxTimeMs values are sufficiently padded to avoid false alarms
+							throw `Performance: Runtime of ${perfDuration} ms exceeded limit of ${test.maxTimeMs} ms` 
+							}
 						if(project.error){
 							throw "Parse error: "+util.inspect(project.error)
 							}

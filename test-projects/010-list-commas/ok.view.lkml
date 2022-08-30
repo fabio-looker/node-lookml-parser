@@ -1,4 +1,4 @@
-view: test {
+view: ok {
 
 	### Atom lists
 
@@ -87,7 +87,7 @@ view: test {
 	measure: short_none     {filters:[state:"done"]}
 	measure: short_leading  {filters:[,state:"done"]}
 	measure: short_trailing {filters:[state:"done",]}
-	measure: short_both {filters:[state:,"done",]}
+	measure: short_both {filters:[,state:"done",]}
 
 	measure: endofline_none {
 		filters: [
