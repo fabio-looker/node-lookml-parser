@@ -1,0 +1,56 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"maxTimeMs":100,
+	"expected":{
+		"file":{
+			"ok.view":{
+				"view":{
+					"ok":{
+						"set":{
+							"short_none":		{"fields":["id"]},
+							"short_leading":	{"fields":["id"]},
+							"short_trailing":	{"fields":["id"]},
+							"short_both":		{"fields":["id"]},
+							"endofline_none":				{"fields":["id","user.id"]},
+							"endofline_leading":			{"fields":["id","user.id"]},
+							"endofline_trailing":			{"fields":["id","user.id"]},
+							"endofline_trailing_nopadding":	{"fields":["id","user.id"]},
+							"endofline_both":				{"fields":["id","user.id"]},
+							"startofline_none":					{"fields":["id","user.id"]},
+							"startofline_leading":				{"fields":["id","user.id"]},
+							"startofline_trailing":				{"fields":["id","user.id"]},
+							"startofline_trailing_nopadding":	{"fields":["id","user.id"]},
+							"startofline_both":					{"fields":["id","user.id"]}
+						},
+						"measure":{
+							"short_none":		{"filters":{"state":"done"}},
+							"short_leading":	{"filters":{"state":"done"}},
+							"short_trailing":	{"filters":{"state":"done"}},
+							"short_both":		{"filters":{"state":"done"}},
+							"endofline_none":		{"filters":{"state":"done","duration":">5"}},
+							"endofline_leading":	{"filters":{"state":"done","duration":">5"}},
+							"endofline_trailing":	{"filters":{"state":"done","duration":">5"}},
+							"endofline_both":		{"filters":{"state":"done","duration":">5"}},
+							"startofline_none":					{"filters":{"state":"done","duration":">5"}},
+							"startofline_leading":				{"filters":{"state":"done","duration":">5"}},
+							"startofline_trailing":				{"filters":{"state":"done","duration":">5"}},
+							"startofline_trailing_nopadding":	{"filters":{"state":"done","duration":">5"}},
+							"startofline_both":					{"filters":{"state":"done","duration":">5"}}
+						}
+					}
+				}
+			},
+			"performance.view":{"view":{"fast":{}}},
+			"x-no-empty-middle.view":{
+				"error":{
+					"exception":{
+						"found":",",
+						"location":{"start":{"line":2,"column":36}}
+					}
+				}
+			}
+		}
+	}
+}

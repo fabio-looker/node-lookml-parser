@@ -180,43 +180,57 @@ emptyListElement =
 
 
 listElement =
-	"[" _0:_ln
+	"[" _0:_ln leading:(_ ",")?
 	body:( _ stringOrAtomElement _ ","  _ln )*
 	tail:( _ stringOrAtomElement _ ","? _   )?
 	_last:_
 	"]" 
 	{return {
-		$value: body
-			.concat(tail?[tail]:[])
-			.map(([_,el])=>el.$value),
+		$value: [
+			...body,
+			...tail?[tail]:[]
+			]
+			.map(([_1,el])=>el.$value),
 		$strings:[
 			"[",
 			..._0,
-			...body.concat(tail?[tail]:[]).map(([_1, bodyEl, _2, comma, _3], i) =>
-				[`${i}`, 		..._1, ...bodyEl.$strings, ..._2, comma, ..._3].filter(Boolean)
-				),
+			...leading?[...leading[0], leading[1]]:[],
+			...[
+				...body,
+				...tail?[tail]:[]
+				]
+				.map(([_1, bodyEl, _2, trailing, _3], i) =>
+					[`${i}`, ..._1, ...bodyEl.$strings, ..._2, trailing, ..._3].filter(Boolean)
+					),
 			..._last,
 			"]"
 			].filter(Boolean)
 		}}
 
 mapElement = 
-	"[" _0:_ln
+	"[" _0:_ln leading:(_ ",")?
 	body:( _ atom _ ":" _ stringOrAtomElement _ ","  _ln )*
 	tail:( _ atom _ ":" _ stringOrAtomElement _ ","? _   )? 
 	_last:_
 	"]" 
 	{return {
-		$value: body
-			.concat(tail?[tail]:[])
+		$value: [
+			...body,
+			...tail?[tail]:[]
+			]
 			.map(([_1,key,_2,colon,_3,el])=>[key,el.$value])
 			.reduce((obj,[k,v])=>({...obj, [k]:v}),{}),
 		$strings:[
 			"[",
 			..._0,
-			...body.concat(tail?[tail]:[]).map(([_1, key, _2, colon, _3, bodyEl, _4, comma, _5], i) =>
-				[`${key}`,	..._1, key,		..._2, colon, ..._3, ...bodyEl.$strings, ..._4, comma, ..._5 ].filter(Boolean)
-				),
+			...leading?[...leading[0], leading[1]]:[],
+			...[
+				...body,
+				...tail?[tail]:[]
+				]
+				.map(([_1, key, _2, colon, _3, bodyEl, _4, comma, _5], i) =>
+					[`${key}`,	..._1, key,		..._2, colon, ..._3, ...bodyEl.$strings, ..._4, comma, ..._5 ].filter(Boolean)
+					),
 			..._last,
 			"]"
 			].filter(Boolean)
