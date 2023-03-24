@@ -19,12 +19,12 @@ parser.parseFiles({
 		let transformationFlags = cliArgs.transform || cliArgs.x || 's'
 		if(typeof transformationFlags === 'string'){
 			for(let flag of transformationFlags.split('')){
-				const transformation = parser.transformations.byCliFlags[flag]
-				if(!transformation){
+				const transform = parser.transformations.byCliFlags[flag]
+				if(!transform){
 					result.warnings = (result.warnings||[]).concat(`Requested transformation '${flag}' not recognized and ignored.'`)
 					continue
 					}
-				result = transformation(result)
+				transform(result)
 			}
 		}
 		if(repl){
@@ -37,9 +37,9 @@ parser.parseFiles({
 						.replace(/(\n\s+([_a-zA-Z$][_0-9a-zA-Z$]*)?:)\s+([_a-zA-Z$][_0-9a-zA-Z$]* {)/g,"$1 $2")
 					})
 				Object.assign(r.context,result)
-				console.info("\x1b[32mSuccess!\x1b[0m Evaluate any of the following \x1b[2m(plurals are arrays, singular are keyed objects)\x1b[0m"
+				console.info("\x1b[32mSuccess!\x1b[0m Evaluate any of the following"
 						+"\n\t"
-						+Object.keys(result)
+						+Object.keys(result||{})
 						.map(s=>s.match(/error|warning/)?"\x1b[33m"+s+"\x1b[0m":s)
 						.map(s=> typeof result[s] == "function"
 								? s+(result[s].toString().match(/\([^)]*\)/)||[""])[0]

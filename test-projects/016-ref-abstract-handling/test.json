@@ -1,0 +1,65 @@
+{
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true,
+			"removeAbstract":true
+			}
+		},
+	"expected":{
+		"file": {
+			"mymodel.model": {
+				"model": {
+					"mymodel": {
+						"$type": "model",
+						"$name": "mymodel",
+						"include": "*.view.lkml"
+					}
+				},
+				"$file_path": "mymodel.model.lkml"
+			},
+			"myref-refinement.view": {
+				"view": {
+					"+facts": [
+						{
+							"$type": "view",
+							"$name": "+facts",
+							"label": "Bar"
+						}
+					]
+				},
+				"$file_path": "myref-refinement.view.lkml"
+			},
+			"myref.view": {
+				"view": {
+					"facts": {
+						"$type": "view",
+						"$name": "facts",
+						"label": "Foo"
+					}
+				},
+				"$file_path": "myref.view.lkml"
+			}
+		},
+		"model": {
+			"mymodel": {
+				"$file_path": [
+					"mymodel.model.lkml",
+					"myref-refinement.view.lkml",
+					"myref.view.lkml"
+					],
+				"$type": "model",
+				"$name": "mymodel",
+				"include": "*.view.lkml",
+				"view": {
+					"+facts": null,
+					"facts": {
+						"$type": "view",
+						"$name": "facts",
+						"label": "Bar"
+						}
+					}
+				}
+			}
+		}	
+	}

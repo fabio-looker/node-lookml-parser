@@ -7,8 +7,17 @@ function deepExpect(expected){
 			.map(([key,expVal])=>{
 				let actVal = actual[key]
 				let path = pathPrefix.concat(key)
-				if(	expVal === null
-					|| typeof expVal === 'string'
+				if(expVal === null){
+					if(actVal === null || actVal === undefined){
+						// Since JSON (which we use to specify test expectations) can't represent undefined values,
+						// we use null to indicate the expectation of an undefined property
+						return []
+					}
+					else {
+						return [`${path.join('.')} : Expected null or undefined, received ${snippet(actVal)}`]
+					}
+				}
+				if(	   typeof expVal === 'string'
 					|| typeof expVal === 'boolean'
 					|| typeof expVal === 'number'
 					)

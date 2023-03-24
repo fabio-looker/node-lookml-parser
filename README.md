@@ -8,12 +8,23 @@ cd <your-lookml-repo>
 lookml-parser --input="*.{view,model}.lkml" --whitespace=2 >> output.json
 ```
 
-# CLI / REPL
+## CLI with REPL
 
 ```
 lookml-parser --interactive
 ```
 
+## CLI tranformation flags
+
+```
+lookml-parser --transform=sxf
+```
+
+| Flag | Description |
+|---|---|
+| s | Remove whitespace information (`$strings` property) |
+| x | Apply extensions and refinements
+| f | Drop repetitive file metadata (`$file_rel`, `$file_type`, `$file_name`) |
 
 # Node API
 
@@ -24,6 +35,7 @@ lookmlParser.parse("view: foo{}")
 lookmlParser.parseFiles({
 		source:  "*.{view,model,explore}.lkml",
 		fileOutput: "by-type" // or "array" or "by-name"
+		transformations: {},	
 		globOptions: {},
 		readFileOptions: {encoding:"utf-8"},
 		readFileConcurrency: 4,

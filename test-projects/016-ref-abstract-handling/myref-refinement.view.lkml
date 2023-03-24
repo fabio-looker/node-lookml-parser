@@ -1,0 +1,3 @@
+view: +facts {
+	label: "Bar"
+}
