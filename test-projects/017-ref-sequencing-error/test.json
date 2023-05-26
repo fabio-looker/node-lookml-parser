@@ -1,0 +1,22 @@
+{
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true
+			}
+		},
+	"expected":{
+		"model":{
+			"my_model":{
+				"explore":{
+					"my_explore":{
+						"from":"my_view"
+						}
+					},
+				"view":{
+					"my_view":{}
+					}
+				}
+			}
+		}
+	}
