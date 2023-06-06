@@ -42,4 +42,5 @@
 	- NPM ignore test-projects, which was growing in size and is normally not useful to consumers of the package
 	- Added the ability to resolve extensions/refinements within models, by passing `transformations:{applyRefinementsExtensions:true}` to parseFiles
 	- Update tests which were broken by a change in a dev dependency (deep-object-diff)
- 
+ - v6.8
+	- Add support for `include: "//..."`, a.k.a. imported projects
