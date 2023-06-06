@@ -1,0 +1,34 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"model":{
+			"my_model":{
+				"view":{
+					"root_view":{},
+					"relative_view":{},
+					"remote_view":{}
+				}
+			}
+		},
+		"file":{
+			"model_in_a_folder/my_model.model": {
+				"model": {
+					"my_model": {
+						"include":[]
+					}
+				}
+			},
+			"root_folder/root_view.view": {
+				"view": {"root_view":{}}
+			},
+			"model_in_a_folder/nested_folder/relative_view.view": {
+				"view": {"relative_view":{}}
+			},
+			"imported_projects/project_foo/remote_view.view": {
+				"view": {"remote_view":{}}
+			}
+		}
+	}
+}

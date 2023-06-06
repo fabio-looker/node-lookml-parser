@@ -1,0 +1,1 @@
+view: remote_view {}

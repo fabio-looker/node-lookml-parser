@@ -1,0 +1,1 @@
+view: root_view {}

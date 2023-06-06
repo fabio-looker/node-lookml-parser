@@ -67,3 +67,6 @@ view: foo {
 > lookml-parser --conditional-comment="PARSE-ME!"
 ```
 
+## Project Imports
+
+The parseFiles method and CLI will resolve any include statements of the style "//project_foo/..." as "/imported_projects/project_foo/...". Therefore, the parser supports project imports, assuming you have previously copied/cloned the remote project to the appropriate location ahead of invoking the parser.
