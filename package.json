@@ -18,7 +18,7 @@
     "LookML"
   ],
   "author": "Fabio Beltramini",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/fabio-looker/node-lookml-parser/issues"
   },
