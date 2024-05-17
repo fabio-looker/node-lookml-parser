@@ -1,0 +1,26 @@
+{
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true,
+			"dropStrings": true
+			}
+		},
+	"expected":{
+		"file":{
+			"models/my_model.model":{
+				"model":{"my_model": {}}
+				},
+			"views/first.view":{
+				"view":{"first":{}}
+				}
+			},
+		"model":{
+			"my_model":{
+				"view":{
+					"first":{}
+					}
+				}
+			}
+		}
+	}
