@@ -1,0 +1,15 @@
+{
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true,
+			"dropStrings": true
+			}
+		},
+	"expected":{
+		"model":{
+			"core":{},
+			"_base_dimension_joins":{}
+			}
+		}
+	}
