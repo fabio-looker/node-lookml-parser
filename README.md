@@ -34,7 +34,7 @@ const lookmlParser = require('lookml-parser')
 lookmlParser.parse("view: foo{}")
 lookmlParser.parseFiles({
 		source:  "*.{view,model,explore}.lkml",
-		fileOutput: "by-type" // or "array" or "by-name"
+		fileOutput: "by-type" // or "array" or "by-name". "by-name" is recommended. 
 		transformations: {},	
 		globOptions: {},
 		readFileOptions: {encoding:"utf-8"},
@@ -70,3 +70,13 @@ view: foo {
 ## Project Imports
 
 The parseFiles method and CLI will resolve any include statements of the style "//project_foo/..." as "/imported_projects/project_foo/...". Therefore, the parser supports project imports, assuming you have previously copied/cloned the remote project to the appropriate location ahead of invoking the parser.
+
+## LookML Dashboard support
+
+Since LookML Dashboards are actually YAML, `lookml-parser` does not handle parsing them. However, this module accepts `js-yaml` as an optional dependency. If you install `js-yaml`, `lookml-parser` will use it to parse LookML dashboards and will the dashboards them into any including models. To use this functionality, make sure to specify an `input` argument, as the default input pattern does not include dashboard files.
+
+```
+npm install -g lookml-parser
+npm install -g js-yaml
+lookml-parser --interactive --file-output=by-name --input="{*.,}{manifest,model,view,explore,dashboard}.{lkml,lookml}"
+```

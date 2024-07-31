@@ -44,6 +44,11 @@
 	- Update tests which were broken by a change in a dev dependency (deep-object-diff)
  - v6.8
 	- Add support for `include: "//..."`, a.k.a. imported projects
- - v.6.8.2
+ - v6.8.2
 	- Fix handling of '..' in include patterns
 	- Fix error when including one model file into another model file
+ - v6.9
+	- Support reading YAML-based LookML Dashboard files 
+ - v6.9.1
+	- YAML-based LookML Dashboard files correctly includable in model objects
+	- YAML parsing documentation
