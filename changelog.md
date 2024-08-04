@@ -52,3 +52,5 @@
  - v6.9.1
 	- YAML-based LookML Dashboard files correctly includable in model objects
 	- YAML parsing documentation
+ - v6.9.2
+	- Compact conditional comments (without linebreak on first line)
