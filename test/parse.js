@@ -29,7 +29,25 @@ const tests = [
 	input:	"explore: bar {}",
 	options: {model: "foo"},
 	exp:	{model:{foo:{explore:{bar:{}}}}}
-	}
+	},
+{	name:	"conditional comments",
+	input:	`
+		# PARSE-ME!
+		# foo: "bar"
+	`,
+	options: {conditionalCommentString:"PARSE-ME!"},
+	exp: {foo:"bar"}
+	},
+{	name	:"conditional comments (compact)",
+	input:	`
+		view: my_view {
+			#PARSE-ME! foo: "bar"
+			bat: "baz"
+		}
+	`,
+	options: {conditionalCommentString:"PARSE-ME!"},
+	exp: {view: {my_view: {foo:"bar", bat:"baz"}}}
+	},
 ]
 const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
 
