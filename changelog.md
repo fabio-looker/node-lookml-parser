@@ -54,3 +54,5 @@
 	- YAML parsing documentation
  - v6.10
 	- Compact conditional comments (without linebreak on first line)
+ - v6.11
+	- Whitespace preservation in front of conditional comments
