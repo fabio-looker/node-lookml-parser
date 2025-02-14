@@ -1,0 +1,34 @@
+{
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true,
+			"dropStrings": true
+			}
+		},
+	"expected":{
+		"file":{
+			"my_model.model":{
+				"model":{"my_model": {}}
+				},
+			"views/my_view.view":{
+				"view":{"my_view":{}}
+				},
+			"imported_projects/my_remote_project/remote.model":{
+				"model":{"remote": {}}
+				},
+			"imported_projects/my_remote_project/views/remote.view":{
+				"view":{"remote": {"dimension":{"foo":{}}}}
+				}
+			},
+		"model":{
+			"my_model":{
+				"explore":{"my_view":{}},
+				"view":{
+					"remote":{"dimension":{"foo":{}}},
+					"my_view":{"dimension":{"foo":{}}}
+					}
+				}
+			}
+		}
+	}
