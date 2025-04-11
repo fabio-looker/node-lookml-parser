@@ -24,10 +24,13 @@ parser.parseFiles({
 					result.warnings = (result.warnings||[]).concat(`Requested transformation '${flag}' not recognized and ignored.'`)
 					continue
 					}
-				transform(result)
+				transform(result,{trace})
 			}
 		}
 		if(repl){
+				if(result.errors){
+					result.errorReport = errorReporter(result)
+					}
 				r = repl.start({writer:x=>
 						util
 						.inspect(x,{depth:1,colors:true})
@@ -58,3 +61,17 @@ parser.parseFiles({
 				console.error(JSON.stringify(result, undefined, cliArgs.whitespace))
 			}
 	})
+
+function errorReporter(project){
+	return function errorReport(){
+		console.log(project.errors?.map(err=>
+			err?.$file_path
+			+"\n" + [
+				err?.message,
+				err?.error?.toString(),
+				err?.error?.context
+				].filter(Boolean).join("\n")
+			).join("\n\n"))
+		return "Error report logged."
+		}
+	}
