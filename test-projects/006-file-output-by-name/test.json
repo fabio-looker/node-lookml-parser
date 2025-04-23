@@ -21,14 +21,10 @@
 				}
 			},
 			"foobar.model": {
-				"model": {
-					"foobar": {
-						"connection":"conn",
-						"include":["*.view.lkml","bar.explore.lkml"],
-						"explore":{
-							"foo_view": {}
-						}
-					}
+				"connection":"conn",
+				"include":["*.view.lkml","bar.explore.lkml"],
+				"explore":{
+					"foo_view": {}
 				}
 			},
 			"bar.explore":{

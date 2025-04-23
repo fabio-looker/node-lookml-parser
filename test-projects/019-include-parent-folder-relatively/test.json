@@ -8,9 +8,7 @@
 		},
 	"expected":{
 		"file":{
-			"models/my_model.model":{
-				"model":{"my_model": {}}
-				},
+			"models/my_model.model":{},
 			"views/first.view":{
 				"view":{"first":{}}
 				}

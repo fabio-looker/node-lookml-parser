@@ -3,21 +3,14 @@
 		"file": {
 			"model": {
 				"simple": {
-					"model": {
-						"simple": {
-							"$type": "model",
-							"$name": "simple",
-							"include": [
-								"*.view.lkml",
-								"*.dashboard.lkml"
-							],
-							"explore": {
-								"facts": {
-									"$type": "explore",
-									"$name": "facts",
-									"$model": "simple"
-								}
-							}
+					"include": [
+						"*.view.lkml",
+						"*.dashboard.lkml"
+					],
+					"explore": {
+						"facts": {
+							"$type": "explore",
+							"$name": "facts"
 						}
 					},
 					"$file_path": "simple.model.lkml",
@@ -54,8 +47,7 @@
 				"explore": {
 					"facts": {
 						"$type": "explore",
-						"$name": "facts",
-						"$model": "simple"
+						"$name": "facts"
 						}
 					},
 				"view": {

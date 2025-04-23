@@ -14,11 +14,7 @@
 		},
 		"file":{
 			"model_in_a_folder/my_model.model": {
-				"model": {
-					"my_model": {
-						"include":[]
-					}
-				}
+				"include":[]
 			},
 			"root_folder/root_view.view": {
 				"view": {"root_view":{}}

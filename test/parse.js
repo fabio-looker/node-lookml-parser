@@ -25,10 +25,10 @@ const tests = [
 	input:	"view: foo {}",
 	exp:	{view:{foo:{}}}
 	},
-{	name:	"explore in a model",
+{	name:	"explore in a model (v4: no longer a special case)",
 	input:	"explore: bar {}",
 	options: {model: "foo"},
-	exp:	{model:{foo:{explore:{bar:{}}}}}
+	exp:	{explore:{bar:{}}}
 	},
 {	name:	"conditional comments",
 	input:	`

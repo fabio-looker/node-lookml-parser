@@ -8,15 +8,11 @@
 		},
 	"expected":{
 		"file":{
-			"my_model.model":{
-				"model":{"my_model": {}}
-				},
+			"my_model.model":{},
 			"views/my_view.view":{
 				"view":{"my_view":{}}
 				},
-			"imported_projects/my_remote_project/remote.model":{
-				"model":{"remote": {}}
-				},
+			"imported_projects/my_remote_project/remote.model":{},
 			"imported_projects/my_remote_project/views/remote.view":{
 				"view":{"remote": {"dimension":{"foo":{}}}}
 				}

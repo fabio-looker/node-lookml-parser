@@ -10,18 +10,6 @@
 		return prop
 		}
 
-	function assignSuper(obj,type,name){
-		//Recursive calls inside forEach seems intensive. Deep trees could scale poorly. Refactor at some point.
-		if(!type || !name){return}
-		if(isObject(obj)){
-			if(obj.$type && obj.$type!=type){obj["$"+type]=name}
-			Object.values(obj).forEach(subObj => assignSuper(subObj, type, name))
-			}
-		if(Array.isArray(obj)){
-			obj.forEach(subObj => assignSuper(subObj, type, name))
-			}
-		return
-		}
 	function groupDeclarations(declarations){
 		const unnamedTypeCardinality = declarations.reduce((counts, declaration) => {
 			if(!declaration.$type){return counts}
@@ -102,7 +90,6 @@
 						$name,
 						...$value
 						}
-					assignSuper(annotatedValue,$type,$name)
 					}
 				if($name){ //Named Parameter, use an object/hashmap
 					collection[safeType] = collection[safeType] || {};

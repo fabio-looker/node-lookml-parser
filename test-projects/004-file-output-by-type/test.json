@@ -39,24 +39,16 @@
 			},
 			"model": {
 				"foobar": {
-					"model": {
-						"foobar": {
-							"connection":"conn",
-							"include":["/**/*.view.lkml","bar.explore.lkml"],
-							"explore":{
-								"foo_view": {}
-							}
-						}
+					"connection":"conn",
+					"include":["/**/*.view.lkml","bar.explore.lkml"],
+					"explore":{
+						"foo_view": {}
 					}
 				},
 				"sub1/in_folder":{
-					"model":{
-						"in_folder":{
-							"include":"sub2/baz.view.lkml",
-							"explore":{
-								"baz":{}
-							}
-						}
+					"include":"sub2/baz.view.lkml",
+					"explore":{
+						"baz":{}
 					}
 				}
 			},

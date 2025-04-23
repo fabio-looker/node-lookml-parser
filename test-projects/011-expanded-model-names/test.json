@@ -5,19 +5,12 @@
 	"expected":{
 		"file": {
 			"__proto__.model": {
-				"model": {
+				"polluted": "is_it",
+				"explore": {
 					"$__proto__": {
-						"$type": "model",
+						"$type": "explore",
 						"$name": "__proto__",
-						"polluted": "is_it",
-						"explore": {
-							"$__proto__": {
-								"$type": "explore",
-								"$name": "__proto__",
-								"polluted": "is_it",
-								"$model": "__proto__"
-							}
-						}
+						"polluted": "is_it"
 					}
 				},
 				"$file_path": "__proto__.model.lkml",
@@ -26,31 +19,18 @@
 				"$file_type": "model"
 			},
 			"$$money.model": {
-				"model": {
-					"$$money": {
-						"cash": "money",
-						"$type": "model",
-						"$name": "$money"
-					}
-				},
+				"$name": "$money",
 				"$file_path": "$money.model.lkml",
 				"$file_rel": "$money",
 				"$file_name": "$money",
 				"$file_type": "model"
 			},
 			"constructor.model": {
-				"model": {
-					"$constructor": {
-						"$type": "model",
-						"$name": "constructor",
-						"polluted": "is_it",
-						"$prototype": {
-							"polluted": {
-								"$type": "prototype",
-								"$name": "polluted",
-								"$model": "constructor"
-							}
-						}
+				"polluted": "is_it",
+				"$prototype": {
+					"polluted": {
+						"$type": "prototype",
+						"$name": "polluted"
 					}
 				},
 				"$file_path": "constructor.model.lkml",
@@ -59,17 +39,10 @@
 				"$file_type": "model"
 			},
 			"hyphens-allowed.model": {
-				"model": {
-					"hyphens-allowed": {
-						"$type": "model",
-						"$name": "hyphens-allowed",
-						"explore": {
-							"hyphens": {
-								"$type": "explore",
-								"$name": "hyphens",
-								"$model": "hyphens-allowed"
-							}
-						}
+				"explore": {
+					"hyphens": {
+						"$type": "explore",
+						"$name": "hyphens",
 					}
 				},
 				"$file_path": "hyphens-allowed.model.lkml",
@@ -78,28 +51,16 @@
 				"$file_type": "model"
 			},
 			"prototype.model": {
-				"model": {
-					"$prototype": {
-						"$type": "model",
-						"$name": "prototype"
-					}
-				},
 				"$file_path": "prototype.model.lkml",
 				"$file_rel": "prototype",
 				"$file_name": "prototype",
 				"$file_type": "model"
 			},
 			"日本.model": {
-				"model": {
-					"日本": {
-						"explore": {
-							"still_alphanumeric": {
-								"$type": "explore",
-								"$name": "still_alphanumeric"
-							}
-						},
-						"$type": "model",
-						"$name": "日本"
+				"explore": {
+					"still_alphanumeric": {
+						"$type": "explore",
+						"$name": "still_alphanumeric"
 					}
 				},
 				"$file_path": "日本.model.lkml",
@@ -121,8 +82,7 @@
 					"$__proto__": {
 						"$type": "explore",
 						"$name": "__proto__",
-						"polluted": "is_it",
-						"$model": "__proto__"
+						"polluted": "is_it"
 					}
 				}
 			},
@@ -146,8 +106,7 @@
 				"$prototype": {
 					"polluted": {
 						"$type": "prototype",
-						"$name": "polluted",
-						"$model": "constructor"
+						"$name": "polluted"
 					}
 				}
 			},
@@ -161,8 +120,7 @@
 				"explore": {
 					"hyphens": {
 						"$type": "explore",
-						"$name": "hyphens",
-						"$model": "hyphens-allowed"
+						"$name": "hyphens"
 					}
 				}
 			},
