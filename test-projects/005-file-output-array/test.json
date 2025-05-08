@@ -32,15 +32,11 @@
 			},
 			{
 				"$file_type":"model",
-				"$file_name":"foobar",	
-				"model": {
-					"foobar": {
-						"connection":"conn",
-						"include":["*.view.lkml","bar.explore.lkml"],
-						"explore":{
-							"foo_view": {}
-						}
-					}
+				"$file_name":"foobar",
+				"connection":"conn",
+				"include":["*.view.lkml","bar.explore.lkml"],
+				"explore":{
+					"foo_view": {}
 				}
 			},
 			{

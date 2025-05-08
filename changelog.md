@@ -42,19 +42,26 @@
 	- NPM ignore test-projects, which was growing in size and is normally not useful to consumers of the package
 	- Added the ability to resolve extensions/refinements within models, by passing `transformations:{applyRefinementsExtensions:true}` to parseFiles
 	- Update tests which were broken by a change in a dev dependency (deep-object-diff)
- - v6.8
+- v6.8
 	- Add support for `include: "//..."`, a.k.a. imported projects
- - v6.8.2
+- v6.8.2
 	- Fix handling of '..' in include patterns
 	- Fix error when including one model file into another model file
- - v6.9
+- v6.9
 	- Support reading YAML-based LookML Dashboard files 
- - v6.9.1
+- v6.9.1
 	- YAML-based LookML Dashboard files correctly includable in model objects
 	- YAML parsing documentation
- - v6.10
+- v6.10
 	- Compact conditional comments (without linebreak on first line)
- - v6.11
+- v6.11
 	- Whitespace preservation in front of conditional comments
- - v6.11.1
+- v6.11.1
 	- Project-root imports (single leading slash) from context of imported projects now resolve correctly
+- v7.0.0
+	- Adds the ability to output position data for LookML objects, using the addPositions (p) transformation.
+	- For Node.js module users, the getPositions function is also exposed to be used with individual string parsing results
+	- ⚡ Removes the additional "model" object inserted into the top-level of model files. The information conveyed by this object was of minimal use, is better served by the model property at the project level (as exposed by the assembe models transformation), and introduced confusing and inconsistent behavior for use cases expecting direct representations of file contents.
+	- ⚡ Removes the ancestry metadata (e.g. $model, $view, $explore) added to child objects. This convenience information is easy for consumers to reproduce, and the implementation for this metadata interacted with the above change. In the future, it could be re-implemented as an opt-in transformation, if any demand for it exists.
+	- ⚡ Switches the default file representation in parseFiles output from by-type to by-name
+	- ⚡ parseFiles now defaults to models applying extensions/refinements and removing abstract declarations 

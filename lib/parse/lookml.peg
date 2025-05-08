@@ -10,18 +10,6 @@
 		return prop
 		}
 
-	function assignSuper(obj,type,name){
-		//Recursive calls inside forEach seems intensive. Deep trees could scale poorly. Refactor at some point.
-		if(!type || !name){return}
-		if(isObject(obj)){
-			if(obj.$type && obj.$type!=type){obj["$"+type]=name}
-			Object.values(obj).forEach(subObj => assignSuper(subObj, type, name))
-			}
-		if(Array.isArray(obj)){
-			obj.forEach(subObj => assignSuper(subObj, type, name))
-			}
-		return
-		}
 	function groupDeclarations(declarations){
 		const unnamedTypeCardinality = declarations.reduce((counts, declaration) => {
 			if(!declaration.$type){return counts}
@@ -33,6 +21,7 @@
 			}, {})
 		const $strings = []
 		const unnamedTypeCount = new Map()
+		const refinementCount = new Map()
 		declarations.forEach(function addDeclarationStringsToStrings(p){
 			try{
 				if(!Array.isArray(p.$strings)){
@@ -44,8 +33,16 @@
 				//Value is its own collection, it will have strings within it and we just want to reference it
 				if(isObject(p.$value)){
 					if(p.$name){ //Named parameter, e.g. a view or dimension
-						$strings.push(`@${p.$type}.${p.$name}`)
-						return
+						if(p.$name[0]==='+'){ //Refinement
+							const count = (refinementCount.get(p.$type + ":" + p.$name) || 0) + 1
+							refinementCount.set(p.$type + ":" + p.$name, count)
+							$strings.push(`@${p.$type}.${p.$name}.${count-1}`)
+							return
+							}
+						else {
+							$strings.push(`@${p.$type}.${p.$name}`)
+							return
+						}
 						}
 					//Cardinality 1
 					if(unnamedTypeCardinality[encodeProperty(p.$type)]===1){
@@ -102,7 +99,6 @@
 						$name,
 						...$value
 						}
-					assignSuper(annotatedValue,$type,$name)
 					}
 				if($name){ //Named Parameter, use an object/hashmap
 					collection[safeType] = collection[safeType] || {};
