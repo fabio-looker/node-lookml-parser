@@ -60,5 +60,8 @@
 	- Project-root imports (single leading slash) from context of imported projects now resolve correctly
 - v7.0.0
 	- Adds the ability to output position data for LookML objects, using the addPositions (p) transformation.
+	- For Node.js module users, the getPositions function is also exposed to be used with individual string parsing results
 	- ⚡ Removes the additional "model" object inserted into the top-level of model files. The information conveyed by this object was of minimal use, is better served by the model property at the project level (as exposed by the assembe models transformation), and introduced confusing and inconsistent behavior for use cases expecting direct representations of file contents.
 	- ⚡ Removes the ancestry metadata (e.g. $model, $view, $explore) added to child objects. This convenience information is easy for consumers to reproduce, and the implementation for this metadata interacted with the above change. In the future, it could be re-implemented as an opt-in transformation, if any demand for it exists.
+	- ⚡ Switches the default file representation in parseFiles output from by-type to by-name
+	- ⚡ parseFiles now defaults to models applying extensions/refinements and removing abstract declarations 

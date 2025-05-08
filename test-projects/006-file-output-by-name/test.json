@@ -1,7 +1,4 @@
 {
-	"parseFileOptions":{
-			"fileOutput":"by-name"
-	},
 	"expected":{
 		"model":{
 			"foobar":{

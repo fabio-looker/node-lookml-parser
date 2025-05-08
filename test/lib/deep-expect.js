@@ -2,6 +2,8 @@ function flatten(a,b){return a.concat(b)}
 
 function deepExpect(expected){
 	return function deepEvaluate(actual,pathPrefix=['$']){
+		if(expected === undefined){throw `Expected is undefined`}
+		if(actual === undefined){throw `Actual is undefined`}
 		const entries = Object.entries(expected)
 		return (entries
 			.map(([key,expVal])=>{

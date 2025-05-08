@@ -1,0 +1,67 @@
+{
+	"comment": "The initial implementation of positions will initially omit support for finding extended/refining declarations",
+	"parseFileOptions":{
+		"fileOutput":"by-name",
+		"transformations":{
+			"applyExtensionsRefinements": true,
+			"addPositions": true
+			}
+		},
+	"transformations":{
+		"addPositions": true
+		},
+	"expected":{
+		"file":{
+			"simple.model":{},
+			"refined.model":{},
+			"used.view":{},
+			"unused.view":{},
+			"refinement.view":{}
+			},
+		"model":{
+			"simple":{"view":{"foo":{}}},
+			"refined":{"view":{"foo":{}}}
+			},
+		"positions":{
+			"file":{
+				"simple.model":{
+					"include":{"$p":[1,0,1,25]}
+					},
+				"refined.model":{
+					"include":{
+						"0": {"$p":[1,0,1,25]},
+						"1": {"$p":[2,0,2,31]}
+						}
+					},
+				"used.view":{
+					"view": {
+						"foo":{"$p":[9,0,14,3]}
+						}
+					},
+				"unused.view":{
+					"view":{
+						"foo":{"$p":[29,0,32,3]}
+						}
+					},
+				"refinement.view":{}
+				},
+			"model": {
+				"simple":{
+					"include":{"$p":[0,1,0,1,25]},
+					"view":{
+						"foo":{"$p":[1,9,0,14,3]}
+						}
+					},
+				"refined":{
+					"include":{
+						"0": {"$p":[0,1,0,1,25]},
+						"1": {"$p":[0,2,0,2,31]}
+						},
+					"view":{
+						"foo":{"$p":[1,9,0,14,3]}
+						}
+					}
+				}
+			}
+		}
+	}

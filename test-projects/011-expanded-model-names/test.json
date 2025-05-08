@@ -19,7 +19,6 @@
 				"$file_type": "model"
 			},
 			"$$money.model": {
-				"$name": "$money",
 				"$file_path": "$money.model.lkml",
 				"$file_rel": "$money",
 				"$file_name": "$money",
@@ -42,7 +41,7 @@
 				"explore": {
 					"hyphens": {
 						"$type": "explore",
-						"$name": "hyphens",
+						"$name": "hyphens"
 					}
 				},
 				"$file_path": "hyphens-allowed.model.lkml",
@@ -147,5 +146,5 @@
 				"$name": "日本"
 			}
 		}
-	}	
 	}
+}
