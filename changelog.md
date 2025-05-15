@@ -65,3 +65,5 @@
 	- ⚡ Removes the ancestry metadata (e.g. $model, $view, $explore) added to child objects. This convenience information is easy for consumers to reproduce, and the implementation for this metadata interacted with the above change. In the future, it could be re-implemented as an opt-in transformation, if any demand for it exists.
 	- ⚡ Switches the default file representation in parseFiles output from by-type to by-name
 	- ⚡ parseFiles now defaults to models applying extensions/refinements and removing abstract declarations 
+- v7.0.1
+	- Fix `getPositions` export for Node.js module users
