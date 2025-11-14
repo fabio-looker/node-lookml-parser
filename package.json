@@ -1,6 +1,6 @@
 {
   "name": "lookml-parser",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "description": "Parse LookML",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,6 @@
     }
   },
   "devDependencies": {
-    "test-runner": "^0.5.0"
+    "test-runner": "^0.5.1"
   }
 }

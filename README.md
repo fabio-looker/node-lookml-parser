@@ -35,6 +35,8 @@ const lookml = lookmlParser.parse("view: foo{}")
 const positions = lookmlParser.getPositions(lookml)
 
 let project = lookmlParser.parseFiles({
+		// The source parameter can be a glob string, or an array of objects
+		// with path (for matching includes) and content properties
 		source:  "*.{view,model,explore}.lkml",
 		fileOutput: "by-name" // or "array" or "by-type",	
 		globOptions: {},
