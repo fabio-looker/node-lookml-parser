@@ -9,7 +9,7 @@
     "test": "node test/parse.js && node test/get-positions.js && node test/parse-files.js"
   },
   "bin": {
-    "lookml-parser": "./cli.js"
+    "lookml-parser": "cli.js"
   },
   "repository": {
     "type": "git",
