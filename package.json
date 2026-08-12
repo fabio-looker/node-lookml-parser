@@ -4,6 +4,8 @@
   "description": "Parse LookML",
   "main": "index.js",
   "scripts": {
+    "build": "node scripts/build-parser.js",
+    "prepare": "node scripts/build-parser.js",
     "test": "node test/parse.js && node test/get-positions.js && node test/parse-files.js"
   },
   "bin": {
@@ -26,8 +28,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "glob": "^7.1.2",
-    "minimist": "^1.2.0",
-    "pegjs": "^0.10.0"
+    "minimist": "^1.2.0"
   },
   "peerDependencies": {
     "js-yaml": "^4.1.0"
@@ -38,6 +39,7 @@
     }
   },
   "devDependencies": {
+    "pegjs": "^0.10.0",
     "test-runner": "^0.5.1"
   }
 }
