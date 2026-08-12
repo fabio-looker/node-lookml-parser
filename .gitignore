@@ -60,3 +60,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# Generated parser (built by scripts/build-parser.js on prepare/publish)
+lib/parse/parser.generated.js
