@@ -67,3 +67,10 @@
 	- ⚡ parseFiles now defaults to models applying extensions/refinements and removing abstract declarations 
 - v7.0.1
 	- Fix `getPositions` export for Node.js module users
+- v7.1.0
+	- `parseFiles` now accepts an array of files, and calls to fs dependencies are isolated so that the package is suitable for in-browser usage, e.g. via webpack
+- v7.1.1
+	- Add a pre-publish step to bundle the compiled PEG grammar into a JS file which is then loaded via standard `require` calls, for compatibility with consumers' downstream build/bundling processes and improved script load time.
+- v7.1.2
+	- Addressed new NPM warnings about how the cli.js entrypoint is referenced
+
