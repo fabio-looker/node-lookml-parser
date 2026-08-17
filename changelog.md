@@ -73,4 +73,7 @@
 	- Add a pre-publish step to bundle the compiled PEG grammar into a JS file which is then loaded via standard `require` calls, for compatibility with consumers' downstream build/bundling processes and improved script load time.
 - v7.1.2
 	- Addressed new NPM warnings about how the cli.js entrypoint is referenced
+- v7.1.3
+	- Upgrade `glob` dependency to v13 to remove deprecated `inflight` sub-dependency and eliminate memory leak warnings
+
 
