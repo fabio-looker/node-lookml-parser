@@ -1,0 +1,9 @@
+{
+	"parseFileOptions":{
+			"fileOutput":"by-name"
+	},
+	"expected":{
+		"file":{
+			}
+		}
+	}
