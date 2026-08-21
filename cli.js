@@ -9,10 +9,17 @@ const util = require("util")
 var r,repl = cliArgs.interactive && require("repl")
 var trace = (cliArgs.trace || cliArgs.t || '').split(",").reduce((idx,x)=>({...idx, [x]:true}),{})
 
+const includeAst = Boolean(cliArgs.ast || cliArgs.a || (typeof (cliArgs.transform || cliArgs.x) === 'string' && (cliArgs.transform || cliArgs.x).includes('a')))
+
 parser.parseFiles({
 		source: cliArgs.input || cliArgs.i,
 		conditionalCommentString: cliArgs['conditional-comment'] || cliArgs.c,
 		fileOutput: cliArgs['file-output'] || cliArgs.f,
+		transformations: {
+			applyExtensionsRefinements: true,
+			removeAbstract: true,
+			includeAst
+		},
 		console,
 		trace
 	}).then((result)=>{
