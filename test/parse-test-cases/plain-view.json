@@ -1,0 +1,8 @@
+{
+	"input": "view: foo {}",
+	"expected": {
+		"view": {
+			"foo": {}
+		}
+	}
+}
