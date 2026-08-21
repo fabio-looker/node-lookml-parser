@@ -6,6 +6,7 @@
 			}
 		if(prop[0]==='$'
 		|| ['__proto__', 'prototype', 'constructor'].includes(prop)
+		|| Object.prototype.hasOwnProperty(prop)
 		){return '$'+prop}
 		return prop
 		}
