@@ -1,0 +1,11 @@
+{
+	"input": "explore: bar {}",
+	"options": {
+		"model": "foo"
+	},
+	"expected": {
+		"explore": {
+			"bar": {}
+		}
+	}
+}

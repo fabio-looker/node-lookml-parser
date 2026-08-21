@@ -1,0 +1,25 @@
+{
+	"input": "__proto__: { polluted: \"is_it\" } constructor: { prototype: { polluted: \"is_it\" } } toString: \"top_val\" view: toString { valueOf: \"prop_val\" dimension: foo { hasOwnProperty: \"dim_val\" } } view: valueOf {}",
+	"expected": {
+		"$__proto__": {
+			"polluted": "is_it"
+		},
+		"$constructor": {
+			"$prototype": {
+				"polluted": "is_it"
+			}
+		},
+		"$toString": "top_val",
+		"view": {
+			"$toString": {
+				"$valueOf": "prop_val",
+				"dimension": {
+					"foo": {
+						"$hasOwnProperty": "dim_val"
+					}
+				}
+			},
+			"$valueOf": {}
+		}
+	}
+}

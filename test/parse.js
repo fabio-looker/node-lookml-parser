@@ -3,65 +3,38 @@ const runner = new TestRunner()
 const deepExpect = require("./lib/deep-expect.js")
 const lookmlParser_parse = require("../lib/parse/index.js")
 const util = require("util")
+const fs = require('fs')
+const pathLib = require('path')
 
-const tests = [
-{	name:	"blank",
-	input:	'',
-	exp:	{}
-	},
-{	name:	"just a comment",
-	input:	'# my comment ',
-	exp:	{}
-	},
-{	name:	"top-level include",
-	input:	'include: "a"',
-	exp:	{include:"a"}
-	},
-{	name:	"top-level includes",
-	input:	'include: "a" include: "b"',
-	exp:	{include:["a","b"]}
-	},
-{	name:	"plain view",
-	input:	"view: foo {}",
-	exp:	{view:{foo:{}}}
-	},
-{	name:	"explore in a model (v4: no longer a special case)",
-	input:	"explore: bar {}",
-	options: {model: "foo"},
-	exp:	{explore:{bar:{}}}
-	},
-{	name:	"conditional comments",
-	input:	`
-		# PARSE-ME!
-		# foo: "bar"
-	`,
-	options: {conditionalCommentString:"PARSE-ME!"},
-	exp: {foo:"bar"}
-	},
-{	name	:"conditional comments (compact)",
-	input:	`
-		view: my_view {
-			#PARSE-ME! foo: "bar"
-			bat: "baz"
+const testCasesDir = pathLib.join(__dirname, 'parse-test-cases')
+const tests = fs.readdirSync(testCasesDir)
+	.filter(file => file.endsWith('.json'))
+	.sort()
+	.map(file => {
+		const spec = JSON.parse(fs.readFileSync(pathLib.join(testCasesDir, file), 'utf8'))
+		return {
+			name: spec.name || pathLib.basename(file, '.json'),
+			...spec
 		}
-	`,
-	options: {conditionalCommentString:"PARSE-ME!"},
-	exp: {view: {my_view: {foo:"bar", bat:"baz"}}}
-	},
-]
+	})
+
 const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
 
 console.log("\n### parse ###")
 tests.forEach( test =>
 		runner.test(test.name, () =>{
 				var parsed = lookmlParser_parse(test.input, test.options)
-				var results = deepExpect(test.exp)(parsed)
+				if({}.polluted !== undefined){
+					throw "Prototype pollution occurred"
+				}
+				var expected = test.expected || test.exp
+				var results = deepExpect(expected)(parsed)
 				if(results.length){
 					throw ("\n"+results.join("\n")
 							+"\n\n## Received: ##\n"
 							+util.inspect(parsed,utOpt)
 							+"\n\n## Expected: ##\n"
-							+util.inspect(test.exp,utOpt)
+							+util.inspect(expected,utOpt)
 						)
 				}
 				return "ok"

@@ -1,0 +1,14 @@
+{
+	"input": "view: my_view {\n #PARSE-ME! foo: \"bar\"\n bat: \"baz\"\n}",
+	"options": {
+		"conditionalCommentString": "PARSE-ME!"
+	},
+	"expected": {
+		"view": {
+			"my_view": {
+				"foo": "bar",
+				"bat": "baz"
+			}
+		}
+	}
+}

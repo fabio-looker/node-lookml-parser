@@ -1,0 +1,9 @@
+{
+	"input": "# PARSE-ME!\n# foo: \"bar\"",
+	"options": {
+		"conditionalCommentString": "PARSE-ME!"
+	},
+	"expected": {
+		"foo": "bar"
+	}
+}
