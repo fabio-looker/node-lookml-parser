@@ -75,5 +75,5 @@
 	- Addressed new NPM warnings about how the cli.js entrypoint is referenced
 - v7.1.3
 	- Upgrade `glob` dependency to v13 to remove deprecated `inflight` sub-dependency and eliminate memory leak warnings
-
-
+- v7.1.4
+	- Fix dropped values for properties that collide with `Object.prototype` (e.g. `toString`)
