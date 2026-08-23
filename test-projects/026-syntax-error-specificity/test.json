@@ -1,0 +1,60 @@
+{
+	"parseFileOptions": {
+		"fileOutput": "by-name",
+		"conditionalCommentString": "PARSE-ME!"
+	},
+	"expected": {
+		"errors": [
+			{
+				"error": {
+					"exception": {
+						"found": null,
+						"location": { "start": { "line": 2, "column": 38 } }
+					}
+				},
+				"$file_path": "invalid-conditional-comment.view.lkml",
+				"$file_rel": "invalid-conditional-comment",
+				"$file_name": "invalid-conditional-comment",
+				"$file_type": "view"
+			},
+			{
+				"error": {
+					"exception": {
+						"found": "}",
+						"location": { "start": { "line": 4, "column": 3 } }
+					}
+				},
+				"$file_path": "invalid-syntax.view.lkml",
+				"$file_rel": "invalid-syntax",
+				"$file_name": "invalid-syntax",
+				"$file_type": "view"
+			}
+		],
+		"file": {
+			"invalid-conditional-comment.view": {
+				"error": {
+					"exception": {
+						"found": null,
+						"location": { "start": { "line": 2, "column": 38 } }
+					}
+				},
+				"$file_path": "invalid-conditional-comment.view.lkml",
+				"$file_rel": "invalid-conditional-comment",
+				"$file_name": "invalid-conditional-comment",
+				"$file_type": "view"
+			},
+			"invalid-syntax.view": {
+				"error": {
+					"exception": {
+						"found": "}",
+						"location": { "start": { "line": 4, "column": 3 } }
+					}
+				},
+				"$file_path": "invalid-syntax.view.lkml",
+				"$file_rel": "invalid-syntax",
+				"$file_name": "invalid-syntax",
+				"$file_type": "view"
+			}
+		}
+	}
+}

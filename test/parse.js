@@ -22,22 +22,42 @@ const utOpt = {compact:false, maxArrayLength:3, depth:8, breakLength:60 }
 
 console.log("\n### parse ###")
 tests.forEach( test =>
-		runner.test(test.name, () =>{
-				var parsed = lookmlParser_parse(test.input, test.options)
-				if({}.polluted !== undefined){
-					throw "Prototype pollution occurred"
+	runner.test(test.name, () => {
+		if (test.error) {
+			let didThrow = false
+			let errObj = null
+			try {
+				lookmlParser_parse(test.input, test.options)
+			} catch (e) {
+				didThrow = true
+				errObj = e
+			}
+			if (!didThrow) {
+				throw new Error(`Expected parse() to throw an error for test '${test.name}', but it succeeded.`)
+			}
+			if (test.errorContains) {
+				const errMsg = (errObj && (errObj.context || (errObj.exception && String(errObj.exception)) || String(errObj))) || ''
+				if (!errMsg.includes(test.errorContains)) {
+					throw new Error(`Expected error message to contain '${test.errorContains}', but received:\n${errMsg}`)
 				}
-				var expected = test.expected || test.exp
-				var results = deepExpect(expected)(parsed)
-				if(results.length){
-					throw ("\n"+results.join("\n")
-							+"\n\n## Received: ##\n"
-							+util.inspect(parsed,utOpt)
-							+"\n\n## Expected: ##\n"
-							+util.inspect(expected,utOpt)
-						)
-				}
-				return "ok"
+			}
+			return "ok"
+		}
 
-			})
-	)
+		var parsed = lookmlParser_parse(test.input, test.options)
+		if ({}.polluted !== undefined) {
+			throw "Prototype pollution occurred"
+		}
+		var expected = test.expected || test.exp
+		var results = deepExpect(expected)(parsed)
+		if (results.length) {
+			throw ("\n"+results.join("\n")
+					+"\n\n## Received: ##\n"
+					+util.inspect(parsed,utOpt)
+					+"\n\n## Expected: ##\n"
+					+util.inspect(expected,utOpt)
+				)
+		}
+		return "ok"
+	})
+)
