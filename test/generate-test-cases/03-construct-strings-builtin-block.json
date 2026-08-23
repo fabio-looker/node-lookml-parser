@@ -1,0 +1,19 @@
+{
+	"input": {
+		"view": {
+			"events": {
+				"sql_table_name": "analytics.events",
+				"html": " <span class=\"badge\">{{ value }}</span> ",
+				"expr_filter": " ${event_type} = 'click' "
+			}
+		}
+	},
+	"expected": [
+		"view: events {",
+		"  sql_table_name:analytics.events;;",
+		"  html: <span class=\"badge\">{{ value }}</span> ;;",
+		"  expr_filter: ${event_type} = 'click' ;;",
+		"}",
+		""
+	]
+}

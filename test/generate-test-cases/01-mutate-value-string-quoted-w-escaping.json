@@ -1,0 +1,19 @@
+{
+  "input": [
+    "",
+    "  view: foo {",
+    "    label: \"Original Label\"",
+    "  }",
+    " "
+  ],
+  "deepSet": {
+    "view.foo.label": "User \"ID\" Label"
+  },
+  "expected": [
+    "",
+    "  view: foo {",
+    "    label: \"User \\\"ID\\\" Label\"",
+    "  }",
+    " "
+  ]
+}

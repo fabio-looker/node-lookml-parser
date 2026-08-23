@@ -1,0 +1,19 @@
+{
+	"input": {
+		"view": {
+			"my_constructed_view": {
+				"sql_table_name": "my_db.my_table",
+				"hidden": true,
+				"label": "Constructed View"
+			}
+		}
+	},
+	"expected": [
+		"view: my_constructed_view {",
+		"  sql_table_name:my_db.my_table;;",
+		"  hidden: yes",
+		"  label: \"Constructed View\"",
+		"}",
+		""
+	]
+}

@@ -1,0 +1,21 @@
+{
+  "input": [
+    "view: +foo {",
+    "  label: \"Refinement 1\"",
+    "}",
+    "view: +foo {",
+    "  label: \"Refinement 2\"",
+    "}"
+  ],
+  "deepSet": {
+    "view.+foo.1.label": "Updated Refinement 2"
+  },
+  "expected": [
+    "view: +foo {",
+    "  label: \"Refinement 1\"",
+    "}",
+    "view: +foo {",
+    "  label: \"Updated Refinement 2\"",
+    "}"
+  ]
+}

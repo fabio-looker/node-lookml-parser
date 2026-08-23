@@ -25,8 +25,8 @@ lkmlFiles.forEach(relPath => {
 		if (regenerated !== original) {
 			throw new Error(
 				`Round-trip mismatch for ${relPath}:\n` +
-				`-- Expected (${original.length} chars) --\n${JSON.stringify(original)}\n` +
-				`-- Received (${regenerated.length} chars) --\n${JSON.stringify(regenerated)}`
+				`-- Expected (${original.length} chars) --\n${original}\n` +
+				`-- Received (${regenerated.length} chars) --\n${regenerated}`
 			)
 		}
 		return "ok"

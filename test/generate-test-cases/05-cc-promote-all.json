@@ -1,0 +1,28 @@
+{
+  "input": [
+    "",
+    "  view: foo {",
+    "    # PARSE-ME!",
+    "    # owner: \"Fabio\"",
+    "    # version: 2",
+    "    dimension: bar {}",
+    "  }",
+    " "
+  ],
+  "parseOptions": {
+    "conditionalCommentString": "PARSE-ME!"
+  },
+  "deepDelete": [
+    "$strings.view.foo.owner.$conditionalComment",
+    "$strings.view.foo.version.$conditionalComment"
+  ],
+  "expected": [
+    "",
+    "  view: foo {",
+    "    owner: \"Fabio\"",
+    "    version: 2",
+    "    dimension: bar {}",
+    "  }",
+    " "
+  ]
+}

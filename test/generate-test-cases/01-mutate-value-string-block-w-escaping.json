@@ -1,0 +1,19 @@
+{
+  "input": [
+    "",
+    "  view: foo {",
+    "    sql: ${TABLE}.id ;;",
+    "  }",
+    " "
+  ],
+  "deepSet": {
+    "view.foo.sql": " SELECT 1 ;\\; SELECT 2 "
+  },
+  "expected": [
+    "",
+    "  view: foo {",
+    "    sql: SELECT 1 ;\\; SELECT 2 ;;",
+    "  }",
+    " "
+  ]
+}

@@ -71,9 +71,18 @@
 	- `parseFiles` now accepts an array of files, and calls to fs dependencies are isolated so that the package is suitable for in-browser usage, e.g. via webpack
 - v7.1.1
 	- Add a pre-publish step to bundle the compiled PEG grammar into a JS file which is then loaded via standard `require` calls, for compatibility with consumers' downstream build/bundling processes and improved script load time.
+	- Add support for unquoted string values in `generate` and atom mutation rules.
 - v7.1.2
 	- Addressed new NPM warnings about how the cli.js entrypoint is referenced
 - v7.1.3
 	- Upgrade `glob` dependency to v13 to remove deprecated `inflight` sub-dependency and eliminate memory leak warnings
 - v7.1.4
 	- Fix dropped values for properties that collide with `Object.prototype` (e.g. `toString`)
+- Unreleased
+	- ⚡ `$strings` metadata updated to a path-mirrored tree structure using array tuple references (`["$type"]`, `["$name"]`, `["$value"]`, `["property_name"]`, `["property_name", index]`) to preserve document ordering, comments, and whitespace across delocalized arrays and top-level statements.
+	- ⚡ Conditional comment blocks (`# <tag>!`) are parsed directly as AST nodes and require syntactically valid LookML fragments.
+	- Added `generate(project, options)` module to reconstruct formatted LookML strings from parsed objects while preserving original formatting, comments, whitespace, and block terminators.
+		- `generate` supports value mutations, property additions, property deletions, and conditional comment promotion, demotion, and stripping.
+		- `generate` supports constructing formatted LookML directly from newly constructed JavaScript objects without `$strings` metadata, automatically formatting standard atoms, double-semi blocks (`sql*`, `html*`, `expr*`), and quoted strings.
+		- Added `stringsAsQuoted`, `stringsAsAtoms`, and `stringsAsBlocks` array options to `generate(project, options)` to override or specify string output format to be used when generating constructed objects. E.g., `{stringsAsBlocks:["schema"],stringsAsAtoms:["status"]}`.
+	- Added `parseAst(lookmlString)` function and `--ast` / `-a` CLI flag to expose concrete AST structure.

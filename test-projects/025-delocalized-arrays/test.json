@@ -1,0 +1,121 @@
+{
+	"parseFileOptions": {
+		"fileOutput": "by-name"
+	},
+	"expected": {
+		"file": {
+			"delocalized-arrays.model": {
+				"include": [
+					"*.view.lkml",
+					"*.dashboard.lkml"
+				],
+				"view": {
+					"facts": {
+						"dimension": {
+							"foo": {
+								"link": [
+									{
+										"url": "https://go.foo/",
+										"$type": "link"
+									},
+									{
+										"url": "https://x.foo/",
+										"$type": "link"
+									}
+								],
+								"label": "Description links continue below...",
+								"$type": "dimension",
+								"$name": "foo"
+							}
+						},
+						"$type": "view",
+						"$name": "facts"
+					},
+					"+fact": [
+						{
+							"label": "Two",
+							"$type": "view",
+							"$name": "+fact"
+						},
+						{
+							"label": "Three",
+							"$type": "view",
+							"$name": "+fact"
+						}
+					]
+				},
+				"$strings": {
+					"$s": [
+						["include", 0],
+						["view", "facts"],
+						["view", "+fact", 0],
+						["include", 1],
+						["view", "+fact", 1],
+						"\n"
+					],
+					"include": [
+						[
+							["$type"], ":", " ", "\"", ["$value"], "\""
+						],
+						[
+							"\n\n", ["$type"], ":", " ", "\"", ["$value"], "\""
+						]
+					],
+					"view": {
+						"facts": {
+							"dimension": {
+								"foo": {
+									"link": [
+										{
+											"url": [
+												["$type"], ":", " ", "\"", ["$value"], "\""
+											],
+											"$s": [
+												["$type"], ":", " ", "{", ["url"], "}"
+											]
+										},
+										{
+											"url": [
+												["$type"], ":", " ", "\"", ["$value"], "\""
+											],
+											"$s": [
+												"\n        ", ["$type"], ":", " ", "{", ["url"], "}"
+											]
+										}
+									],
+									"label": [
+										"\n        ", ["$type"], ":", " ", "\"", ["$value"], "\""
+									],
+									"$s": [
+										["$type"], ":", " ", ["$name"], " ", "{", "\n        ", ["link", 0], ["label"], ["link", 1], "\n    ", "}"
+									]
+								}
+							},
+							"$s": [
+								"\n\n", ["$type"], ":", " ", ["$name"], " ", "{", "\n    ", ["dimension", "foo"], "\n", "}"
+							]
+						},
+						"+fact": [
+							{
+								"label": [
+									["$type"], ":", " ", "\"", ["$value"], "\""
+								],
+								"$s": [
+									"\n\n", ["$type"], ":", " ", ["$name"], " ", "{", "\n    ", ["label"], "\n", "}"
+								]
+							},
+							{
+								"label": [
+									["$type"], ":", " ", "\"", ["$value"], "\""
+								],
+								"$s": [
+									"\n\n", ["$type"], ":", " ", ["$name"], " ", "{", "\n    ", ["label"], "\n", "}"
+								]
+							}
+						]
+					}
+				}
+			}
+		}
+	}
+}

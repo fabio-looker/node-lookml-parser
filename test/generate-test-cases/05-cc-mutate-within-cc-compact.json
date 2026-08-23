@@ -1,0 +1,20 @@
+{
+  "input": [
+    "view: foo {",
+    "  # PARSE-ME! owner: \"Alice\"",
+    "  dimension: bar {}",
+    "}"
+  ],
+  "parseOptions": {
+    "conditionalCommentString": "PARSE-ME!"
+  },
+  "deepSet": {
+    "view.foo.owner": "Bob"
+  },
+  "expected": [
+    "view: foo {",
+    "  # PARSE-ME! owner: \"Bob\"",
+    "  dimension: bar {}",
+    "}"
+  ]
+}

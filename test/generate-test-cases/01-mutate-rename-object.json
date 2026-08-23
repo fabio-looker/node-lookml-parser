@@ -1,0 +1,19 @@
+{
+  "input": [
+    "",
+    "  view: foo {",
+    "    sql_table_name: my_table ;;",
+    "  }",
+    " "
+  ],
+  "deepSet": {
+    "view.foo.$name": "bar"
+  },
+  "expected": [
+    "",
+    "  view: bar {",
+    "    sql_table_name: my_table ;;",
+    "  }",
+    " "
+  ]
+}

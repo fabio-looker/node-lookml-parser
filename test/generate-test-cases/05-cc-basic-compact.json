@@ -1,0 +1,17 @@
+{
+  "input": [
+    "view: foo {",
+    "  # PARSE-ME! owner: \"Alice\"",
+    "  dimension: bar {}",
+    "}"
+  ],
+  "parseOptions": {
+    "conditionalCommentString": "PARSE-ME!"
+  },
+  "expected": [
+    "view: foo {",
+    "  # PARSE-ME! owner: \"Alice\"",
+    "  dimension: bar {}",
+    "}"
+  ]
+}

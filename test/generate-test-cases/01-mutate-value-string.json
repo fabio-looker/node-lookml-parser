@@ -1,0 +1,19 @@
+{
+	"input": [
+		"",
+		"  view: foo {",
+		"    sql_table_name: old_schema.old_table ;;",
+		"  }",
+		" "
+	],
+	"deepSet": {
+		"view.foo.sql_table_name": " new_schema.new_table "
+	},
+	"expected": [
+		"",
+		"  view: foo {",
+		"    sql_table_name: new_schema.new_table ;;",
+		"  }",
+		" "
+	]
+}
