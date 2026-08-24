@@ -1,0 +1,10 @@
+{
+	"input": "view: foo { label: \"Foo\" }",
+	"expected": {
+		"view": {
+			"foo": {
+				"label": "Foo"
+			}
+		}
+	}
+}

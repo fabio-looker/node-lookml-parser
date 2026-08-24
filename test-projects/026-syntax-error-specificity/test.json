@@ -7,9 +7,10 @@
 		"errors": [
 			{
 				"error": {
+					"name": "SyntaxError",
 					"exception": {
 						"found": null,
-						"location": { "start": { "line": 2, "column": 38 } }
+						"location": { "start": { "line": 2, "column": 36 } }
 					}
 				},
 				"$file_path": "invalid-conditional-comment.view.lkml",
@@ -35,7 +36,7 @@
 				"error": {
 					"exception": {
 						"found": null,
-						"location": { "start": { "line": 2, "column": 38 } }
+						"location": { "start": { "line": 2, "column": 36 } }
 					}
 				},
 				"$file_path": "invalid-conditional-comment.view.lkml",

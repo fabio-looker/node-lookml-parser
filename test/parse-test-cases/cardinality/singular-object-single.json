@@ -1,0 +1,6 @@
+{
+	"input": "derived_table: { sql: \"SELECT 1\" }",
+	"expected": {
+		"derived_table": { "sql": "SELECT 1" }
+	}
+}

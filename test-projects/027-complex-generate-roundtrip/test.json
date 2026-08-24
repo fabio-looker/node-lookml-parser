@@ -1,0 +1,47 @@
+{
+	"parseFileOptions": {
+		"fileOutput": "by-name"
+	},
+	"expected": {
+		"file": {
+			"complex.model": {
+				"include": [
+					"a.lkml",
+					"b.lkml"
+				],
+				"view": {
+					"foo": {
+						"derived_table": {
+							"datagroup_trigger": "my_dg",
+							"sql": " SELECT 1 as id ",
+							"$type": "derived_table"
+						},
+						"dimension": {
+							"id": {
+								"$type": "dimension",
+								"$name": "id"
+							}
+						},
+						"$type": "view",
+						"$name": "foo"
+					}
+				},
+				"explore": {
+					"foo": {
+						"fields": [
+							"foo.id",
+							"bar.baz",
+							"ALL_FIELDS*"
+						],
+						"$type": "explore",
+						"$name": "foo"
+					}
+				},
+				"$file_path": "complex.model.lkml",
+				"$file_rel": "complex",
+				"$file_name": "complex",
+				"$file_type": "model"
+			}
+		}
+	}
+}

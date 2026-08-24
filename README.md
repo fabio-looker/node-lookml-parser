@@ -99,9 +99,12 @@ be rejected by the native IDE, the CLI and parseFiles function now allow this
 ```
 view: foo {
 	# PARSE-ME!
-	# owner: "Fabio"
+	# owner: "Alice"
 	# version: {major:1 minor:4 date:"2018-01-01"}
-	dimension: bar {}
+	dimension: bar {
+		label: "Bar!"
+		#PARSE-ME! owner: "Bob"
+	}
 }
 
 > lookml-parser --conditional-comment="PARSE-ME!"
@@ -110,6 +113,11 @@ view: foo {
 ## Project Imports
 
 The parseFiles method and CLI will resolve any include statements of the style "//project_foo/..." as "/imported_projects/project_foo/...". Therefore, the parser supports project imports, assuming you have previously copied/cloned the remote project to the appropriate location ahead of invoking the parser.
+
+## LookML Schema, Cardinality & Validation
+
+After parsing, validation happens against a basic LookML schema. Properties are checked for disallowed repetition of the property, high-level values types, and missing required properties. Validation surfaces errors but does not block results. The schema may be incomplete, especially as new features are added to LookML.
+
 
 ## LookML Dashboard support
 

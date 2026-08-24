@@ -1,0 +1,10 @@
+{
+	"input": "view: foo { hidden: \"invalid_boolean\" }",
+	"options": {
+		"validation": { "types": true }
+	},
+	"error": true,
+	"errorType": "LookMLTypeError",
+	"errorCode": "INVALID_PROPERTY_TYPE",
+	"errorProperty": "hidden"
+}

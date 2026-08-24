@@ -1,5 +1,5 @@
 {
-	"input": "# PARSE-ME!\n# foo: \"bar\"",
+	"input": " #PARSE-ME! foo: \"bar\"",
 	"options": {
 		"conditionalCommentString": "PARSE-ME!"
 	},

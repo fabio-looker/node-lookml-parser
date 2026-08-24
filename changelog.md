@@ -79,10 +79,12 @@
 - v7.1.4
 	- Fix dropped values for properties that collide with `Object.prototype` (e.g. `toString`)
 - Unreleased
-	- ⚡ `$strings` metadata updated to a path-mirrored tree structure using array tuple references (`["$type"]`, `["$name"]`, `["$value"]`, `["property_name"]`, `["property_name", index]`) to preserve document ordering, comments, and whitespace across delocalized arrays and top-level statements.
-	- ⚡ Conditional comment blocks (`# <tag>!`) are parsed directly as AST nodes and require syntactically valid LookML fragments.
-	- Added `generate(project, options)` module to reconstruct formatted LookML strings from parsed objects while preserving original formatting, comments, whitespace, and block terminators.
-		- `generate` supports value mutations, property additions, property deletions, and conditional comment promotion, demotion, and stripping.
+	- ⚡ Properties which are known to be repeatable (e.g., model>include, dimension>link) now always output as arrays.
+	- ⚡ `$strings` metadata format is redesigned to a top-level entrypoint under top-level file/root nodes, with a structure that mirrors the values structure, rather than being embedded within the values structure. The format simplifies the syntax for referencing values (`["$name"]`, `["$value"]`, `["property_name"]`, `["property_name", index]`) and captures additional context for conditional comments use cases.
+	- ⚡ Conditional comment blocks now have their contents individually parsed and require syntactically valid LookML fragments in each comment.
+	- Added `generate(project, options)` feature to generate LookML strings from constructed or parsed LookML objects. Generation supports preserving or modifying formatting, comments, whitespace.
+		- `generate` supports value mutations, property additions, property deletions, object renames, whitespace/comments, and conditional comment manipulation.
 		- `generate` supports constructing formatted LookML directly from newly constructed JavaScript objects without `$strings` metadata, automatically formatting standard atoms, double-semi blocks (`sql*`, `html*`, `expr*`), and quoted strings.
-		- Added `stringsAsQuoted`, `stringsAsAtoms`, and `stringsAsBlocks` array options to `generate(project, options)` to override or specify string output format to be used when generating constructed objects. E.g., `{stringsAsBlocks:["schema"],stringsAsAtoms:["status"]}`.
+		- `stringsAsQuoted`, `stringsAsAtoms`, and `stringsAsBlocks` options  override or specify string output format to be used when generating strings values in objects without explicity `$strings`. E.g., `{stringsAsBlocks:["schema"],stringsAsAtoms:["status"]}`.
 	- Added `parseAst(lookmlString)` function and `--ast` / `-a` CLI flag to expose concrete AST structure.
+	- Added basic schema validation for property cardinalities, data types, and required fields. Validation behavior is configurable via the validation options flag ({ validation: { cardinality: true, types: true, required: true } }), attaching LookMLCardinalityError, LookMLTypeError, or LookMLRequiredPropertyError instances to obj.errors when violations occur.

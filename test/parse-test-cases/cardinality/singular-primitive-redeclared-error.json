@@ -1,0 +1,8 @@
+{
+	"input": "label: \"Label 1\" label: \"Label 2\"",
+	"error": true,
+	"errorType": "LookMLCardinalityError",
+	"errorCode": "DUPLICATE_SINGULAR_PROPERTY",
+	"errorProperty": "label",
+	"errorContains": "label"
+}

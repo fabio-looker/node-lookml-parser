@@ -15,7 +15,7 @@
 	"expected":{
 		"file": {
 			"simple.model": {
-				"include": "facts.view.lkml",
+				"include": ["facts.view.lkml"],
 				"explore": {
 					"facts": {
 						"$type": "explore",
@@ -45,7 +45,7 @@
 			"simple": {
 				"$type": "model",
 				"$name": "simple",
-				"include": "facts.view.lkml",
+				"include": ["facts.view.lkml"],
 				"explore": {
 					"facts": {
 						"$type": "explore",

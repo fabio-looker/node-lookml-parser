@@ -49,7 +49,7 @@
 					}
 				},
 				"sub1/in_folder":{
-					"include":"sub2/baz.view.lkml",
+					"include":["sub2/baz.view.lkml"],
 					"explore":{
 						"baz":{}
 					}

@@ -1,0 +1,10 @@
+{
+	"input": "access_grant: my_grant {}",
+	"options": {
+		"validation": { "required": true }
+	},
+	"error": true,
+	"errorType": "LookMLRequiredPropertyError",
+	"errorCode": "MISSING_REQUIRED_PROPERTY",
+	"errorProperty": "user_attribute"
+}
