@@ -79,7 +79,7 @@
 - v7.1.4
 	- Fix dropped values for properties that collide with `Object.prototype` (e.g. `toString`)
 - v8.0.0
-	- ⚡⚡⚡ Unification / re-alignment of CLI parameters and module funciton parameters. See [doc/v8-migration-guide.md] for full breakdown.
+	- ⚡⚡⚡ Unification / re-alignment of CLI parameters and module funciton parameters. See [doc/v8-migration-guide.md](doc/v8-migration-guide.md) for a full breakdown.
 	- ⚡ Properties which are known to be repeatable (e.g., model>include, dimension>link) now always output as arrays.
 	- ⚡ `$strings` metadata format is redesigned to a top-level entrypoint under top-level file/root nodes, with a structure that mirrors the values structure, rather than being embedded within the values structure. The format simplifies the syntax for referencing values (`["$name"]`, `["$value"]`, `["property_name"]`, `["property_name", index]`) and captures additional context for conditional comments use cases.
 	- ⚡ Conditional comment blocks now have their contents individually parsed and require syntactically valid LookML fragments in each comment.
