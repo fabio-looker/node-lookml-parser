@@ -78,7 +78,7 @@
 	- Upgrade `glob` dependency to v13 to remove deprecated `inflight` sub-dependency and eliminate memory leak warnings
 - v7.1.4
 	- Fix dropped values for properties that collide with `Object.prototype` (e.g. `toString`)
-- Unreleased
+- v8.0.0
 	- ⚡⚡⚡ Unification / re-alignment of CLI parameters and module funciton parameters. See [doc/v8-migration-guide.md] for full breakdown.
 	- ⚡ Properties which are known to be repeatable (e.g., model>include, dimension>link) now always output as arrays.
 	- ⚡ `$strings` metadata format is redesigned to a top-level entrypoint under top-level file/root nodes, with a structure that mirrors the values structure, rather than being embedded within the values structure. The format simplifies the syntax for referencing values (`["$name"]`, `["$value"]`, `["property_name"]`, `["property_name", index]`) and captures additional context for conditional comments use cases.
