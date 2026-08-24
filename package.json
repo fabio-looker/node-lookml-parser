@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node scripts/build-parser.js",
     "prepare": "node scripts/build-parser.js",
-    "test": "node test/parse.js && node test/get-positions.js && node test/parse-files.js && node test/parse-ast.js && node test/round-trip.js && node test/generate.js"
+    "test": "node test/parse.js && node test/get-positions.js && node test/parse-files.js && node test/parse-ast.js && node test/round-trip.js && node test/generate.js && node test/cli.js"
   },
   "bin": {
     "lookml-parser": "cli.js"

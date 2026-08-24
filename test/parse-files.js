@@ -34,7 +34,7 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 	for(let path of paths){
 			const test = getSpec(path)
 			const name = test.name||path
-			const opts = {cwd: pathLib.join(testProjectsLocation,path), ...test.parseFileOptions||{}}
+			const opts = {cwd: pathLib.join(testProjectsLocation,path), legacyFileMetadata: true, ...test.parseFileOptions||{}}
 			if(opts.console){opts.console = mockConsole(opts.console)}
 			try{
 				runner.test(name, async () => {
@@ -83,6 +83,80 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 				}
 			catch(e){console.error(e)}
 		}
+
+	runner.test("parseFilesRaw returns un-assembled project files", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFilesRaw({
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model')
+		})
+		if (!project.file) throw new Error("Expected project.file")
+		if (project.model) throw new Error("Expected no project.model in raw parsing")
+		return "ok"
+	})
+
+	runner.test("parseFiles with modelAssembly: false skips model assembly", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model'),
+			modelAssembly: false,
+			extensions: false
+		})
+		if (!project.file) throw new Error("Expected project.file")
+		if (project.model) throw new Error("Expected no project.model when modelAssembly: false")
+		return "ok"
+	})
+
+	runner.test("parseFiles with extensions: true and modelAssembly: false warns and enables modelAssembly", async () => {
+		const lookmlParser = require('../index.js')
+		let warned = false
+		const customConsole = {
+			warn: (msg) => {
+				if (typeof msg === 'string' && msg.includes('extensions option requires modelAssembly')) {
+					warned = true
+				}
+			},
+			log: () => {},
+			error: () => {}
+		}
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model'),
+			modelAssembly: false,
+			extensions: true,
+			console: customConsole
+		})
+		if (!warned) throw new Error("Expected warning when extensions: true and modelAssembly: false")
+		if (!project.model) throw new Error("Expected modelAssembly to be auto-enabled when extensions: true")
+		return "ok"
+	})
+
+	runner.test("parseFiles defaults legacyFileMetadata to false", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model')
+		})
+		for (const [key, fileObj] of Object.entries(project.file || {})) {
+			if (fileObj.$file_rel !== undefined) throw new Error(`Expected $file_rel to be undefined by default on ${key}`)
+			if (fileObj.$file_name !== undefined) throw new Error(`Expected $file_name to be undefined by default on ${key}`)
+			if (fileObj.$file_type !== undefined) throw new Error(`Expected $file_type to be undefined by default on ${key}`)
+			if (!fileObj.$file_path) throw new Error(`Expected $file_path to be preserved on ${key}`)
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles with strings: false and legacyFileMetadata: false purges metadata while preserving $file_path", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model'),
+			strings: false,
+			legacyFileMetadata: false
+		})
+		for (const [key, fileObj] of Object.entries(project.file || {})) {
+			if (fileObj.$strings !== undefined) throw new Error(`Expected $strings to be undefined on ${key}`)
+			if (fileObj.$file_rel !== undefined) throw new Error(`Expected $file_rel to be undefined on ${key}`)
+			if (!fileObj.$file_path) throw new Error(`Expected $file_path to be preserved on ${key}`)
+		}
+		return "ok"
+	})
 	}()
 
 function mockConsole(consoleSpec){
