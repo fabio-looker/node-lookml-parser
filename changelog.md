@@ -89,3 +89,4 @@
 		- `stringsAsQuoted`, `stringsAsAtoms`, and `stringsAsBlocks` options  override or specify string output format to be used when generating strings values in objects without explicity `$strings`. E.g., `{stringsAsBlocks:["schema"],stringsAsAtoms:["status"]}`.
 	- Added `parseAst(lookmlString)` function and `--ast` / `-a` CLI flag to expose concrete AST structure.
 	- Added basic schema validation for property cardinalities, data types, and required fields. Validation behavior is configurable via the validation options flag ({ validation: { cardinality: true, types: true, required: true } }), attaching LookMLCardinalityError, LookMLTypeError, or LookMLRequiredPropertyError instances to obj.errors when violations occur.
+	- Fix handling of `/**/` patterns in include statements (issue #29)
