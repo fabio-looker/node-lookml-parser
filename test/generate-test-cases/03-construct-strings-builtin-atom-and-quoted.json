@@ -1,0 +1,21 @@
+{
+	"input": {
+		"explore": {
+			"orders": {
+				"from": "raw_orders",
+				"view_name": "order_facts",
+				"label": "All Orders",
+				"description": "Exploration of customer orders"
+			}
+		}
+	},
+	"expected": [
+		"explore: orders {",
+		"  from: raw_orders",
+		"  view_name: order_facts",
+		"  label: \"All Orders\"",
+		"  description: \"Exploration of customer orders\"",
+		"}",
+		""
+	]
+}

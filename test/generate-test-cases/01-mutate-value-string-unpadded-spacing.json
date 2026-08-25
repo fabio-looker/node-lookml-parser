@@ -1,0 +1,15 @@
+{
+  "input": [
+    "view: foo {",
+    "  sql_table_name: my_table ;;",
+    "}"
+  ],
+  "deepSet": {
+    "view.foo.sql_table_name": "new_table"
+  },
+  "expected": [
+    "view: foo {",
+    "  sql_table_name:new_table;;",
+    "}"
+  ]
+}

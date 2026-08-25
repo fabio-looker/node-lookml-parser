@@ -1,0 +1,6 @@
+{
+	"input": "include: \"foo\"",
+	"expected": {
+		"include": ["foo"]
+	}
+}

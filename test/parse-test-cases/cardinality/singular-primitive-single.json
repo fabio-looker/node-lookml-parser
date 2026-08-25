@@ -1,0 +1,6 @@
+{
+	"input": "label: \"My View\"",
+	"expected": {
+		"label": "My View"
+	}
+}

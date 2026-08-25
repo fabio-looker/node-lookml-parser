@@ -9,7 +9,7 @@
 	"expected":{
 		"file": {
 			"mymodel.model": {
-				"include": "*.view.lkml",
+				"include": ["*.view.lkml"],
 				"$file_path": "mymodel.model.lkml"
 			},
 			"myref-refinement.view": {
@@ -44,7 +44,7 @@
 					],
 				"$type": "model",
 				"$name": "mymodel",
-				"include": "*.view.lkml",
+				"include": ["*.view.lkml"],
 				"view": {
 					"+facts": null,
 					"facts": {

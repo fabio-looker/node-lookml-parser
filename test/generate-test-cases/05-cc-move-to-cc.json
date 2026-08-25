@@ -1,0 +1,22 @@
+{
+	"input": [
+		"",
+		"  view: foo {",
+		"    owner: \"Fabio\"",
+		"    dimension: bar {}",
+		"  }",
+		" "
+	],
+	"deepSet": {
+		"$strings.view.foo.owner.$conditionalComment": "PARSE-ME!"
+	},
+	"expected": [
+		"",
+		"  view: foo {",
+		"    # PARSE-ME!",
+		"    # owner: \"Fabio\"",
+		"    dimension: bar {}",
+		"  }",
+		" "
+	]
+}

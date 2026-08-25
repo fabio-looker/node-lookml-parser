@@ -1,0 +1,8 @@
+{
+	"input": "view: foo {} view: foo {}",
+	"error": true,
+	"errorType": "LookMLCardinalityError",
+	"errorCode": "DUPLICATE_SINGULAR_PROPERTY",
+	"errorProperty": "view",
+	"errorContains": "view"
+}

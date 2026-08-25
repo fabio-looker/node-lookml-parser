@@ -1,0 +1,8 @@
+{
+	"input": "view: my_view {\n  # PARSE-ME! invalid_cc_syntax_token\n}",
+	"options": {
+		"conditionalCommentString": "PARSE-ME!"
+	},
+	"error": true,
+	"errorContains": "In conditional comment '# PARSE-ME!' (line 2)"
+}

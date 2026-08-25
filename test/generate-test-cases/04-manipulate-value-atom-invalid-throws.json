@@ -1,0 +1,13 @@
+{
+  "input": [
+    "",
+    "  explore: foo {",
+    "    from: simple_view",
+    "  }",
+    " "
+  ],
+  "deepSet": {
+    "explore.foo.from": "view with spaces"
+  },
+  "error": true
+}

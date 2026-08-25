@@ -1,0 +1,5 @@
+{
+	"input": "view: my_view { invalid_syntax_token }",
+	"error": true,
+	"errorContains": "invalid_syntax_token"
+}

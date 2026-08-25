@@ -1,12 +1,12 @@
 {
   "name": "lookml-parser",
-  "version": "7.1.4",
+  "version": "8.0.0",
   "description": "Parse LookML",
   "main": "index.js",
   "scripts": {
     "build": "node scripts/build-parser.js",
     "prepare": "node scripts/build-parser.js",
-    "test": "node test/parse.js && node test/get-positions.js && node test/parse-files.js"
+    "test": "node test/parse.js && node test/get-positions.js && node test/parse-files.js && node test/parse-ast.js && node test/round-trip.js && node test/generate.js && node test/cli.js"
   },
   "bin": {
     "lookml-parser": "cli.js"

@@ -1,0 +1,17 @@
+{
+	"input": {
+		"view": {
+			"my_custom_view": {
+				"custom_unrecognized_property": "my_value",
+				"some_other_unknown_key": "some text"
+			}
+		}
+	},
+	"expected": [
+		"view: my_custom_view {",
+		"  custom_unrecognized_property: \"my_value\"",
+		"  some_other_unknown_key: \"some text\"",
+		"}",
+		""
+	]
+}

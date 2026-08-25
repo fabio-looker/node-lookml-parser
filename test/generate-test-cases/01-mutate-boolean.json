@@ -1,0 +1,19 @@
+{
+	"input": [
+		"",
+		"  view: foo {",
+		"    hidden: yes",
+		"  }",
+		" "
+	],
+	"deepSet": {
+		"view.foo.hidden": false
+	},
+	"expected": [
+		"",
+		"  view: foo {",
+		"    hidden: no",
+		"  }",
+		" "
+	]
+}

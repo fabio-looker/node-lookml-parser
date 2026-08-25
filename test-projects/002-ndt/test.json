@@ -11,10 +11,10 @@
 							"derived_table": {
 								"explore_source": {
 									"identifier": {
-										"bind_filters": {
+										"bind_filters": [{
 											"from_field": "field_name",
 											"to_field": "field_name"
-										},
+										}],
 										"column": {
 											"identifier": {
 												"field": "field_name"
@@ -26,15 +26,15 @@
 											}
 										},
 										"expression_custom_filter": " ${orders.status} = \"pending\" ",
-										"filters": {
+										"filters": [{
 											"field": "field_name",
 											"value": "string"
-										},
+										}],
 										"limit": "number",
-										"sort": {
+										"sort": [{
 											"desc": "boolean",
 											"field": "field_name"
-										},
+										}],
 										"timezone": "string"
 									}
 								}

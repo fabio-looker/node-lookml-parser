@@ -1,0 +1,23 @@
+{
+	"input": [
+		"",
+		"  explore: foo { #Object",
+		"    from:",
+		"    # Value",
+		"    view",
+		"  }",
+		" "
+	],
+	"deepSet": {
+		"explore.foo.from": "view2"
+	},
+	"expected": [
+		"",
+		"  explore: foo { #Object",
+		"    from:",
+		"    # Value",
+		"    view2",
+		"  }",
+		" "
+	]
+}

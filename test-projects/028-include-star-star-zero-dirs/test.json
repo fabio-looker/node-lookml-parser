@@ -1,0 +1,51 @@
+{
+	"name": "028-include-star-star-zero-dirs",
+	"parseFileOptions": {
+		"fileOutput": "by-name",
+		"transformations": {
+			"applyExtensionsRefinements": true,
+			"dropStrings": true
+		}
+	},
+	"expected": {
+		"file": {
+			"my_model.model": {},
+			"root_view.view": {
+				"view": {
+					"root_view": {
+						"sql_table_name": " root_table "
+					}
+				}
+			},
+			"views/direct_view.view": {
+				"view": {
+					"direct_view": {
+						"sql_table_name": " direct_table "
+					}
+				}
+			},
+			"views/sub/nested_view.view": {
+				"view": {
+					"nested_view": {
+						"sql_table_name": " nested_table "
+					}
+				}
+			}
+		},
+		"model": {
+			"my_model": {
+				"view": {
+					"root_view": {
+						"sql_table_name": " root_table "
+					},
+					"direct_view": {
+						"sql_table_name": " direct_table "
+					},
+					"nested_view": {
+						"sql_table_name": " nested_table "
+					}
+				}
+			}
+		}
+	}
+}

@@ -18,7 +18,15 @@
 				"$file_name": "__proto__",
 				"$file_type": "model"
 			},
-			"$$money.model": {
+			"$$name.model": {
+				"cash": "name_test",
+				"$file_path": "$name.model.lkml",
+				"$file_rel": "$name",
+				"$file_name": "$name",
+				"$file_type": "model"
+			},
+			"$money.model": {
+				"cash": "money",
 				"$file_path": "$money.model.lkml",
 				"$file_rel": "$money",
 				"$file_name": "$money",
@@ -85,7 +93,7 @@
 					}
 				}
 			},
-			"$$money": {
+			"$money": {
 				"$file_path": "$money.model.lkml",
 				"$file_rel": "$money",
 				"$file_name": "$money",

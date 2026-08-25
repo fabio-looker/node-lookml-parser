@@ -1,0 +1,6 @@
+{
+	"input": "custom_prop: \"val\"",
+	"expected": {
+		"custom_prop": "val"
+	}
+}

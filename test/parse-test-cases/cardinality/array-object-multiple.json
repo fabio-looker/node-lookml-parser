@@ -1,0 +1,6 @@
+{
+	"input": "link: { url: \"http://a.com\" } link: { url: \"http://b.com\" }",
+	"expected": {
+		"link": [{ "url": "http://a.com" }, { "url": "http://b.com" }]
+	}
+}

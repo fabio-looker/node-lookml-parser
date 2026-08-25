@@ -1,7 +1,14 @@
+const parseModule = require('./lib/parse')
+const parseFilesModule = require('./lib/parse-files')
+const generateModule = require('./lib/generate')
 
 exports = module.exports = {
-		parse: require('./lib/parse'),
-		parseFiles: require('./lib/parse-files'),
-		getPositions: require('./lib/positions/get-positions.js').getPositions,
-		transformations: require('./lib/transformations')
-	}
+	parse: parseModule,
+	parseAst: parseModule.parseAst,
+	parseRaw: parseModule.parseRaw,
+	parseFiles: parseFilesModule,
+	parseFilesRaw: parseFilesModule.parseFilesRaw,
+	generate: generateModule,
+	getPositions: require('./lib/positions/get-positions.js').getPositions,
+	transformations: require('./lib/transformations')
+}

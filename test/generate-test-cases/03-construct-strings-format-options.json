@@ -1,0 +1,26 @@
+{
+	"input": {
+		"explore": {
+			"user_facts": {
+				"from": "users",
+				"custom_status": "active_user",
+				"custom_query": " SELECT * FROM users ",
+				"label": "User Facts"
+			}
+		}
+	},
+	"generateOptions": {
+		"stringsAsQuoted": ["from"],
+		"stringsAsAtoms": ["label","custom_status"],
+		"stringsAsBlocks": ["custom_query"]
+	},
+	"expected": [
+		"explore: user_facts {",
+		"  from: \"users\"",
+		"  custom_status: active_user",
+		"  custom_query: SELECT * FROM users ;;",
+		"  label: User Facts",
+		"}",
+		""
+	]
+}

@@ -1,0 +1,27 @@
+{
+  "input": [
+    "",
+    "  explore: foo {",
+    "    from: simple_view",
+    "  }",
+    " "
+  ],
+  "deepSet": {
+    "explore.foo.from": "view with spaces",
+    "$strings.explore.foo.from": [
+      "from",
+      ":",
+      " ",
+      "\"",
+      "view with spaces",
+      "\""
+    ]
+  },
+  "expected": [
+    "",
+    "  explore: foo {",
+    "    from: \"view with spaces\"",
+    "  }",
+    " "
+  ]
+}

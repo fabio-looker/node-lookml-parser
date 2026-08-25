@@ -25,19 +25,19 @@
 							"startofline_both":					{"fields":["id","user.id"]}
 						},
 						"measure":{
-							"short_none":		{"filters":{"state":"done"}},
-							"short_leading":	{"filters":{"state":"done"}},
-							"short_trailing":	{"filters":{"state":"done"}},
-							"short_both":		{"filters":{"state":"done"}},
-							"endofline_none":		{"filters":{"state":"done","duration":">5"}},
-							"endofline_leading":	{"filters":{"state":"done","duration":">5"}},
-							"endofline_trailing":	{"filters":{"state":"done","duration":">5"}},
-							"endofline_both":		{"filters":{"state":"done","duration":">5"}},
-							"startofline_none":					{"filters":{"state":"done","duration":">5"}},
-							"startofline_leading":				{"filters":{"state":"done","duration":">5"}},
-							"startofline_trailing":				{"filters":{"state":"done","duration":">5"}},
-							"startofline_trailing_nopadding":	{"filters":{"state":"done","duration":">5"}},
-							"startofline_both":					{"filters":{"state":"done","duration":">5"}}
+							"short_none":		{"filters":[{"state":"done"}]},
+							"short_leading":	{"filters":[{"state":"done"}]},
+							"short_trailing":	{"filters":[{"state":"done"}]},
+							"short_both":		{"filters":[{"state":"done"}]},
+							"endofline_none":		{"filters":[{"state":"done","duration":">5"}]},
+							"endofline_leading":	{"filters":[{"state":"done","duration":">5"}]},
+							"endofline_trailing":	{"filters":[{"state":"done","duration":">5"}]},
+							"endofline_both":		{"filters":[{"state":"done","duration":">5"}]},
+							"startofline_none":					{"filters":[{"state":"done","duration":">5"}]},
+							"startofline_leading":				{"filters":[{"state":"done","duration":">5"}]},
+							"startofline_trailing":				{"filters":[{"state":"done","duration":">5"}]},
+							"startofline_trailing_nopadding":	{"filters":[{"state":"done","duration":">5"}]},
+							"startofline_both":					{"filters":[{"state":"done","duration":">5"}]}
 						}
 					}
 				}
