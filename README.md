@@ -116,6 +116,7 @@ const project = await lookmlParser.parseFiles({
 | **Raw PEG AST (`$ast`)** | `-a`, `--ast`<br>*(off by default)* | `ast: boolean`<br>*(default: `false`)* | `ast: boolean`<br>*(default: `false`)* | N/A *(Parser option during parsing)* |
 | **Conditional Comment Tagging** | `-c`, `--conditional-comment` | `conditionalCommentString: string` | `conditionalCommentString: string` | N/A *(Parser option during parsing)* |
 | **Legacy File Metadata (e.g., `$file_type`)** | `-f`, `--legacy-file-metadata` | `legacyFileMetadata: boolean`<br>*(default: `false`)* | N/A *(File level only)* | `transformations.dropFileAdditional(project)` |
+| **Validation Mode** | `--validation-mode` | `validationMode: boolean`<br>*(default: `false`)* | N/A | N/A |
 
 ---
 
@@ -166,6 +167,16 @@ The `parseFiles` method and CLI resolve any include statements of the style `"//
 ## LookML Schema, Cardinality & Validation
 
 After parsing, validation happens against a basic LookML schema. Properties are checked for disallowed repetition, value types, and missing required properties. Validation surfaces errors but does not block results.
+
+## Validation Mode (`validationMode`)
+
+For use cases where the primary need is validation without returning parsed LookML contents, pass `validationMode: true` in JS API options or `--validation-mode` in the CLI.
+
+In Validation Mode:
+- Parsed content objects (`model`, `view`, `explore`, `manifest`, ASTs) are omitted from the output.
+- Output keys are strictly restricted to: `error` (critical top-level error if present), `errors` (accumulated non-critical errors), `info` (contains completion summary message), and `file`.
+- Individual file entries under `project.file` omit file metadata and contain only `errors` or `error` if present, or `{}` if no errors were found.
+- Combining `validationMode: true` with output-expanding options (such as `ast`, `positions`, `strings`, or `legacyFileMetadata`) will throw an error.
 
 ## LookML Dashboard Support
 

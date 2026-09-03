@@ -1,0 +1,18 @@
+{
+	"parseFileOptions": {
+		"fileOutput": "by-name"
+	},
+	"expected": {
+		"errors": [
+			{
+				"code": "SYNTAX_ERROR",
+				"filePath": "invalid_syntax.view.lkml"
+			},
+			{
+				"code": "DUPLICATE_SINGULAR_PROPERTY",
+				"property": "sql_table_name",
+				"filePath": "bad_cardinality.view.lkml"
+			}
+		]
+	}
+}

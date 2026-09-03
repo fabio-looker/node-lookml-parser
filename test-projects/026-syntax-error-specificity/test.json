@@ -6,55 +6,32 @@
 	"expected": {
 		"errors": [
 			{
-				"error": {
-					"name": "SyntaxError",
-					"exception": {
-						"found": null,
-						"location": { "start": { "line": 2, "column": 36 } }
-					}
-				},
-				"$file_path": "invalid-conditional-comment.view.lkml",
-				"$file_rel": "invalid-conditional-comment",
-				"$file_name": "invalid-conditional-comment",
-				"$file_type": "view"
+				"code": "SYNTAX_ERROR",
+				"filePath": "invalid-conditional-comment.view.lkml",
+				"line": 2,
+				"column": 36
 			},
 			{
-				"error": {
-					"exception": {
-						"found": "}",
-						"location": { "start": { "line": 4, "column": 3 } }
-					}
-				},
-				"$file_path": "invalid-syntax.view.lkml",
-				"$file_rel": "invalid-syntax",
-				"$file_name": "invalid-syntax",
-				"$file_type": "view"
+				"code": "SYNTAX_ERROR",
+				"filePath": "invalid-syntax.view.lkml",
+				"line": 4,
+				"column": 3
 			}
 		],
 		"file": {
 			"invalid-conditional-comment.view": {
 				"error": {
-					"exception": {
-						"found": null,
-						"location": { "start": { "line": 2, "column": 36 } }
-					}
-				},
-				"$file_path": "invalid-conditional-comment.view.lkml",
-				"$file_rel": "invalid-conditional-comment",
-				"$file_name": "invalid-conditional-comment",
-				"$file_type": "view"
+					"code": "SYNTAX_ERROR",
+					"line": 2,
+					"column": 36
+				}
 			},
 			"invalid-syntax.view": {
 				"error": {
-					"exception": {
-						"found": "}",
-						"location": { "start": { "line": 4, "column": 3 } }
-					}
-				},
-				"$file_path": "invalid-syntax.view.lkml",
-				"$file_rel": "invalid-syntax",
-				"$file_name": "invalid-syntax",
-				"$file_type": "view"
+					"code": "SYNTAX_ERROR",
+					"line": 4,
+					"column": 3
+				}
 			}
 		}
 	}

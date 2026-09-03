@@ -62,3 +62,22 @@ runner.test("cli.run with -s and -f includes $strings and legacy file metadata",
 	}
 	return "ok"
 })
+
+runner.test("parseCliArgs detects --validation-mode flag", () => {
+	const parsed = parseCliArgs(['node', 'cli.js', '-i', 'foo.lkml', '--validation-mode'])
+	if (parsed.parseFilesOptions.validationMode !== true) throw new Error("Expected validationMode=true for --validation-mode")
+	return "ok"
+})
+
+runner.test("cli.run with --validation-mode outputs validation mode summary and restricted keys", async () => {
+	const testPath = pathLib.join(__dirname, '../test-projects/001-simple-model/*.lkml')
+	const result = await cli.run(['node', 'cli.js', '-i', testPath, '--validation-mode'])
+	if (result.model !== undefined) throw new Error("Expected result.model to be undefined in CLI validation mode")
+	if (!result.info || !result.info.some(i => i.type === 'summary')) {
+		throw new Error("Expected summary in result.info")
+	}
+	for (const [key, fileObj] of Object.entries(result.file)) {
+		if (Object.keys(fileObj).length !== 0) throw new Error(`Expected empty file obj for clean file, got ${JSON.stringify(fileObj)}`)
+	}
+	return "ok"
+})
