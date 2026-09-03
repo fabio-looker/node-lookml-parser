@@ -91,6 +91,6 @@
 	- Added basic schema validation for property cardinalities, data types, and required fields. Validation behavior is configurable via the validation options flag ({ validation: { cardinality: true, types: true, required: true } }), attaching LookMLCardinalityError, LookMLTypeError, or LookMLRequiredPropertyError instances to obj.errors when violations occur.
 	- Fix handling of `/**/` patterns in include statements (issue #29)
 - v9.0.0
-	- ⚡ Added `validationMode: true` (`--validation-mode`) for lightweight validation-only runs.
 	- ⚡ Standardized all errors onto a single `code` identifier with self-contained, fully detailed human-readable `message` strings.
+	- Added `validationMode: true` (`--validation-mode`) for lightweight validation-only runs.
 
