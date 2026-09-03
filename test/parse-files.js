@@ -157,6 +157,85 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 		}
 		return "ok"
 	})
+
+	runner.test("parseFiles with validationMode: true returns restricted keys and empty objects for error-free files", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model'),
+			validationMode: true
+		})
+		const allowedKeys = new Set(['error', 'errors', 'info', 'file'])
+		for (const key of Object.keys(project)) {
+			if (!allowedKeys.has(key)) throw new Error(`Unexpected top-level key in validationMode: ${key}`)
+		}
+		if (project.model !== undefined) throw new Error("Expected project.model to be undefined in validationMode")
+		if (!project.info || !project.info.some(i => i.type === 'summary' && i.filesCount > 0)) {
+			throw new Error("Expected summary info message in project.info")
+		}
+		if (!project.file) throw new Error("Expected project.file in validationMode")
+		for (const [fileKey, fileObj] of Object.entries(project.file)) {
+			if (fileObj.$file_path !== undefined) throw new Error(`Expected file metadata $file_path to be omitted on ${fileKey}`)
+			if (fileObj.view !== undefined || fileObj.model !== undefined || fileObj.explore !== undefined) {
+				throw new Error(`Expected LookML content to be omitted on ${fileKey}`)
+			}
+			if (Object.keys(fileObj).length !== 0) {
+				throw new Error(`Expected error-free file object to be empty {}, got ${JSON.stringify(fileObj)}`)
+			}
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles with validationMode: true throws error when combined with output-expanding options", async () => {
+		const lookmlParser = require('../index.js')
+		let threw = false
+		try {
+			await lookmlParser.parseFiles({
+				cwd: pathLib.join(testProjectsLocation, '001-simple-model'),
+				validationMode: true,
+				ast: true
+			})
+		} catch (e) {
+			if (e.message && e.message.includes('validationMode cannot be combined')) {
+				threw = true
+			}
+		}
+		if (!threw) throw new Error("Expected error when combining validationMode with ast: true")
+		return "ok"
+	})
+
+	runner.test("parseFiles aggregates validation errors to project.errors in standard mode and validationMode", async () => {
+		const lookmlParser = require('../index.js')
+		const stdProject = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '029-validation-error-aggregation')
+		})
+		if (!stdProject.errors || !stdProject.errors.some(e => e.code === 'DUPLICATE_SINGULAR_PROPERTY')) {
+			throw new Error("Expected aggregated DUPLICATE_SINGULAR_PROPERTY in stdProject.errors")
+		}
+		if (!stdProject.errors.some(e => e.code === 'SYNTAX_ERROR')) {
+			throw new Error("Expected aggregated SYNTAX_ERROR in stdProject.errors")
+		}
+
+		const valProject = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '029-validation-error-aggregation'),
+			validationMode: true
+		})
+		if (!valProject.errors || !valProject.errors.some(e => e.code === 'DUPLICATE_SINGULAR_PROPERTY')) {
+			throw new Error("Expected aggregated DUPLICATE_SINGULAR_PROPERTY in valProject.errors")
+		}
+		if (!valProject.errors.some(e => e.code === 'SYNTAX_ERROR')) {
+			throw new Error("Expected aggregated SYNTAX_ERROR in valProject.errors")
+		}
+		if (valProject.view !== undefined || valProject.file['bad_cardinality.view'].view !== undefined) {
+			throw new Error("Expected parsed view contents to be omitted in valProject")
+		}
+		if (!valProject.file['bad_cardinality.view'].errors || valProject.file['bad_cardinality.view'].errors.length === 0) {
+			throw new Error("Expected file-level errors in valProject.file['bad_cardinality.view']")
+		}
+		if (!valProject.file['invalid_syntax.view'].error) {
+			throw new Error("Expected file-level error in valProject.file['invalid_syntax.view']")
+		}
+		return "ok"
+	})
 	}()
 
 function mockConsole(consoleSpec){
