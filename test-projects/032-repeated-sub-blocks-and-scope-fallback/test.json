@@ -1,0 +1,35 @@
+{
+	"comment": "Verify repeated sub-blocks (case.when, parameter.allowed_value) and scope-isolated always_filter",
+	"parseFileOptions": {
+		"fileOutput": "by-name"
+	},
+	"expected": {
+		"model": {
+			"test": {
+				"view": {
+					"orders": {
+						"dimension": {
+							"price_bucket": {
+								"case": {
+									"when": [
+										{ "label": "Low", "sql": " ${TABLE}.price < 20 " },
+										{ "label": "Medium", "sql": " ${TABLE}.price < 100 " }
+									],
+									"else": "High"
+								}
+							}
+						},
+						"parameter": {
+							"metric_selector": {
+								"type": "unquoted",
+								"allowed_value": [
+									{ "label": "Revenue", "value": "revenue" }
+								]
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
