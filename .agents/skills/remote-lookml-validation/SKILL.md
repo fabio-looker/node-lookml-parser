@@ -17,8 +17,14 @@ At any point, you can verify that `looker-cli` is installed and configured with 
    looker-cli user me --token-file
    ```
    *Expected Output*: Returns user details (e.g., User ID, Email, Name) indicating a valid session token in `~/.looker_auth`.
-3. **Confirm target project**
-    A "sandbox project ID" should be idnetified, and can be set/retrieved as `SANDBOX_PROJECT_ID` in a dev.env file in the local working project
+3. **Confirm target project & configured models**:
+    A "sandbox project ID" should be identified, and can be set/retrieved as `SANDBOX_PROJECT_ID` in a dev.env file in the local working project.
+    *Note*: In order to explore or inspect models via the API, Looker requires a LookML model configuration. Agents may want to persist to the env file what model names are already configured (e.g., `CONFIGURED_MODELS=test`). Agents *can* configure new models when needed, but reusing an already configured model name avoids those extra steps.
+
+    *Configuring a new model via the API*:
+    ```bash
+    echo '{"name":"<MODEL_NAME>","project_name":"<PROJECT_ID>","allowed_db_connection_names":["<CONNECTION_NAME>"]}' | looker-cli api lookmlmodel create_lookml_model - --token-file
+    ```
 ---
 ### Switching Session Workspace to Dev Mode
 Looker prohibits modifying project files while in `production` mode. Always update the session to `dev` mode before starting to work.
@@ -66,6 +72,8 @@ looker-cli project validate <PROJECT_ID> --token-file
 ---
 ### Checking Model Interpretation
 Inspect how Looker semantically parses and interprets models, explores, and fields.
+
+*Note*: API inspection requires the model to have an active LookML model configuration in Looker (see step 3 under local configuration to create one if needed).
 
 1. **Inspect Parsed Model JSON**:
    ```bash
