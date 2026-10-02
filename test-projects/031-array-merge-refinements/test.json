@@ -1,0 +1,24 @@
+{
+	"comment": "Refining an array replaces baseVal with addVal rather than appending undefined",
+	"parseFileOptions": {
+		"fileOutput": "by-name",
+		"transformations": {
+			"applyExtensionsRefinements": true
+		}
+	},
+	"expected": {
+		"model": {
+			"test": {
+				"view": {
+					"orders": {
+						"dimension_group": {
+							"created": {
+								"timeframes": ["raw", "date", "month", "year"]
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
