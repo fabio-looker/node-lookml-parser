@@ -1,0 +1,28 @@
+{
+	"input": "view: orders {\n  dimension: price_bucket {\n    case: {\n      when: {\n        sql: ${TABLE}.price < 20 ;;\n        label: \"Low\"\n      }\n      when: {\n        sql: ${TABLE}.price < 100 ;;\n        label: \"Medium\"\n      }\n      else: \"High\"\n    }\n  }\n\n  parameter: metric_selector {\n    type: unquoted\n    allowed_value: {\n      label: \"Revenue\"\n      value: \"revenue\"\n    }\n  }\n}",
+	"expected": {
+		"view": {
+			"orders": {
+				"dimension": {
+					"price_bucket": {
+						"case": {
+							"when": [
+								{ "sql": " ${TABLE}.price < 20 ", "label": "Low" },
+								{ "sql": " ${TABLE}.price < 100 ", "label": "Medium" }
+							],
+							"else": "High"
+						}
+					}
+				},
+				"parameter": {
+					"metric_selector": {
+						"type": "unquoted",
+						"allowed_value": [
+							{ "label": "Revenue", "value": "revenue" }
+						]
+					}
+				}
+			}
+		}
+	}
+}
