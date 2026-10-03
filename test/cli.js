@@ -15,6 +15,7 @@ runner.test("parseCliArgs defaults: strings=false, legacyFileMetadata=false, mod
 	if (opts.extensions !== true) throw new Error(`Expected extensions=true in CLI default, got ${opts.extensions}`)
 	if (opts.positions !== false) throw new Error(`Expected positions=false in CLI default, got ${opts.positions}`)
 	if (opts.ast !== false) throw new Error(`Expected ast=false in CLI default, got ${opts.ast}`)
+	if (opts.indexRefinementsExtensions !== false) throw new Error(`Expected indexRefinementsExtensions=false in CLI default, got ${opts.indexRefinementsExtensions}`)
 	return "ok"
 })
 
@@ -81,3 +82,11 @@ runner.test("cli.run with --validation-mode outputs validation mode summary and 
 	}
 	return "ok"
 })
+
+runner.test("parseCliArgs detects --index-refinements-extensions flag", () => {
+	const parsed = parseCliArgs(['node', 'cli.js', '-i', 'foo.lkml', '--index-refinements-extensions'])
+	if (parsed.parseFilesOptions.indexRefinementsExtensions !== true) throw new Error("Expected indexRefinementsExtensions=true")
+	return "ok"
+})
+
+

@@ -236,6 +236,63 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 		}
 		return "ok"
 	})
+
+	runner.test("parseFiles with indexRefinementsExtensions generates index and tracks sources", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '030-positions-inherited-refined'),
+			indexRefinementsExtensions: true
+		})
+		if (!project.indexRefinementsExtensions) throw new Error("Expected project.indexRefinementsExtensions")
+		const ordersSources = project.indexRefinementsExtensions["model.test.view.orders"]
+		if (!ordersSources || ordersSources.length !== 3) {
+			throw new Error(`Expected 3 sources for model.test.view.orders, got ${JSON.stringify(ordersSources)}`)
+		}
+		const idSources = project.indexRefinementsExtensions["model.test.view.orders.dimension.id"]
+		if (!idSources || idSources.length !== 1 || idSources[0][0] !== 2) {
+			throw new Error(`Expected source in base view (fileIdx 2) for dimension.id, got ${JSON.stringify(idSources)}`)
+		}
+		const statusSources = project.indexRefinementsExtensions["model.test.view.orders.dimension.status"]
+		if (!statusSources || statusSources.length !== 1 || statusSources[0][0] !== 1) {
+			throw new Error(`Expected source in orders view (fileIdx 1) for dimension.status, got ${JSON.stringify(statusSources)}`)
+		}
+		const refinedSources = project.indexRefinementsExtensions["model.test.view.orders.dimension.refined_dim"]
+		if (!refinedSources || refinedSources.length !== 1 || refinedSources[0][0] !== 1) {
+			throw new Error(`Expected source in orders view (fileIdx 1) for dimension.refined_dim, got ${JSON.stringify(refinedSources)}`)
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles purges indexRefinementsExtensions when only positions are requested", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '030-positions-inherited-refined'),
+			positions: true
+		})
+		if (!project.positions) throw new Error("Expected project.positions")
+		if (project.indexRefinementsExtensions !== undefined) {
+			throw new Error("Expected project.indexRefinementsExtensions to be purged when not requested")
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles throws when validationMode is combined with indexRefinementsExtensions", async () => {
+		const lookmlParser = require('../index.js')
+		let threw = false
+		try {
+			await lookmlParser.parseFiles({
+				cwd: pathLib.join(testProjectsLocation, '030-positions-inherited-refined'),
+				validationMode: true,
+				indexRefinementsExtensions: true
+			})
+		} catch (e) {
+			if (e.message && e.message.includes('validationMode cannot be combined')) {
+				threw = true
+			}
+		}
+		if (!threw) throw new Error("Expected error when combining validationMode with indexRefinementsExtensions: true")
+		return "ok"
+	})
 	}()
 
 function mockConsole(consoleSpec){
