@@ -40,7 +40,7 @@ runner.test("parseCliArgs handles legacy string combinations in -x sxf", () => {
 
 runner.test("cli.run parses files with CLI defaults (omitting $strings and legacy file metadata)", async () => {
 	const testPath = pathLib.join(__dirname, '../test-projects/001-simple-model/*.lkml')
-	const result = await cli.run(['node', 'cli.js', '-i', testPath])
+	const result = await cli.run(['node', 'cli.js', '-i', testPath], { console: [] })
 	if (!result.file) throw new Error("Expected project.file in result")
 	for (const [key, fileObj] of Object.entries(result.file)) {
 		if (fileObj.$strings !== undefined) throw new Error(`Expected $strings to be undefined on ${key}`)
@@ -52,7 +52,7 @@ runner.test("cli.run parses files with CLI defaults (omitting $strings and legac
 
 runner.test("cli.run with -s and -f includes $strings and legacy file metadata", async () => {
 	const testPath = pathLib.join(__dirname, '../test-projects/001-simple-model/*.lkml')
-	const result = await cli.run(['node', 'cli.js', '-i', testPath, '-s', '-f'])
+	const result = await cli.run(['node', 'cli.js', '-i', testPath, '-s', '-f'], { console: [] })
 	if (!result.file) throw new Error("Expected project.file in result")
 	for (const [key, fileObj] of Object.entries(result.file)) {
 		if (!fileObj.$strings) throw new Error(`Expected $strings to be present on ${key}`)
@@ -72,7 +72,7 @@ runner.test("parseCliArgs detects --validation-mode flag", () => {
 
 runner.test("cli.run with --validation-mode outputs validation mode summary and restricted keys", async () => {
 	const testPath = pathLib.join(__dirname, '../test-projects/001-simple-model/*.lkml')
-	const result = await cli.run(['node', 'cli.js', '-i', testPath, '--validation-mode'])
+	const result = await cli.run(['node', 'cli.js', '-i', testPath, '--validation-mode'], { console: [] })
 	if (result.model !== undefined) throw new Error("Expected result.model to be undefined in CLI validation mode")
 	if (!result.info || !result.info.some(i => i.type === 'summary')) {
 		throw new Error("Expected summary in result.info")
@@ -88,5 +88,30 @@ runner.test("parseCliArgs detects --index-refinements-extensions flag", () => {
 	if (parsed.parseFilesOptions.indexRefinementsExtensions !== true) throw new Error("Expected indexRefinementsExtensions=true")
 	return "ok"
 })
+
+runner.test("CustomConsole normalizes array, object, boolean and default configs", () => {
+	const CustomConsole = require('../lib/common/custom-console.js')
+	let logCalled = false
+	const custom = new CustomConsole({ log: () => { logCalled = true } })
+	custom.log("test")
+	if (!logCalled) throw new Error("Expected custom.log to be called")
+	custom.warn("silent")
+	custom.error("silent")
+
+	const silent = new CustomConsole([])
+	silent.log("silent")
+	silent.warn("silent")
+	silent.error("silent")
+
+	const falseConsole = new CustomConsole(false)
+	falseConsole.log("silent")
+
+	const defaultCon = new CustomConsole()
+	if (typeof defaultCon.log !== 'function' || typeof defaultCon.warn !== 'function' || typeof defaultCon.error !== 'function') {
+		throw new Error("Expected all methods on default CustomConsole")
+	}
+	return "ok"
+})
+
 
 

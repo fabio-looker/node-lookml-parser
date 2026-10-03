@@ -1,14 +1,11 @@
 {
-	"comment": "The initial implementation of positions will initially omit support for finding extended/refining declarations",
+	"comment": "Positions resolves declarations across models, views, and refinements",
 	"parseFileOptions":{
 		"fileOutput":"by-name",
 		"transformations":{
 			"applyExtensionsRefinements": true,
 			"addPositions": true
 			}
-		},
-	"transformations":{
-		"addPositions": true
 		},
 	"expected":{
 		"file":{
@@ -58,8 +55,14 @@
 						"1": {"$p":[0,2,0,2,31]}
 						},
 					"view":{
-						"foo":{"$p":[1,9,0,14,3]}
+						"foo":{
+							"$p":[1,9,0,14,3],
+							"dimension":{
+								"extra":{"$p":[2,21,1,23,2]},
+								"new":{"$p":[2,41,1,41,18]}
+							}
 						}
+					}
 					}
 				}
 			}
