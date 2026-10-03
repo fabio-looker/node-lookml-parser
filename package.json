@@ -15,6 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/fabio-looker/node-lookml-parser.git"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "keywords": [
     "Looker",
     "LookML"
