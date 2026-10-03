@@ -236,6 +236,37 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 		}
 		return "ok"
 	})
+
+	runner.test("parseFiles purges indexRefinementsExtensions when only positions are requested", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			cwd: pathLib.join(testProjectsLocation, '030-positions-inherited-refined'),
+			positions: true
+		})
+		if (!project.positions) throw new Error("Expected project.positions")
+		if (project.indexRefinementsExtensions !== undefined) {
+			throw new Error("Expected project.indexRefinementsExtensions to be purged when not requested")
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles throws when validationMode is combined with indexRefinementsExtensions", async () => {
+		const lookmlParser = require('../index.js')
+		let threw = false
+		try {
+			await lookmlParser.parseFiles({
+				cwd: pathLib.join(testProjectsLocation, '030-positions-inherited-refined'),
+				validationMode: true,
+				indexRefinementsExtensions: true
+			})
+		} catch (e) {
+			if (e.message && e.message.includes('validationMode cannot be combined')) {
+				threw = true
+			}
+		}
+		if (!threw) throw new Error("Expected error when combining validationMode with indexRefinementsExtensions: true")
+		return "ok"
+	})
 	}()
 
 function mockConsole(consoleSpec){

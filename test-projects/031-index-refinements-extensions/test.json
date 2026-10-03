@@ -1,0 +1,25 @@
+{
+	"comment": "indexRefinementsExtensions generates index of mutated paths with source attribution for extensions and refinements",
+	"parseFileOptions": {
+		"fileOutput": "by-name",
+		"indexRefinementsExtensions": true
+	},
+	"expected": {
+		"indexRefinementsExtensions": {
+			"model.test.view.orders": [
+				[2, "view", "base"],
+				[1, "view", "orders"],
+				[1, "view", "+orders", 0]
+			],
+			"model.test.view.orders.dimension.id": [
+				[2, "view", "base", "dimension", "id"]
+			],
+			"model.test.view.orders.dimension.status": [
+				[1, "view", "orders", "dimension", "status"]
+			],
+			"model.test.view.orders.dimension.refined_dim": [
+				[1, "view", "+orders", 0, "dimension", "refined_dim"]
+			]
+		}
+	}
+}

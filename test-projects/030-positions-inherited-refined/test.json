@@ -1,0 +1,33 @@
+{
+	"comment": "Positions are populated for inherited and refined fields",
+	"parseFileOptions": {
+		"fileOutput": "by-name",
+		"transformations": {
+			"applyExtensionsRefinements": true,
+			"addPositions": true
+		}
+	},
+	"expected": {
+		"positions": {
+			"model": {
+				"test": {
+					"view": {
+						"orders": {
+							"dimension": {
+								"id": {
+									"$p": [2, 1, 2, 4, 3]
+								},
+								"status": {
+									"$p": [1, 4, 2, 6, 3]
+								},
+								"refined_dim": {
+									"$p": [1, 10, 2, 12, 3]
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
