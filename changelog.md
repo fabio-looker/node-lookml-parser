@@ -93,4 +93,8 @@
 - v9.0.0
 	- ⚡ Standardized all errors onto a single `code` identifier with self-contained, fully detailed human-readable `message` strings.
 	- Added `validationMode: true` (`--validation-mode`) for lightweight validation-only runs.
-
+- v9.1.0
+	- Populate `positions.model` for inherited and refined properties (issue #35).
+	- Added `indexRefinementsExtensions` option and `--index-refinements-extensions` CLI flag to expose an index tracking the source attribution chain of extended and refined declarations.
+	- Fix schema cardinality validation for repeated sub-blocks and scope isolation (issue #37).
+	- Fix array merge replacement and identifier path resolution in extensions and refinements (issue #36).
