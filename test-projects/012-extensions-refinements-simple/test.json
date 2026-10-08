@@ -11,7 +11,7 @@
 				"view":{"facts": {"label":"Foo"}}
 				},
 			"facts-refinement.view":{
-				"view":{"+facts":[{"label":"Bar"}]}
+				"view":{"+facts":[{"label":"Bar","final":true},{"label":"Baz"}]}
 				},
 			"model1.model":{
 				"include":["facts.view.lkml"]
