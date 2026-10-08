@@ -18,9 +18,9 @@
 					"b_before_a_plus":{"label":"A+"},
 					"a_plus_before_b_plus_c":{"label":"C+"},
 					"a_plus_before_b_plus_d":{"label":"D+"},
-					"b_plus_a":{"label":"A"},
-					"b_plus_a_then_b":{"label":"A"},
-					"a_plus_a_then_b":{"label":"B"}
+					"b_plus_a":{"$name":"b_plus_a","label":"A","extends":["has_label_b","has_label_a"]},
+					"b_plus_a_then_b":{"$name":"b_plus_a_then_b","label":"A","extends":["has_label_b","has_label_a"]},
+					"a_plus_a_then_b":{"$name":"a_plus_a_then_b","label":"B","extends":["has_label_a","has_label_b"]}
 					}
 				}
 			}
