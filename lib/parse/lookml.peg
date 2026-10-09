@@ -107,7 +107,7 @@ mapElement =
 	}
 
 doubleSemiBlockElement =
-	chars:([^;] / ( ";" [^;] ))* ";;" 
+	chars:([^;] / ( ";" ch:[^;] { return ";" + ch; } ))* ";;" 
 	{
 		return {
 			type: 'double_semi_block',
