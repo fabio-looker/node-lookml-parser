@@ -1,4 +1,8 @@
 view: bad_cardinality {
-  sql_table_name: "foo"
-  sql_table_name: "bar"
+  label: "foo"
+  label: "bar"
+  measure: errors {
+    type: number
+    sql: COUNT(*) ;;
+  }
 }
