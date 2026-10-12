@@ -98,3 +98,5 @@
 	- Added `indexRefinementsExtensions` option and `--index-refinements-extensions` CLI flag to expose an index tracking the source attribution chain of extended and refined declarations.
 	- Fix schema cardinality validation for repeated sub-blocks and scope isolation (issue #37).
 	- Fix array merge replacement and identifier path resolution in extensions and refinements (issue #36).
+- v9.1.1
+	- Fix single-semicolon corruption inside double-semicolon (`;;`) blocks (issue #43).
