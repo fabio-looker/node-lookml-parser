@@ -100,3 +100,5 @@
 	- Fix array merge replacement and identifier path resolution in extensions and refinements (issue #36).
 - v9.1.1
 	- Fix single-semicolon corruption inside double-semicolon (`;;`) blocks (issue #43).
+- v9.2.0
+	- Added `gitRef` option to `parseFiles` and `--git-ref` CLI flag to parse LookML projects at any historical git revision (commit SHA, branch, tag, `HEAD~N`) without checking out files.

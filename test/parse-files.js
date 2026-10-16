@@ -267,6 +267,118 @@ const utOpt = {compact:false, maxArrayLength:3, depth:12, breakLength:60 }
 		if (!threw) throw new Error("Expected error when combining validationMode with indexRefinementsExtensions: true")
 		return "ok"
 	})
+
+	runner.test("parseFiles with gitRef: 'HEAD' parses from git historical mode and attaches git info", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			gitRef: 'HEAD',
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model')
+		})
+		if (!project.file || !project.file['facts.view']) {
+			throw new Error("Expected project.file['facts.view'] in historical git mode")
+		}
+		if (!project.model || !project.model.simple) {
+			throw new Error("Expected project.model.simple in historical git mode")
+		}
+		if (!Array.isArray(project.info) || project.info.length === 0) {
+			throw new Error("Expected project.info array in historical git mode")
+		}
+		const gitEntry = project.info.find(i => i.type === 'git')
+		if (!gitEntry) {
+			throw new Error("Expected git info entry in project.info")
+		}
+		if (gitEntry.ref !== 'HEAD' || !gitEntry.commit || !gitEntry.message) {
+			throw new Error("Expected ref, commit, and message in git info entry")
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles with gitRef and validationMode preserves git info and suppresses contents", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			gitRef: 'HEAD',
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model'),
+			validationMode: true
+		})
+		if (project.model !== undefined) {
+			throw new Error("Expected project.model to be suppressed in validationMode")
+		}
+		if (!Array.isArray(project.info)) {
+			throw new Error("Expected project.info to be preserved in validationMode")
+		}
+		const gitEntry = project.info.find(i => i.type === 'git')
+		const summaryEntry = project.info.find(i => i.type === 'summary')
+		if (!gitEntry || !summaryEntry) {
+			throw new Error("Expected both git and summary info entries in project.info")
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles with gitRef: 'v9.1.0' resolves git tag", async () => {
+		const lookmlParser = require('../index.js')
+		const project = await lookmlParser.parseFiles({
+			gitRef: 'v9.1.0',
+			cwd: pathLib.join(testProjectsLocation, '001-simple-model')
+		})
+		const gitEntry = project.info && project.info.find(i => i.type === 'git')
+		if (!gitEntry || gitEntry.ref !== 'v9.1.0') {
+			throw new Error("Expected gitEntry with ref 'v9.1.0'")
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles with invalid gitRef throws GIT_INVALID_REF", async () => {
+		const lookmlParser = require('../index.js')
+		let caughtErr = null
+		try {
+			await lookmlParser.parseFiles({
+				gitRef: 'non-existent-git-ref-123456789'
+			})
+		} catch (e) {
+			caughtErr = e
+		}
+		if (!caughtErr) throw new Error("Expected error for non-existent gitRef")
+		if (caughtErr.code !== 'GIT_INVALID_REF') {
+			throw new Error(`Expected code GIT_INVALID_REF, got ${caughtErr.code}`)
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles with non-git directory throws GIT_NOT_A_REPOSITORY", async () => {
+		const lookmlParser = require('../index.js')
+		let caughtErr = null
+		try {
+			await lookmlParser.parseFiles({
+				gitRef: 'HEAD',
+				cwd: '/tmp'
+			})
+		} catch (e) {
+			caughtErr = e
+		}
+		if (!caughtErr) throw new Error("Expected error for non-git cwd")
+		if (caughtErr.code !== 'GIT_NOT_A_REPOSITORY') {
+			throw new Error(`Expected code GIT_NOT_A_REPOSITORY, got ${caughtErr.code}`)
+		}
+		return "ok"
+	})
+
+	runner.test("parseFiles with array input and gitRef throws INVALID_OPTIONS", async () => {
+		const lookmlParser = require('../index.js')
+		let caughtErr = null
+		try {
+			await lookmlParser.parseFiles({
+				gitRef: 'HEAD',
+				input: [{ path: 'test.view.lkml', content: 'view: test {}' }]
+			})
+		} catch (e) {
+			caughtErr = e
+		}
+		if (!caughtErr) throw new Error("Expected error when combining array input and gitRef")
+		if (caughtErr.code !== 'INVALID_OPTIONS') {
+			throw new Error(`Expected code INVALID_OPTIONS, got ${caughtErr.code}`)
+		}
+		return "ok"
+	})
 	}()
 
 function mockConsole(consoleSpec){

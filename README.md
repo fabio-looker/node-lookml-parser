@@ -15,6 +15,8 @@ Parse, interpret, and generate LookML files and multi-file projects.
   - [Conditional Comments](#conditional-comments)
   - [Project Imports](#project-imports)
   - [LookML Schema, Cardinality & Validation](#lookml-schema-cardinality--validation)
+  - [Validation Mode (`validationMode`)](#validation-mode-validationmode)
+  - [Historical Git Mode (`gitRef` / `--git-ref`)](#historical-git-mode-gitref---git-ref)
   - [LookML Dashboard Support](#lookml-dashboard-support)
 - [Changelog](#changelog)
 
@@ -117,6 +119,7 @@ const project = await lookmlParser.parseFiles({
 | **Conditional Comment Tagging** | `-c`, `--conditional-comment` | `conditionalCommentString: string` | `conditionalCommentString: string` | N/A *(Parser option during parsing)* |
 | **Legacy File Metadata (e.g., `$file_type`)** | `-f`, `--legacy-file-metadata` | `legacyFileMetadata: boolean`<br>*(default: `false`)* | N/A *(File level only)* | `transformations.dropFileAdditional(project)` |
 | **Validation Mode** | `--validation-mode` | `validationMode: boolean`<br>*(default: `false`)* | N/A | N/A |
+| **Historical Git Mode** | `--git-ref` | `gitRef: string` | N/A *(File level only)* | N/A |
 
 ---
 
@@ -177,6 +180,25 @@ In Validation Mode:
 - Output keys are strictly restricted to: `error` (critical top-level error if present), `errors` (accumulated non-critical errors), `info` (contains completion summary message), and `file`.
 - Individual file entries under `project.file` omit file metadata and contain only `errors` or `error` if present, or `{}` if no errors were found.
 - Combining `validationMode: true` with output-expanding options (such as `ast`, `positions`, `strings`, or `legacyFileMetadata`) will throw an error.
+
+## Historical Git Mode (`gitRef` / `--git-ref`)
+
+To parse a LookML project at a specific historical git commit, branch, or tag without modifying your working tree or checking out files:
+
+```bash
+# In the CLI
+lookml-parser --git-ref=HEAD~1
+lookml-parser --git-ref=main
+```
+
+```javascript
+// In Javascript
+const project = await lookmlParser.parseFiles({
+  gitRef: 'main'
+})
+```
+
+The parser uses Git plumbing (`git ls-tree` and `git cat-file --batch`) to discover and stream project files directly from the repository's object database in-memory.
 
 ## LookML Dashboard Support
 

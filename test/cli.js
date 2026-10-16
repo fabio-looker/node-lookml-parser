@@ -113,5 +113,36 @@ runner.test("CustomConsole normalizes array, object, boolean and default configs
 	return "ok"
 })
 
+runner.test("parseCliArgs detects --git-ref flag", () => {
+	const { parseCliArgs } = require('../lib/cli/flags.js')
+	const res1 = parseCliArgs(['lookml-parser', '--git-ref=HEAD'])
+	if (res1.parseFilesOptions.gitRef !== 'HEAD') {
+		throw new Error(`Expected gitRef 'HEAD', got ${res1.parseFilesOptions.gitRef}`)
+	}
+	const res2 = parseCliArgs(['lookml-parser', '--git-ref', 'main'])
+	if (res2.parseFilesOptions.gitRef !== 'main') {
+		throw new Error(`Expected gitRef 'main', got ${res2.parseFilesOptions.gitRef}`)
+	}
+	return "ok"
+})
+
+runner.test("cli.run with --git-ref parses repository at git revision", async () => {
+	const cli = require('../lib/cli')
+	let output = ''
+	const customConsole = {
+		log: msg => { output += msg + '\n' },
+		warn: () => {},
+		error: () => {}
+	}
+	await cli.run(
+		['lookml-parser', '--git-ref=HEAD', 'test-projects/001-simple-model/simple.model.lkml'],
+		{ console: customConsole }
+	)
+	if (!output || !output.includes('simple')) {
+		throw new Error("Expected CLI output to include model name 'simple' when parsed with --git-ref")
+	}
+	return "ok"
+})
+
 
 
