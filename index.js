@@ -10,5 +10,6 @@ exports = module.exports = {
 	parseFilesRaw: parseFilesModule.parseFilesRaw,
 	generate: generateModule,
 	getPositions: require('./lib/positions/get-positions.js').getPositions,
-	transformations: require('./lib/transformations')
+	transformations: require('./lib/transformations'),
+	cache: require('./lib/cache')
 }
