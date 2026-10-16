@@ -76,9 +76,9 @@ const ast = lookmlParser.parseAst("view: foo {}")
 lookmlParser.transformations.addPositions(project)
 ```
 
-## Browser & Bundler Usage (Webpack, Vite, React)
+## Browser & Bundler Usage
 
-`lookml-parser` can be used directly in browser environments, React components, and frontend bundlers (such as Webpack, Vite, or Next.js).
+`lookml-parser` can be used in browser environments via frontend bundlers such as Webpack.
 
 ### In-Memory Single File Parsing
 ```javascript
