@@ -1,3 +1,5 @@
 connection: "my_connection"
 
-explore: initial_explore {}
+explore: modified_explore {}
+
+view: new_view {}

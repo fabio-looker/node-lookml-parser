@@ -1,0 +1,41 @@
+{
+	"name": "033-git-historical-mode",
+	"parseFileOptions": {
+		"gitRef": "242fcee"
+	},
+	"expected": {
+		"info": [
+			{
+				"type": "git",
+				"ref": "242fcee",
+				"commit": "242fcee2c9f483530eb407bf2ef6647165f0e9b8"
+			}
+		],
+		"file": {
+			"test.model": {
+				"connection": "my_connection",
+				"explore": {
+					"initial_explore": {
+						"$type": "explore",
+						"$name": "initial_explore"
+					},
+					"modified_explore": null
+				},
+				"view": null
+			}
+		},
+		"model": {
+			"test": {
+				"connection": "my_connection",
+				"explore": {
+					"initial_explore": {
+						"$type": "explore",
+						"$name": "initial_explore"
+					},
+					"modified_explore": null
+				},
+				"view": null
+			}
+		}
+	}
+}
