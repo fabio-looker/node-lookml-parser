@@ -6,7 +6,7 @@ Parse, interpret, and generate LookML files and multi-file projects.
 - [CLI Usage](#cli-usage)
   - [CLI Flags](#cli-flags)
 - [Javascript API](#javascript-api)
-  - [Browser & Bundler Usage (Webpack, Vite, React)](#browser--bundler-usage-webpack-vite-react)
+  - [Browser & Bundler Usage](#browser--bundler-usage)
 - [Feature Matrix](#feature-matrix)
 - [Output & Features](#output--features)
   - [$strings and Code Generation (`generate`)](#strings-and-code-generation-generate)
