@@ -15,6 +15,8 @@ Parse, interpret, and generate LookML files and multi-file projects.
   - [Conditional Comments](#conditional-comments)
   - [Project Imports](#project-imports)
   - [LookML Schema, Cardinality & Validation](#lookml-schema-cardinality--validation)
+  - [Validation Mode (`validationMode`)](#validation-mode-validationmode)
+  - [Historical Git Mode (`gitRef` / `--git-ref`)](#historical-git-mode-gitref---git-ref)
   - [LookML Dashboard Support](#lookml-dashboard-support)
 - [Changelog](#changelog)
 
@@ -197,16 +199,6 @@ const project = await lookmlParser.parseFiles({
 ```
 
 The parser uses Git plumbing (`git ls-tree` and `git cat-file --batch`) to discover and stream project files directly from the repository's object database in-memory.
-
-An entry is added to `project.info`:
-```json
-{
-  "type": "git",
-  "ref": "main",
-  "commit": "3b01cc7...",
-  "message": "Parsed from git ref 'main' (3b01cc7...)"
-}
-```
 
 ## LookML Dashboard Support
 
