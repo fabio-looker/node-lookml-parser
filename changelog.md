@@ -102,3 +102,5 @@
 	- Fix single-semicolon corruption inside double-semicolon (`;;`) blocks (issue #43).
 - v9.2.0
 	- Added `gitRef` option to `parseFiles` and `--git-ref` CLI flag to parse LookML projects at any historical git revision (commit SHA, branch, tag, `HEAD~N`) without checking out files.
+- v9.3.0
+	- Added file-level caching to speed up repeated runs. Off by default for CLI invocations, use `--cache-dir=<directory for the cache file(s)>` to enable.

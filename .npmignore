@@ -1,3 +1,6 @@
 test-projects
 test
 doc
+.lookml-cache/
+test/tmp_*
+tmp_*

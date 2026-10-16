@@ -62,3 +62,8 @@ typings/
 
 # Generated parser (built by scripts/build-parser.js on prepare/publish)
 lib/parse/parser.generated.js
+
+# Cache and test cache directories
+.lookml-cache/
+test/tmp_*
+tmp_*

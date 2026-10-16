@@ -17,6 +17,7 @@ Parse, interpret, and generate LookML files and multi-file projects.
   - [LookML Schema, Cardinality & Validation](#lookml-schema-cardinality--validation)
   - [Validation Mode (`validationMode`)](#validation-mode-validationmode)
   - [Historical Git Mode (`gitRef` / `--git-ref`)](#historical-git-mode-gitref---git-ref)
+  - [File-Level Caching (`cacheDir` / `--cache-dir`)](#file-level-caching-cachedir----cache-dir)
   - [LookML Dashboard Support](#lookml-dashboard-support)
 - [Changelog](#changelog)
 
@@ -120,6 +121,7 @@ const project = await lookmlParser.parseFiles({
 | **Legacy File Metadata (e.g., `$file_type`)** | `-f`, `--legacy-file-metadata` | `legacyFileMetadata: boolean`<br>*(default: `false`)* | N/A *(File level only)* | `transformations.dropFileAdditional(project)` |
 | **Validation Mode** | `--validation-mode` | `validationMode: boolean`<br>*(default: `false`)* | N/A | N/A |
 | **Historical Git Mode** | `--git-ref` | `gitRef: string` | N/A *(File level only)* | N/A |
+| **File-Level Caching** | `--cache-dir`, `--cache-max-mb` | `cache: boolean`<br>`cacheDir: string`<br>`cacheMaxMb: number` | N/A *(File level only)* | N/A |
 
 ---
 
@@ -199,6 +201,31 @@ const project = await lookmlParser.parseFiles({
 ```
 
 The parser uses Git plumbing (`git ls-tree` and `git cat-file --batch`) to discover and stream project files directly from the repository's object database in-memory.
+ 
+## File-Level Caching (`cacheDir` / `--cache-dir`)
+
+`lookml-parser` supports two-tier file-level caching to dramatically accelerate repeated parses in agentic workflows, developer tools, and CLI scripts:
+
+- **JS API (In-Memory by Default)**: In JavaScript environments, in-memory caching is active by default (`cache: true`), speeding up repeated parses in long-running processes, servers, or in-browser file arrays. Pass `cache: false` to disable.
+- **CLI (Opt-in via `--cache-dir`)**: For CLI commands, caching is enabled by passing `--cache-dir=<path>`. One-off CLI invocations without `--cache-dir` do not incur memory overhead or cache entries.
+- **On-Disk Persistence**: Pass `--cache-dir=<path>` via the CLI or `cacheDir: string` in `parseFiles` to persist the cache to a JSON file on disk.
+- **Two-Tier Invalidation**: Checks filesystem `mtime` and file `size` for sub-millisecond fast hits without reading file contents from disk. If timestamps differ (e.g. following git branch switches or `touch`), it falls back to SHA-256 content hashing to avoid false cache misses.
+- **LRU Size Capping**: On-disk cache size is capped at 20 MB by default (`--cache-max-mb` or `cacheMaxMb`). When the threshold is exceeded, older entries are automatically evicted.
+- **Options Fingerprinting**: Cache keys incorporate the active parser options (`strings`, `ast`, `conditionalCommentString`, and parser version), ensuring different configurations safely coexist.
+
+```bash
+# Persist file cache to .lookml-cache directory
+lookml-parser --cache-dir=.lookml-cache --input="*.{view,model}.lkml"
+```
+
+```javascript
+// In Javascript
+const project = await lookmlParser.parseFiles({
+  input: "*.{view,model}.lkml",
+  cacheDir: ".lookml-cache",
+  cacheMaxMb: 20
+})
+```
 
 ## LookML Dashboard Support
 

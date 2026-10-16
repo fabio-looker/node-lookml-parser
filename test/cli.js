@@ -144,5 +144,53 @@ runner.test("cli.run with --git-ref parses repository at git revision", async ()
 	return "ok"
 })
 
+runner.test("parseCliArgs detects caching flags: --cache-dir and --cache-max-mb", () => {
+	const { parseCliArgs } = require('../lib/cli/flags.js')
+	const resDefault = parseCliArgs(['lookml-parser', 'foo.lkml'])
+	if (resDefault.parseFilesOptions.cache !== false) throw new Error("Expected cache: false by default in CLI")
+	if (resDefault.parseFilesOptions.cacheDir !== null) throw new Error("Expected cacheDir: null by default in CLI")
+	if (resDefault.parseFilesOptions.cacheMaxMb !== 20) throw new Error("Expected cacheMaxMb: 20 by default")
+
+	const resConfigured = parseCliArgs(['lookml-parser', '--cache-dir=.cache', '--cache-max-mb=50'])
+	if (resConfigured.parseFilesOptions.cache !== true) throw new Error("Expected cache: true when --cache-dir is passed")
+	if (resConfigured.parseFilesOptions.cacheDir !== '.cache') throw new Error(`Expected cacheDir '.cache', got ${resConfigured.parseFilesOptions.cacheDir}`)
+	if (resConfigured.parseFilesOptions.cacheMaxMb !== 50) throw new Error(`Expected cacheMaxMb 50, got ${resConfigured.parseFilesOptions.cacheMaxMb}`)
+
+	return "ok"
+})
+
+runner.test("cli.run writes and uses disk cache when --cache-dir is passed", async () => {
+	const fs = require('fs')
+	const cli = require('../lib/cli')
+	const tmpCacheDir = pathLib.join(__dirname, 'tmp_cli_cache')
+	if (fs.existsSync(tmpCacheDir)) fs.rmSync(tmpCacheDir, { recursive: true, force: true })
+
+	try {
+		let output = ''
+		const customConsole = {
+			log: msg => { output += msg + '\n' },
+			warn: () => {},
+			error: () => {}
+		}
+		const testFile = 'test-projects/001-simple-model/simple.model.lkml'
+		await cli.run(
+			['lookml-parser', `--cache-dir=${tmpCacheDir}`, testFile],
+			{ console: customConsole }
+		)
+
+		const cacheFile = pathLib.join(tmpCacheDir, 'cache.json')
+		if (!fs.existsSync(cacheFile)) {
+			throw new Error("Expected cache.json to be created in cache-dir")
+		}
+		const cacheContent = JSON.parse(fs.readFileSync(cacheFile, 'utf8'))
+		if (!cacheContent.entries || Object.keys(cacheContent.entries).length === 0) {
+			throw new Error("Expected cache entries in cache.json")
+		}
+	} finally {
+		if (fs.existsSync(tmpCacheDir)) fs.rmSync(tmpCacheDir, { recursive: true, force: true })
+	}
+	return "ok"
+})
+
 
 
