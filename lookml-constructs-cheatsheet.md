@@ -9,9 +9,9 @@ This guide summarizes the categories of LookML syntax constructs, how `lookml-pa
 | Category | LookML Syntax Example | Schema (`type` / `cardinality`) | Parsed JS Output\* | Refinement / Extension Merge Behavior |
 | :--- | :--- | :--- | :--- | :--- |
 | **1. Singular Named Objects** | `dimension: status { ... }`<br>`explore: orders { ... }` | `object` / `singular` | Object keyed by `$type` then `$name` holding a single object\*:<br>`{dimension: { status: { ... } }}` | **Deep-merged** recursively by object name |
-| **2. Refinements (Repeatable Named Object)** | `view: +orders { ... }`<br>`explore: +orders { ... }` | `object` / `repeated` | Object keyed by `$type` then `+$name` holding an array of objects:<br>`{ "explore: {+orders": [ { ... } ] }}` | **Applied sequentially** in declaration order onto the base object |
+| **2. Refinements (Repeatable Named Object)** | `view: +orders { ... }`<br>`explore: +orders { ... }` | `object` / `repeated` | Object keyed by `$type` then `+$name` holding an array of objects:<br>`{ explore: { "+orders": [ { ... } ] } }` | **Applied sequentially** in declaration order onto the base object, then stripped from `project.model` by `removeAbstract` (preserved in `project.file`) |
 | **3. Singular Unnamed Objects** | `derived_table: { ... }`<br>`always_filter: { ... }` | `object` / `singular` | Single object\*:<br>`{ $type, ... }` | **Deep-merged** recursively |
-| **4. Repeatable Unnamed Objects** | `link: { label: "A" url: "..." }`<br>`access_filter: { ... }` | `object` / `repeated` | Array of objects:<br>`[ { label: "A", url: "..." } ]` | **Additive (`concat`)** for `additiveArrayKeys`; otherwise replaced |
+| **4. Repeatable Unnamed Objects** | `link: { label: "A" url: "..." }`<br>`access_filter: { ... }` | `object` / `repeated` | Array of objects:<br>`[ { label: "A", url: "..." } ]` | **Additive (`concat`)** across declarations and refinements |
 | **5. Maps** | `filters: [status: "done", a: "1"]`<br>`sorts: [created: desc]` | `object` / `repeated`<br>*(parsed via `mapElement`)* | Array of map objects:<br>`[ { status: "done", a: "1" } ]` | **Additive (`concat`)** across declarations and refinements |
 | **6. Lists** | `timeframes: [raw, date]`<br>`fields: [id, name]` | `list` / `singular`<br>*(parsed via `listElement`)* | Single flat array\*:<br>`["raw", "date"]` | **Replaced** (`addVal` overwrites `baseVal`), except `extends` |
 | **7. Repeated Primitives** | `include: "/views/*.view.lkml"` | `string` / `repeated` | Array of strings:<br>`["/views/*.view.lkml"]` | Resolved during model assembly (`assembleModels`) |
@@ -61,6 +61,7 @@ Refinement declarations use a `+`-prefixed identifier (`+$name`) between the col
 
 - **Parsed Output**: Always an **Array of Objects** under `parent[type]["+name"]` (e.g., `view["+orders"] = [ { $type: "view", $name: "+orders", ... } ]`), even when refined only once.
 - **Transformation (`applyExtensionsRefinements`)**: Iterates through the `parent[type]["+name"]` array in order and deep-merges each refinement onto the base `parent[type]["name"]` object.
+- **Transformation (`removeAbstract`)**: Enabled by default whenever `extensions` (`applyExtensionsRefinements`) is enabled in `parseFiles`. After refinements and extensions are applied in `project.model`, `removeAbstract` deletes all `+name` refinement keys (as well as abstract `extension: required` objects) from `project.model.<model>.view` and `project.model.<model>.explore` so the assembled model only contains concrete, resolved objects. The raw `parent[type]["+name"]` arrays remain intact in `project.file` (and in `project.model` if `transformations: { removeAbstract: false }` or `extensions: false` is set).
 
 **Parameters by Scope:**
 - **Top-level / `model`**: `view` (`view: +name`), `explore` (`explore: +name`) *(child named objects inside a refined `view` or `explore` — such as `dimension: status`, `join: users`, `query: my_query`, `aggregate_table: my_rollup`, or `set: my_set` — are written without `+` and deep-merged by name when the parent refinement is applied).*
@@ -79,6 +80,7 @@ Curly-brace objects without a `$name` identifier after the colon that can only a
 - **`explore`**: `always_filter`, `conditionally_filter`
 - **`view`**: `derived_table`
 - **`derived_table`**: `create_process`
+- **`aggregate_table`**: `query`, `materialization`
 - **`field` (`dimension`, `measure`, `filter`, `parameter`)**: `case`
 
 ---
@@ -89,13 +91,12 @@ Curly-brace objects without a `$name` identifier after the colon that can be dec
 
 - **Parsed Output**: Always an **Array of Objects** (`[ { ... }, { ... } ]`), even when declared only once.
 - **Refinement Behavior**:
-  - Properties in `additiveArrayKeys` (`link`, `action`, `allowed_value`, `access_filter`, `bind_filters`) are **concatenated (`baseVal.concat(addVal)`)** when refined.
-  - Properties nested inside another repeated or replaced object (`when` inside `case`, `param` / `form_param` / `user_attribute_param` inside `action`, `option` inside `form_param`) are replaced along with their parent object.
+  - Driven directly by `cardinality: 'repeated'` in `LOOKML_SCHEMA`: refining a parent object **concatenates (`baseVal.concat(addVal)`)** the refinement's array onto the base array (including nested repeated objects inside singular unnamed objects, such as `case.when` or `explore_source.sort`).
 
 **Parameters by Scope:**
-- **`explore`**: `access_filter` *(additive)*
-- **`field` (`dimension`, `measure`, `filter`, `parameter`)**: `link` *(additive)*, `action` *(additive)*, `allowed_value` *(additive)*
-- **`explore_source`**: `bind_filters` *(additive)*, `bind_service`, `sort` *(legacy object form of `sorts`)*
+- **`explore`**: `access_filter`
+- **`field` (`dimension`, `measure`, `filter`, `parameter`)**: `link`, `action`, `allowed_value`
+- **`explore_source`**: `bind_filters`, `bind_service`, `sort` *(legacy object form of `sorts`)*
 - **`case`**: `when`
 - **`action`**: `param`, `user_attribute_param`, `form_param`
 - **`form_param`**: `option`
@@ -125,7 +126,7 @@ Parses to:
 ```
 
 - **Legacy Object Syntax Compatibility**: In LookML, `filters` and `dev_filters` also accept legacy curly-brace objects (`filters: { field: status value: "complete" }`), which parse as `{ field: "status", value: "complete" }` inside the same `filters: [ ... ]` array.
-- **Refinement Behavior**: **Additive (`concat`)** via `additiveArrayKeys`. Preserving each declaration object in the array keeps `$strings` and `positions` intact for code generation (`generate`), while consumers wanting Looker's effective key-value map can merge the array elements by key (e.g., `Object.assign({}, ...measure.filters)`).
+- **Refinement Behavior**: **Additive (`concat`)**, driven by `cardinality: 'repeated'` in `LOOKML_SCHEMA`. Preserving each declaration object in the array keeps `$strings` and `positions` intact for code generation (`generate`), while consumers wanting Looker's effective key-value map can merge the array elements by key (e.g., `Object.assign({}, ...measure.filters)`).
 
 **Parameters by Scope:**
 - **`field` (`measure`)**: `filters`
