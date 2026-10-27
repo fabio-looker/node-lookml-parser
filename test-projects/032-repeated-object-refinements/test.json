@@ -11,6 +11,13 @@
 			"test": {
 				"view": {
 					"orders": {
+						"derived_table": {
+							"create_process": {
+								"sql_step": [
+									" CREATE TABLE ${SQL_TABLE_NAME} AS SELECT 3 AS id "
+								]
+							}
+						},
 						"dimension": {
 							"status": {
 								"case": {

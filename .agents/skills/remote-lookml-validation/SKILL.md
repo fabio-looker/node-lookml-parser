@@ -11,14 +11,14 @@ At any point, you can verify that `looker-cli` is installed and configured with 
    ```bash
    looker-cli profile ls
    ```
-   *Expected Output*: Displays available profiles. Note which profile is active. If more than one profile is available, a sandbox profile should be identified and set/retrieved as `SANDBOX_PROFILE` in a dev.env file in the local working project.
+   *Expected Output*: Displays available profiles. Note which profile is active. If more than one profile is available, a sandbox profile should be identified and set/retrieved as `SANDBOX_PROFILE` in a `.env.dev` file in the local working project.
 2. **Verify Authentication Token**:
    ```bash
    looker-cli user me --token-file
    ```
    *Expected Output*: Returns user details (e.g., User ID, Email, Name) indicating a valid session token in `~/.looker_auth`.
 3. **Confirm target project & configured models**:
-    A "sandbox project ID" should be identified, and can be set/retrieved as `SANDBOX_PROJECT_ID` in a dev.env file in the local working project.
+    A "sandbox project ID" should be identified, and can be set/retrieved as `SANDBOX_PROJECT_ID` in a `.env.dev` file in the local working project.
     *Note*: In order to explore or inspect models via the API, Looker requires a LookML model configuration. Agents may want to persist to the env file what model names are already configured (e.g., `CONFIGURED_MODELS=test`). Agents *can* configure new models when needed, but reusing an already configured model name avoids those extra steps.
 
     *Configuring a new model via the API*:

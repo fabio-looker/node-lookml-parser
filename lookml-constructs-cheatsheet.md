@@ -13,9 +13,9 @@ This guide summarizes the categories of LookML syntax constructs, how `lookml-pa
 | **3. Singular Unnamed Objects** | `derived_table: { ... }`<br>`always_filter: { ... }` | `object` / `singular` | Addressed by `$type` into a single object\*:<br>`{ derived_table: { ... } }` | **Deep-merged** recursively |
 | **4. Repeatable Unnamed Objects** | `link: { label: "A" url: "..." }`<br>`access_filter: { ... }` | `object` / `repeated` | Addressed by `$type` into an array of objects:<br>`{ link: [ { label: "A", url: "..." } ] }` | **Additive (`concat`)** across declarations and refinements |
 | **5. Maps** | `filters: [status: "done", a: "1"]`<br>`sorts: [created: desc]` | `object` / `repeated`<br>*(parsed via `mapElement`)* | Addressed by `$type` into an array of map objects:<br>`{ filters: [ { status: "done", a: "1" } ] }` | **Additive (`concat`)** across declarations and refinements |
-| **6. Lists** | `timeframes: [raw, date]`<br>`fields: [id, name]` | `list` / `singular`<br>*(parsed via `listElement`)* | Addressed by `$type` into a single flat array\*:<br>`{ timeframes: ["raw", "date"] }` | **Replaced** (`addVal` overwrites `baseVal`), except `extends` |
-| **7. Repeated Primitives** | `include: "/views/*.view.lkml"` | `string` / `repeated` | Addressed by `$type` into an array of strings:<br>`{ include: ["/views/*.view.lkml"] }` | Resolved during model assembly (`assembleModels`) |
-| **8. Singular Primitives & `;;` Blocks** | `hidden: yes`<br>`type: count`<br>`sql: ${TABLE}.id ;;` | `string` \| `boolean` \| `number`<br>/ `singular` | Addressed by `$type` into a primitive value\*:<br>`{ hidden: true, type: "count", sql: " ${TABLE}.id " }` | **Replaced** (`addVal` overwrites `baseVal`) |
+| **6. Lists** | `timeframes: [raw, date]`<br>`fields: [id, name]` | `list` / `singular`<br>*(parsed via `listElement`)* | Addressed by `$type` into a single flat array\*:<br>`{ timeframes: ["raw", "date"] }` | **Replaced** (`addVal` overwrites `baseVal`; [see details](#6-singular-lists-type-val1-val2-)) |
+| **7. Repeated Primitives** | `include: "/views/*.view.lkml"`<br>`sql_step: CREATE TABLE ... ;;` | `string` / `repeated` | Addressed by `$type` into an array of strings:<br>`{ include: ["/views/*.view.lkml"] }` | **Additive (`concat`)** by default ([see details](#7-repeated-primitives)) |
+| **8. Singular Primitives** | `hidden: yes`<br>`type: count`<br>`sql: ${TABLE}.id ;;` | `string` \| `boolean` \| `number`<br>/ `singular` | Addressed by `$type` into a primitive value\*:<br>`{ hidden: true, type: "count", sql: " ${TABLE}.id " }` | **Replaced** (`addVal` overwrites `baseVal`) |
 
 > **\*Note on Singularity / Cardinality Violations**: During initial AST grouping, all declarations start in an array and are unwrapped to a single value only when `length === 1`.
 > - **`singular`**: If a `singular` construct is illegally declared multiple times in the same scope (e.g., `view: foo { label: "A" } view: foo { label: "B" }`), the parser records a `LookMLCardinalityError` (`DUPLICATE_SINGULAR_PROPERTY`) and **returns the value un-unwrapped as an array of the duplicate declarations** (e.g., `view.foo = [ {...}, {...} ]`) so no source data is lost and `generate` can still round-trip the file.
@@ -50,10 +50,13 @@ Named object declarations have an unprefixed identifier (`$name`) between the co
 
 **Parameters by Scope:**
 - **Top-level / `model`**: `explore`, `view`, `datagroup`, `access_grant`, `map_layer`, `named_value_format`, `test`
+- **`manifest`**: `constant`, `remote_dependency`, `application`
+- **`local_dependency` / `remote_dependency`**: `override_constant`
 - **`explore`**: `join`, `aggregate_table`, `query`
 - **`view`**: `dimension`, `dimension_group`, `measure`, `filter`, `parameter`, `set`
 - **`derived_table`**: `explore_source`
 - **`explore_source`**: `column` (`singular_permissive`), `derived_column` (`singular_permissive`)
+- **`test`**: `explore_source`, `assert`
 
 ---
 
@@ -79,6 +82,8 @@ Curly-brace objects without a `$name` identifier after the colon that can only a
 
 **Parameters by Scope:**
 - **Top-level**: `manifest`
+- **`manifest`**: `localization_settings`
+- **`application`**: `mount_points`, `entitlements`
 - **`explore`**: `always_filter`, `conditionally_filter`
 - **`view`**: `derived_table`
 - **`derived_table`**: `create_process`
@@ -96,6 +101,7 @@ Curly-brace objects without a `$name` identifier after the colon that can be dec
   - Driven directly by `cardinality: 'repeated'` in `LOOKML_SCHEMA`: refining a parent object **concatenates (`baseVal.concat(addVal)`)** the refinement's array onto the base array (including nested repeated objects inside singular unnamed objects, such as `case.when` or `explore_source.sort`).
 
 **Parameters by Scope:**
+- **`manifest`**: `local_dependency`
 - **`explore`**: `access_filter`
 - **`field` (`dimension`, `measure`, `filter`, `parameter`)**: `link`, `action`, `allowed_value`
 - **`explore_source`**: `bind_filters`, `bind_service`, `sort` *(legacy object form of `sorts`)*
@@ -146,7 +152,7 @@ Bracketed comma-separated lists of strings or unquoted atoms (`listElement` / `e
 - **Parsed Output**: Addressed by `$type` into a single flat array of primitives: `{ timeframes: ["val1", "val2"] }`.
 - **Refinement Behavior**:
   - **Standard list parameters**: Refining **replaces** the base array (`addVal` overwrites `baseVal`). For example, refining `timeframes: [raw, date]` with `timeframes: [raw, date, month, year]` yields `["raw", "date", "month", "year"]`.
-  - **Special Case (`extends`)**: `extends` is additive across refinements and extensions when `applyExtensionsRefinements` traverses the inheritance graph.
+  - **Special Case (`extends`, marked `extension: 'special'` in `LOOKML_SCHEMA`)**: On `+` refinements, `extends` is deduplicated-additive rather than replaced when `applyExtensionsRefinements` merges refinements onto the base object.
 
 **Parameters by Scope:**
 - **`explore`**: `extends` *(additive inheritance)*, `fields`, `always_join`, `cancel_grouping_fields`, `unless`, `required_access_grants`, `tags`
@@ -159,6 +165,7 @@ Bracketed comma-separated lists of strings or unquoted atoms (`listElement` / `e
 - **`conditionally_filter`**: `unless`
 - **`set`**: `fields`
 - **`query`**: `dimensions`, `measures`, `pivots`
+- **`entitlements`**: `core_api_methods`, `external_api_urls`, `oauth2_urls`, `global_user_attributes`, `scoped_user_attributes`, `new_window_external_urls`
 
 ---
 
@@ -166,15 +173,20 @@ Bracketed comma-separated lists of strings or unquoted atoms (`listElement` / `e
 
 Primitive declarations that can appear multiple times in the same scope (`type: 'string', cardinality: 'repeated'`).
 
-- **Parsed Output**: Addressed by `$type` into an array of strings (`{ include: ["/views/*.view.lkml", ...] }`).
+- **Parsed Output**: Addressed by `$type` into an array of strings (`{ include: ["/views/*.view.lkml", ...] }`), even when declared only once.
+- **Refinement Behavior**:
+  - **Default**: Like other `cardinality: 'repeated'` properties, repeated primitives are concatenated (`baseVal.concat(addVal)`) by default unless overridden via `extension: 'replace'` in `LOOKML_SCHEMA`.
+  - **`sql_step` (`extension: 'replace'`)**: Because `create_process` defines an ordered procedural sequence of DDL/DML steps (`CREATE TABLE ...`, `INSERT INTO ...`), refining `create_process` with new `sql_step` declarations **replaces** the base `sql_step` array rather than concatenating onto it (matching Looker's PDT compiler).
+  - **`include`**: Resolved at the file/model level during model assembly (`assembleModels`) prior to extension and refinement merging.
 - **Parameters by Scope**:
   - **Top-level / `model` / `view` / `explore` files**: `include`
+  - **`create_process`**: `sql_step`
 
 ---
 
-### 8. Singular Primitives & Double-Semicolon (`;;`) Blocks
+### 8. Singular Primitives
 
-Single-valued primitive and `;;` block properties (`cardinality: 'singular'`), addressed by `$type` into a primitive value (`{ hidden: true, type: "count", sql: " ${TABLE}.id " }`). Re-declaring any of these within the same scope triggers a `LookMLCardinalityError`, and refining them overwrites the base value.
+Single-valued primitive properties (`cardinality: 'singular'`), addressed by `$type` into a primitive value (`{ hidden: true, type: "count", sql: " ${TABLE}.id " }`). Re-declaring any of these within the same scope triggers a `LookMLCardinalityError`, and refining them overwrites the base value.
 
 - **Double-Semicolon (`;;`) Blocks (`blockDeclaration`)**:
   - Any property whose name starts with `sql`, `html`, or `expr` (e.g., `sql`, `sql_on`, `sql_table_name`, `sql_always_where`, `sql_always_having`, `sql_where`, `sql_foreign_key`, `sql_distinct_key`, `sql_start`, `sql_end`, `sql_latitude`, `sql_longitude`, `sql_trigger`, `sql_trigger_value`, `sql_create`, `sql_preamble`, `html`, `expression_custom_filter`).
