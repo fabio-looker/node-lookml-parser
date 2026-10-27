@@ -15,6 +15,14 @@
 							"created": {
 								"timeframes": ["raw", "date", "month", "year"]
 							}
+						},
+						"measure": {
+							"filtered_count": {
+								"filters": [
+									{ "status": "complete" },
+									{ "region": "EU" }
+								]
+							}
 						}
 					}
 				}

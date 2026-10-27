@@ -1,6 +1,6 @@
 {
   "name": "lookml-parser",
-  "version": "9.3.0",
+  "version": "9.3.1",
   "description": "Parse LookML",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,10 @@
     "Looker",
     "LookML"
   ],
-  "author": "Fabio Beltramini",
+  "contributors": [
+    "Fabio Beltramini",
+    "Joseph Axisa"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/fabio-looker/node-lookml-parser/issues"

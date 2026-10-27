@@ -1,0 +1,8 @@
+{
+	"input": "explore: orders { query: my_query { dimensions: [status] } query: my_query { dimensions: [region] } }",
+	"error": true,
+	"errorType": "LookMLCardinalityError",
+	"errorCode": "DUPLICATE_SINGULAR_PROPERTY",
+	"errorProperty": "query",
+	"errorContains": "query:my_query"
+}
