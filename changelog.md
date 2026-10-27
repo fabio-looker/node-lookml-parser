@@ -108,3 +108,4 @@
 	- Fix false-positive type validation errors on `filters`, `dev_filters`, and `sorts` map declarations.
 	- Fix extensions and refinements so repeatable properties (such as `filters`, `sorts`, `access_filter`, `link`, `action`, `allowed_value`, and `when`) are concatenated rather than overwritten.
 	- Fix cardinality handling so multiple `+` refinements no longer cause base views or explores to be wrapped in arrays, duplicate `set`, `query`, and `aggregate_table` declarations are flagged as cardinality errors, and repeated NDT `column` / `derived_column` declarations are permitted without error.
+	- Fix base-project wildcard `include` patterns inadvertently matching files inside `imported_projects/`.
