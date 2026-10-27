@@ -50,10 +50,13 @@ Named object declarations have an unprefixed identifier (`$name`) between the co
 
 **Parameters by Scope:**
 - **Top-level / `model`**: `explore`, `view`, `datagroup`, `access_grant`, `map_layer`, `named_value_format`, `test`
+- **`manifest`**: `constant`, `remote_dependency`, `application`
+- **`local_dependency` / `remote_dependency`**: `override_constant`
 - **`explore`**: `join`, `aggregate_table`, `query`
 - **`view`**: `dimension`, `dimension_group`, `measure`, `filter`, `parameter`, `set`
 - **`derived_table`**: `explore_source`
 - **`explore_source`**: `column` (`singular_permissive`), `derived_column` (`singular_permissive`)
+- **`test`**: `explore_source`, `assert`
 
 ---
 
@@ -79,6 +82,8 @@ Curly-brace objects without a `$name` identifier after the colon that can only a
 
 **Parameters by Scope:**
 - **Top-level**: `manifest`
+- **`manifest`**: `localization_settings`
+- **`application`**: `mount_points`, `entitlements`
 - **`explore`**: `always_filter`, `conditionally_filter`
 - **`view`**: `derived_table`
 - **`derived_table`**: `create_process`
@@ -96,6 +101,7 @@ Curly-brace objects without a `$name` identifier after the colon that can be dec
   - Driven directly by `cardinality: 'repeated'` in `LOOKML_SCHEMA`: refining a parent object **concatenates (`baseVal.concat(addVal)`)** the refinement's array onto the base array (including nested repeated objects inside singular unnamed objects, such as `case.when` or `explore_source.sort`).
 
 **Parameters by Scope:**
+- **`manifest`**: `local_dependency`
 - **`explore`**: `access_filter`
 - **`field` (`dimension`, `measure`, `filter`, `parameter`)**: `link`, `action`, `allowed_value`
 - **`explore_source`**: `bind_filters`, `bind_service`, `sort` *(legacy object form of `sorts`)*
@@ -159,6 +165,7 @@ Bracketed comma-separated lists of strings or unquoted atoms (`listElement` / `e
 - **`conditionally_filter`**: `unless`
 - **`set`**: `fields`
 - **`query`**: `dimensions`, `measures`, `pivots`
+- **`entitlements`**: `core_api_methods`, `external_api_urls`, `oauth2_urls`, `global_user_attributes`, `scoped_user_attributes`, `new_window_external_urls`
 
 ---
 
