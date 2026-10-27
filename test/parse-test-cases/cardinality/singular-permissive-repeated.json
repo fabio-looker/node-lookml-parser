@@ -1,0 +1,21 @@
+{
+	"input": "view: my_ndt { derived_table: { explore_source: orders { column: status { field: orders.status } column: status { field: orders.id } } } }",
+	"expected": {
+		"view": {
+			"my_ndt": {
+				"derived_table": {
+					"explore_source": {
+						"orders": {
+							"column": {
+								"status": [
+									{ "field": "orders.status" },
+									{ "field": "orders.id" }
+								]
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -33,6 +33,13 @@
 						"derived_table": {
 							"explore_source": {
 								"orders": {
+									"column": {
+										"status": [
+											{ "field": "orders.status" },
+											{ "field": "orders.region" },
+											{ "field": "orders.status" }
+										]
+									},
 									"sort": [
 										{
 											"field": "orders.status",

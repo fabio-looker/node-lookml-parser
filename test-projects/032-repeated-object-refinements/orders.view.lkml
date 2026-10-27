@@ -29,7 +29,7 @@ view: ndt_orders {
   derived_table: {
     explore_source: orders {
       column: status { field: orders.status }
-      column: region { field: orders.region }
+      column: status { field: orders.region }
       sort: {
         field: orders.status
         desc: yes
@@ -43,6 +43,7 @@ view: ndt_orders {
 view: +ndt_orders {
   derived_table: {
     explore_source: orders {
+      column: status { field: orders.status }
       sort: {
         field: orders.region
         desc: no

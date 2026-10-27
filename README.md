@@ -173,6 +173,8 @@ The `parseFiles` method and CLI resolve any include statements of the style `"//
 
 After parsing, validation happens against a basic LookML schema. Properties are checked for disallowed repetition, value types, and missing required properties. Validation surfaces errors but does not block results.
 
+See the [LookML Constructs & Parser Representation Cheat Sheet](lookml-constructs-cheatsheet.md) for a complete reference on how each category of LookML syntax is represented in JavaScript/JSON, validated for cardinality, and merged across extensions and refinements.
+
 ## Validation Mode (`validationMode`)
 
 For use cases where the primary need is validation without returning parsed LookML contents, pass `validationMode: true` in JS API options or `--validation-mode` in the CLI.

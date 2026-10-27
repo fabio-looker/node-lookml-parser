@@ -8,16 +8,18 @@ This guide summarizes the categories of LookML syntax constructs, how `lookml-pa
 
 | Category | LookML Syntax Example | Schema (`type` / `cardinality`) | Parsed JS Output\* | Refinement / Extension Merge Behavior |
 | :--- | :--- | :--- | :--- | :--- |
-| **1. Singular Named Objects** | `dimension: status { ... }`<br>`explore: orders { ... }` | `object` / `singular` | Object keyed by `$type` then `$name` holding a single object\*:<br>`{dimension: { status: { ... } }}` | **Deep-merged** recursively by object name |
-| **2. Refinements (Repeatable Named Object)** | `view: +orders { ... }`<br>`explore: +orders { ... }` | `object` / `repeated` | Object keyed by `$type` then `+$name` holding an array of objects:<br>`{ explore: { "+orders": [ { ... } ] } }` | **Applied sequentially** in declaration order onto the base object, then stripped from `project.model` by `removeAbstract` (preserved in `project.file`) |
-| **3. Singular Unnamed Objects** | `derived_table: { ... }`<br>`always_filter: { ... }` | `object` / `singular` | Single object\*:<br>`{ $type, ... }` | **Deep-merged** recursively |
-| **4. Repeatable Unnamed Objects** | `link: { label: "A" url: "..." }`<br>`access_filter: { ... }` | `object` / `repeated` | Array of objects:<br>`[ { label: "A", url: "..." } ]` | **Additive (`concat`)** across declarations and refinements |
-| **5. Maps** | `filters: [status: "done", a: "1"]`<br>`sorts: [created: desc]` | `object` / `repeated`<br>*(parsed via `mapElement`)* | Array of map objects:<br>`[ { status: "done", a: "1" } ]` | **Additive (`concat`)** across declarations and refinements |
-| **6. Lists** | `timeframes: [raw, date]`<br>`fields: [id, name]` | `list` / `singular`<br>*(parsed via `listElement`)* | Single flat array\*:<br>`["raw", "date"]` | **Replaced** (`addVal` overwrites `baseVal`), except `extends` |
-| **7. Repeated Primitives** | `include: "/views/*.view.lkml"` | `string` / `repeated` | Array of strings:<br>`["/views/*.view.lkml"]` | Resolved during model assembly (`assembleModels`) |
-| **8. Singular Primitives & `;;` Blocks** | `hidden: yes`<br>`type: count`<br>`sql: ${TABLE}.id ;;` | `string` \| `boolean` \| `number`<br>/ `singular` | Primitive value\*:<br>`true`, `"count"`, `" ${TABLE}.id "` | **Replaced** (`addVal` overwrites `baseVal`) |
+| **1. Singular Named Objects** | `dimension: status { ... }`<br>`explore: orders { ... }` | `object` / `singular` | Addressed by `$type` then `$name` into a single object\*:<br>`{ dimension: { status: { ... } } }` | **Deep-merged** recursively by object name |
+| **2. Refinements (Repeatable Named Object)** | `view: +orders { ... }`<br>`explore: +orders { ... }` | `object` / `repeated` | Addressed by `$type` then `+$name` into an array of objects:<br>`{ explore: { "+orders": [ { ... } ] } }` | **Applied sequentially** in declaration order onto the base object, then stripped from `project.model` by `removeAbstract` (preserved in `project.file`) |
+| **3. Singular Unnamed Objects** | `derived_table: { ... }`<br>`always_filter: { ... }` | `object` / `singular` | Addressed by `$type` into a single object\*:<br>`{ derived_table: { ... } }` | **Deep-merged** recursively |
+| **4. Repeatable Unnamed Objects** | `link: { label: "A" url: "..." }`<br>`access_filter: { ... }` | `object` / `repeated` | Addressed by `$type` into an array of objects:<br>`{ link: [ { label: "A", url: "..." } ] }` | **Additive (`concat`)** across declarations and refinements |
+| **5. Maps** | `filters: [status: "done", a: "1"]`<br>`sorts: [created: desc]` | `object` / `repeated`<br>*(parsed via `mapElement`)* | Addressed by `$type` into an array of map objects:<br>`{ filters: [ { status: "done", a: "1" } ] }` | **Additive (`concat`)** across declarations and refinements |
+| **6. Lists** | `timeframes: [raw, date]`<br>`fields: [id, name]` | `list` / `singular`<br>*(parsed via `listElement`)* | Addressed by `$type` into a single flat array\*:<br>`{ timeframes: ["raw", "date"] }` | **Replaced** (`addVal` overwrites `baseVal`), except `extends` |
+| **7. Repeated Primitives** | `include: "/views/*.view.lkml"` | `string` / `repeated` | Addressed by `$type` into an array of strings:<br>`{ include: ["/views/*.view.lkml"] }` | Resolved during model assembly (`assembleModels`) |
+| **8. Singular Primitives & `;;` Blocks** | `hidden: yes`<br>`type: count`<br>`sql: ${TABLE}.id ;;` | `string` \| `boolean` \| `number`<br>/ `singular` | Addressed by `$type` into a primitive value\*:<br>`{ hidden: true, type: "count", sql: " ${TABLE}.id " }` | **Replaced** (`addVal` overwrites `baseVal`) |
 
-> **\*Note on Singularity / Cardinality Violations**: During initial AST grouping, all declarations start in an array and are unwrapped to a single value only when `length === 1`. If any `singular` construct is illegally declared multiple times in the same scope (e.g., `view: foo { label: "A" } view: foo { label: "B" }`), the parser records a `LookMLCardinalityError` (`DUPLICATE_SINGULAR_PROPERTY`) and **returns the value un-unwrapped as an array of the duplicate declarations** (e.g., `view.foo = [ {...}, {...} ]`) so no source data is lost and `generate` can still round-trip the file.
+> **\*Note on Singularity / Cardinality Violations**: During initial AST grouping, all declarations start in an array and are unwrapped to a single value only when `length === 1`.
+> - **`singular`**: If a `singular` construct is illegally declared multiple times in the same scope (e.g., `view: foo { label: "A" } view: foo { label: "B" }`), the parser records a `LookMLCardinalityError` (`DUPLICATE_SINGULAR_PROPERTY`) and **returns the value un-unwrapped as an array of the duplicate declarations** (e.g., `view.foo = [ {...}, {...} ]`) so no source data is lost and `generate` can still round-trip the file.
+> - **`singular_permissive`** *(default for un-schematized properties, and explicit on `explore_source.column` and `explore_source.derived_column`)*: Unwraps to a single value when declared once, but if declared multiple times within a scope, preserves the array across the project (via `globalRepeatedKeys`) **without** emitting a `LookMLCardinalityError`, and concatenates arrays during refinements.
 
 ---
 
@@ -41,9 +43,9 @@ A common point of confusion when working with parsed LookML is that **both** Sin
 
 ### 1. Singular Named Objects (`type: name { ... }`)
 
-Named object declarations have an unprefixed identifier (`$name`) between the colon and the opening brace, and are grouped at `parent[type][$name]`.
+Named object declarations have an unprefixed identifier (`$name`) between the colon and the opening brace, and are addressed on their parent by `$type` then `$name` (`parent[$type][$name]`).
 
-- **Parsed Output**: Unwrapped to a single object (`view.orders.dimension.status = { $type: "dimension", $name: "status", ... }`).
+- **Parsed Output**: Addressed by `$type` then `$name` into a single object (`{ dimension: { status: { $type: "dimension", $name: "status", ... } } }`).
 - **Cardinality Violation**: Re-declaring `view: foo {} view: foo {}` without `+` violates singularity, emitting `LookMLCardinalityError` (`DUPLICATE_SINGULAR_PROPERTY`) and leaving `view.foo` as an un-unwrapped array `[ {...}, {...} ]`.
 
 **Parameters by Scope:**
@@ -51,17 +53,17 @@ Named object declarations have an unprefixed identifier (`$name`) between the co
 - **`explore`**: `join`, `aggregate_table`, `query`
 - **`view`**: `dimension`, `dimension_group`, `measure`, `filter`, `parameter`, `set`
 - **`derived_table`**: `explore_source`
-- **`explore_source`**: `column`, `derived_column`
+- **`explore_source`**: `column` (`singular_permissive`), `derived_column` (`singular_permissive`)
 
 ---
 
 ### 2. Repeated Named Objects / Refinements (`type: +name { ... }`)
 
-Refinement declarations use a `+`-prefixed identifier (`+$name`) between the colon and the opening brace. Because the same named object can be refined multiple times in the same file or across included files (`view: +orders { ... } view: +orders { ... }`), refinements have `repeated` cardinality.
+Refinement declarations use a `+`-prefixed identifier (`+$name`, stored on the object as `$name: "+name"`) between the colon and the opening brace. Because the same named object can be refined multiple times in the same file or across included files (`view: +orders { ... } view: +orders { ... }`), refinements have `repeated` cardinality.
 
-- **Parsed Output**: Always an **Array of Objects** under `parent[type]["+name"]` (e.g., `view["+orders"] = [ { $type: "view", $name: "+orders", ... } ]`), even when refined only once.
-- **Transformation (`applyExtensionsRefinements`)**: Iterates through the `parent[type]["+name"]` array in order and deep-merges each refinement onto the base `parent[type]["name"]` object.
-- **Transformation (`removeAbstract`)**: Enabled by default whenever `extensions` (`applyExtensionsRefinements`) is enabled in `parseFiles`. After refinements and extensions are applied in `project.model`, `removeAbstract` deletes all `+name` refinement keys (as well as abstract `extension: required` objects) from `project.model.<model>.view` and `project.model.<model>.explore` so the assembled model only contains concrete, resolved objects. The raw `parent[type]["+name"]` arrays remain intact in `project.file` (and in `project.model` if `transformations: { removeAbstract: false }` or `extensions: false` is set).
+- **Parsed Output**: Addressed by `$type` then `+$name` into an **Array of Objects** (`{ view: { "+orders": [ { $type: "view", $name: "+orders", ... } ] } }`), even when refined only once.
+- **Transformation (`applyExtensionsRefinements`)**: Iterates through the `parent[$type]["+name"]` array in order and deep-merges each refinement onto the base `parent[$type]["name"]` object.
+- **Transformation (`removeAbstract`)**: Enabled by default whenever `extensions` (`applyExtensionsRefinements`) is enabled in `parseFiles`. After refinements and extensions are applied in `project.model`, `removeAbstract` deletes all `+name` refinement keys (as well as abstract `extension: required` objects) from `project.model.<model>.view` and `project.model.<model>.explore` so the assembled model only contains concrete, resolved objects. The raw `parent[$type]["+name"]` arrays remain intact in `project.file` (and in `project.model` if `transformations: { removeAbstract: false }` or `extensions: false` is set).
 
 **Parameters by Scope:**
 - **Top-level / `model`**: `view` (`view: +name`), `explore` (`explore: +name`) *(child named objects inside a refined `view` or `explore` — such as `dimension: status`, `join: users`, `query: my_query`, `aggregate_table: my_rollup`, or `set: my_set` — are written without `+` and deep-merged by name when the parent refinement is applied).*
@@ -72,7 +74,7 @@ Refinement declarations use a `+`-prefixed identifier (`+$name`) between the col
 
 Curly-brace objects without a `$name` identifier after the colon that can only appear **once** per parent scope.
 
-- **Parsed Output**: Unwrapped to a single object `{ $type, ... }`.
+- **Parsed Output**: Addressed by `$type` into a single object (`{ derived_table: { $type: "derived_table", ... } }`).
 - **Refinement Behavior**: Recursively merged property-by-property (`merge(baseVal, addVal)`).
 
 **Parameters by Scope:**
@@ -89,7 +91,7 @@ Curly-brace objects without a `$name` identifier after the colon that can only a
 
 Curly-brace objects without a `$name` identifier after the colon that can be declared **multiple times** in the same parent scope.
 
-- **Parsed Output**: Always an **Array of Objects** (`[ { ... }, { ... } ]`), even when declared only once.
+- **Parsed Output**: Addressed by `$type` into an **Array of Objects** (`{ link: [ { $type: "link", ... }, { $type: "link", ... } ] }`), even when declared only once.
 - **Refinement Behavior**:
   - Driven directly by `cardinality: 'repeated'` in `LOOKML_SCHEMA`: refining a parent object **concatenates (`baseVal.concat(addVal)`)** the refinement's array onto the base array (including nested repeated objects inside singular unnamed objects, such as `case.when` or `explore_source.sort`).
 
@@ -105,7 +107,7 @@ Curly-brace objects without a `$name` identifier after the colon that can be dec
 
 ### 5. Repeated Maps (`type: [key: value, ...]`)
 
-Bracketed `key: value` pairs (`mapElement` in the PEG grammar, also referred to as `maplists` in the v6.3 changelog). Each `[key: value, ...]` map is parsed into a JS object `{ key: value, ... }`, and because these declarations have `cardinality: 'repeated'`, they are collected into an array of map objects.
+Bracketed `key: value` pairs (`mapElement` in the PEG grammar, also referred to as `maplists` in the v6.3 changelog). Each `[key: value, ...]` map is parsed into a JS object `{ key: value, ... }`, and because these declarations have `cardinality: 'repeated'`, they are addressed by `$type` into an array of map objects (`{ filters: [ { ... } ] }`).
 
 ```lookml
 measure: filtered_count {
@@ -141,7 +143,7 @@ Parses to:
 
 Bracketed comma-separated lists of strings or unquoted atoms (`listElement` / `emptyListElement` in the PEG grammar) with `cardinality: 'singular'`.
 
-- **Parsed Output**: Unwrapped to a single flat array of primitives: `["val1", "val2"]`.
+- **Parsed Output**: Addressed by `$type` into a single flat array of primitives: `{ timeframes: ["val1", "val2"] }`.
 - **Refinement Behavior**:
   - **Standard list parameters**: Refining **replaces** the base array (`addVal` overwrites `baseVal`). For example, refining `timeframes: [raw, date]` with `timeframes: [raw, date, month, year]` yields `["raw", "date", "month", "year"]`.
   - **Special Case (`extends`)**: `extends` is additive across refinements and extensions when `applyExtensionsRefinements` traverses the inheritance graph.
@@ -164,7 +166,7 @@ Bracketed comma-separated lists of strings or unquoted atoms (`listElement` / `e
 
 Primitive declarations that can appear multiple times in the same scope (`type: 'string', cardinality: 'repeated'`).
 
-- **Parsed Output**: Array of strings (`["/views/*.view.lkml", ...]`).
+- **Parsed Output**: Addressed by `$type` into an array of strings (`{ include: ["/views/*.view.lkml", ...] }`).
 - **Parameters by Scope**:
   - **Top-level / `model` / `view` / `explore` files**: `include`
 
@@ -172,7 +174,7 @@ Primitive declarations that can appear multiple times in the same scope (`type: 
 
 ### 8. Singular Primitives & Double-Semicolon (`;;`) Blocks
 
-Single-valued primitive and `;;` block properties (`cardinality: 'singular'`). Re-declaring any of these within the same scope triggers a `LookMLCardinalityError`, and refining them overwrites the base value.
+Single-valued primitive and `;;` block properties (`cardinality: 'singular'`), addressed by `$type` into a primitive value (`{ hidden: true, type: "count", sql: " ${TABLE}.id " }`). Re-declaring any of these within the same scope triggers a `LookMLCardinalityError`, and refining them overwrites the base value.
 
 - **Double-Semicolon (`;;`) Blocks (`blockDeclaration`)**:
   - Any property whose name starts with `sql`, `html`, or `expr` (e.g., `sql`, `sql_on`, `sql_table_name`, `sql_always_where`, `sql_always_having`, `sql_where`, `sql_foreign_key`, `sql_distinct_key`, `sql_start`, `sql_end`, `sql_latitude`, `sql_longitude`, `sql_trigger`, `sql_trigger_value`, `sql_create`, `sql_preamble`, `html`, `expression_custom_filter`).
