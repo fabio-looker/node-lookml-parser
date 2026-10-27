@@ -1,0 +1,8 @@
+{
+	"input": "explore: orders { aggregate_table: my_rollup {} aggregate_table: my_rollup {} }",
+	"error": true,
+	"errorType": "LookMLCardinalityError",
+	"errorCode": "DUPLICATE_SINGULAR_PROPERTY",
+	"errorProperty": "aggregate_table",
+	"errorContains": "aggregate_table:my_rollup"
+}

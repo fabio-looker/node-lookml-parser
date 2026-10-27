@@ -1,0 +1,54 @@
+{
+	"comment": "Repeated unnamed objects (such as case.when and explore_source.sort) are additive under refinement",
+	"parseFileOptions": {
+		"fileOutput": "by-name",
+		"transformations": {
+			"applyExtensionsRefinements": true
+		}
+	},
+	"expected": {
+		"model": {
+			"test": {
+				"view": {
+					"orders": {
+						"dimension": {
+							"status": {
+								"case": {
+									"when": [
+										{
+											"sql": " ${TABLE}.status = 'a' ",
+											"label": "A"
+										},
+										{
+											"sql": " ${TABLE}.status = 'b' ",
+											"label": "B"
+										}
+									],
+									"else": "Other"
+								}
+							}
+						}
+					},
+					"ndt_orders": {
+						"derived_table": {
+							"explore_source": {
+								"orders": {
+									"sort": [
+										{
+											"field": "orders.status",
+											"desc": true
+										},
+										{
+											"field": "orders.region",
+											"desc": false
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
