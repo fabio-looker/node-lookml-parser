@@ -1,4 +1,10 @@
 view: orders {
+  derived_table: {
+    create_process: {
+      sql_step: CREATE TABLE ${SQL_TABLE_NAME} AS SELECT 1 AS id ;;
+      sql_step: INSERT INTO ${SQL_TABLE_NAME} SELECT 2 AS id ;;
+    }
+  }
   dimension: status {
     case: {
       when: {
@@ -15,6 +21,11 @@ view: orders {
 }
 
 view: +orders {
+  derived_table: {
+    create_process: {
+      sql_step: CREATE TABLE ${SQL_TABLE_NAME} AS SELECT 3 AS id ;;
+    }
+  }
   dimension: status {
     case: {
       when: {
