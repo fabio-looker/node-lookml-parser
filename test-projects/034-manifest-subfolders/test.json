@@ -1,0 +1,47 @@
+{
+	"parseFileOptions": {
+		"fileOutput": "by-name"
+	},
+	"expected": {
+		"manifest": {
+			"project_name": "root_project",
+			"constant": {
+				"root_const": {
+					"value": "from_root"
+				}
+			}
+		},
+		"file": {
+			"manifest": {
+				"project_name": "root_project",
+				"$file_type": "manifest"
+			},
+			"sub/manifest": {
+				"project_name": "sub_project",
+				"$file_type": "manifest",
+				"errors": [
+					{
+						"code": "INVALID_PROPERTY_FOR_SCOPE",
+						"property": "project_name"
+					},
+					{
+						"code": "INVALID_PROPERTY_FOR_SCOPE",
+						"property": "constant"
+					}
+				]
+			}
+		},
+		"errors": [
+			{
+				"code": "INVALID_PROPERTY_FOR_SCOPE",
+				"property": "project_name",
+				"filePath": "sub/manifest.lkml"
+			},
+			{
+				"code": "INVALID_PROPERTY_FOR_SCOPE",
+				"property": "constant",
+				"filePath": "sub/manifest.lkml"
+			}
+		]
+	}
+}

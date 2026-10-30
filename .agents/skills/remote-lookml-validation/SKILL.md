@@ -52,12 +52,28 @@ Looker prohibits modifying project files while in `production` mode. Always upda
    ```bash
    looker-cli project file cat <PROJECT_ID> <FILE_PATH> --token-file
    ```
-3. **Update Project File**:
-   Write the desired LookML code to a local temporary file (e.g. `updated_file.lkml`), then upload it:
+3. **Create or Update Project File**:
+   Write the desired LookML code to a local temporary file or pipe via stdin (`-`):
    ```bash
+   # Create a new file (note: parent directory must already exist in the project)
+   looker-cli project file create <PROJECT_ID> <FILE_PATH> ./new_file.lkml --token-file
+   # Or via stdin:
+   cat << 'EOF' | looker-cli project file create <PROJECT_ID> <FILE_PATH> - --token-file
+   ...
+   EOF
+
+   # Update an existing file
    looker-cli project file update <PROJECT_ID> <FILE_PATH> ./updated_file.lkml --token-file
+   # Or via stdin:
+   cat << 'EOF' | looker-cli project file update <PROJECT_ID> <FILE_PATH> - --token-file
+   ...
+   EOF
+
+   # Delete a file
+   looker-cli project file rm <PROJECT_ID> <FILE_PATH> --token-file
    ```
-   *Expected Output*: `Updated file '<FILE_PATH>' in project '<PROJECT_ID>'`
+   *Expected Output*: `Created/Updated/Deleted file '<FILE_PATH>' in/from project '<PROJECT_ID>'`
+   *Note*: If a project returns `"No developer copy found for requested project"`, initialize its dev workspace first via `looker-cli api project reset_project_to_production <PROJECT_ID> --token-file`.
 ---
 ### Running the LookML Validator
 Validate the LookML project code to catch syntax and model errors.

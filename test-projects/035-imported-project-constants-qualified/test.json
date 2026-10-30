@@ -1,0 +1,45 @@
+{
+	"parseFileOptions": {
+		"fileOutput": "by-name"
+	},
+	"expected": {
+		"file": {
+			"imported_projects/spoke_project/views/spoke_users.view": {
+				"view": {
+					"spoke_users": {
+						"sql_table_name": " @{spoke_schema}.users ",
+						"dimension": {
+							"user_id": {
+								"$name": "user_id",
+								"label": "@{spoke_prefix} ID",
+								"sql": " ${TABLE}.@{spoke_prefix}_id "
+							}
+						}
+					}
+				}
+			}
+		},
+		"model": {
+			"hub": {
+				"connection": "@{hub_schema}_conn",
+				"explore": {
+					"spoke_users": {
+						"label": "@{hub_schema} Users"
+					}
+				},
+				"view": {
+					"spoke_users": {
+						"sql_table_name": " @{//spoke_project/spoke_schema}.users ",
+						"dimension": {
+							"user_id": {
+								"$name": "user_id",
+								"label": "@{//spoke_project/spoke_prefix} ID",
+								"sql": " ${TABLE}.@{//spoke_project/spoke_prefix}_id "
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

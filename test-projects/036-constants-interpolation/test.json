@@ -1,0 +1,46 @@
+{
+	"parseFileOptions": {
+		"fileOutput": "by-name",
+		"constants": true,
+		"positions": true
+	},
+	"expected": {
+		"model": {
+			"hub": {
+				"connection": "hub_db_conn",
+				"explore": {
+					"spoke_users": {
+						"label": "hub_db Users"
+					}
+				},
+				"view": {
+					"spoke_users": {
+						"sql_table_name": " hub_db_overridden_spoke.users ",
+						"dimension": {
+							"user_id": {
+								"$name": "user_id",
+								"label": "spk ID",
+								"sql": " ${TABLE}.spk_id "
+							}
+						}
+					}
+				}
+			}
+		},
+		"positions": {
+			"model": {
+				"hub": {
+					"view": {
+						"spoke_users": {
+							"dimension": {
+								"user_id": {
+									"$p": [1, 2, 2, 6, 3]
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

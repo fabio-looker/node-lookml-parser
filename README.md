@@ -13,7 +13,7 @@ Parse, interpret, and generate LookML files and multi-file projects.
   - [Raw PEG AST (`parseAst` / `ast: true`)](#raw-peg-ast-parseast--ast-true)
   - [Position Metadata](#position-metadata)
   - [Conditional Comments](#conditional-comments)
-  - [Project Imports](#project-imports)
+  - [Project Imports & Constants](#project-imports--constants)
   - [LookML Schema, Cardinality & Validation](#lookml-schema-cardinality--validation)
   - [Validation Mode (`validationMode`)](#validation-mode-validationmode)
   - [Historical Git Mode (`gitRef` / `--git-ref`)](#historical-git-mode-gitref---git-ref)
@@ -114,6 +114,7 @@ const project = await lookmlParser.parseFiles({
 | **Input Files / Pattern** | `-i`, `--input` | `input: string \| Array`<br>*(`source` supported for back-compat)* | N/A *(File level only)* | N/A |
 | **Model Assembly (`include` resolution)** | `-m`, `--models`<br>*(on by default)* | `modelAssembly: boolean`<br>*(default: `true`)* | N/A *(File level only)* | `transformations.assembleModels(project, options)` |
 | **Extensions & Refinements (`extends`, `+`)** | `-x`, `--extensions`<br>*(on by default)* | `extensions: boolean`<br>*(default: `true`)* | N/A *(File level only)* | `transformations.applyExtensionsRefinements(project)`<br>`transformations.removeAbstract(project)` |
+| **Constant Interpolation (`@{...}`)** | `--constants`<br>*(off by default)* | `constants: boolean`<br>*(default: `false`)* | N/A *(File level only)* | `transformations.applyConstants(project)` |
 | **LookML Strings Metadata (`$strings`)** | `-s`, `--strings`<br>*(**off** by default)* | `strings: boolean`<br>*(JS default: **`true`**)* | `strings: boolean`<br>*(JS default: **`true`**)* | `transformations.dropStrings(project)` |
 | **Line/Position Index (`positions`)** | `-p`, `--positions`<br>*(off by default)* | `positions: boolean`<br>*(default: `false`)* | `positions: boolean`<br>*(default: `false`)* | `transformations.addPositions(project, options)` |
 | **Raw PEG AST (`$ast`)** | `-a`, `--ast`<br>*(off by default)* | `ast: boolean`<br>*(default: `false`)* | `ast: boolean`<br>*(default: `false`)* | N/A *(Parser option during parsing)* |
@@ -165,13 +166,17 @@ view: foo {
 lookml-parser --conditional-comment="PARSE-ME!"
 ```
 
-## Project Imports
+## Project Imports & Constants
 
 The `parseFiles` method and CLI resolve any include statements of the style `"//project_foo/..."` as `"/imported_projects/project_foo/..."`. Therefore, the parser supports project imports, assuming you have previously copied or cloned the remote project to the appropriate location ahead of invoking the parser.
 
+During model assembly (`modelAssembly: true`), constant references (`@{const_name}`) in declarations originating from an imported project are qualified with the imported project's prefix (`@{//project_foo/const_name}`) in the assembled `model` output so their originating project scope remains unambiguous.
+
+When `constants: true` (or `--constants` in the CLI) is enabled, `transformations.applyConstants(project)` interpolates `@{...}` constant references in string values across `project.model` (including `override_constant` values configured on `local_dependency` and `remote_dependency` declarations in `manifest.lkml`).
+
 ## LookML Schema, Cardinality & Validation
 
-After parsing, validation happens against a basic LookML schema. Properties are checked for disallowed repetition, value types, and missing required properties. Validation surfaces errors but does not block results.
+After parsing, validation happens against a basic LookML schema. Properties are checked for disallowed repetition, value types, valid scope placement (`INVALID_PROPERTY_FOR_SCOPE`), and missing required properties. Validation surfaces errors but does not block results.
 
 See the [LookML Constructs & Parser Representation Cheat Sheet](lookml-constructs-cheatsheet.md) for a complete reference on how each category of LookML syntax is represented in JavaScript/JSON, validated for cardinality, and merged across extensions and refinements.
 

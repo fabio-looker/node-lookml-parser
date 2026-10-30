@@ -1,0 +1,7 @@
+{
+	"input": "view: my_view {\n  connection: \"my_db\"\n}",
+	"error": true,
+	"errorType": "LookMLScopeError",
+	"errorCode": "INVALID_PROPERTY_FOR_SCOPE",
+	"errorProperty": "connection"
+}
