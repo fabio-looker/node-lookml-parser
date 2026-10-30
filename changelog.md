@@ -109,9 +109,11 @@
 	- Fix extensions and refinements so repeatable properties (such as `filters`, `sorts`, `access_filter`, `link`, `action`, `allowed_value`, and `when`) and `extends` on refinements are accumulated rather than overwritten, and preserve root `$name` across refinements.
 	- Fix cardinality handling so multiple `+` refinements no longer cause base views or explores to be wrapped in arrays, duplicate `set`, `query`, and `aggregate_table` declarations are flagged as cardinality errors, and repeated NDT `column` / `derived_column` declarations are permitted without error.
 	- Fix base-project wildcard `include` patterns inadvertently matching files inside `imported_projects/`.
-- v9.4.0
-	- Qualify constant references originating from imported projects as `@{//<project>/<constant>}` in assembled `model` objects to preserve project context across imports.
-	- Added `constants: true` option (`--constants` CLI flag and `transformations.applyConstants`) to interpolate manifest constants—including `override_constant` values across `local_dependency` and `remote_dependency` declarations—in assembled models.
-	- Added schema scope exclusivity validation (`INVALID_PROPERTY_FOR_SCOPE`), reporting errors when known schema properties are declared in scopes where they are not valid (such as manifest-only properties inside non-root files).
-	- Fix `project.manifest` so it is only sourced from the root `manifest.lkml` file, ignoring manifests inside `imported_projects/` or subdirectories.
-	- Fix `project.file` keys (`fileOutput: 'by-name'`) so single-segment filenames in subdirectories (such as `imported_projects/<project>/manifest.lkml`) do not have a spurious leading period inserted before the filename.
+- v10.0.0
+	- ⚡ Property encoding for `$`-prefixed and JavaScript-reserved property names (e.g. `__proto__`, `constructor`, `prototype`, `toString`) now uses a `$_` prefix (e.g. `$___proto__`, `$_toString`, `$_$name`) so that `$[a-z]`-prefixed keys are unambiguously reserved for parser metadata.
+	- ⚡ Parser-generated error and info properties inside LookML objects and file results now use `$`-prefixed metadata keys (`$error`, `$errors`, `$info`) instead of `error`, `errors`, and `info`, avoiding collisions with user-defined LookML declarations of the same name. Top-level `parseFiles` result keys (`error`, `errors`, `info`) remain unchanged.
+	- Qualify constant references originating from imported projects as `@{//<project>/<constant>}` in assembled `model` objects to disambiguate project context across imported objects.
+	- Added `constants: true` option (`--constants` CLI flag and `transformations.applyConstants`) to interpolate manifest constants, including `override_constant` values across `local_dependency` and `remote_dependency` declarations, in assembled models.
+	- Added limited "invalid property for scope" schema validation (`INVALID_PROPERTY_FOR_SCOPE`), reporting errors when known schema properties are declared in scopes where they are not expected.
+	- Fix `project.manifest` so it is only sourced from the root `manifest.lkml` file, ignoring manifests inside subdirectories or imported projects.
+	- Fix `project.file` keys so single-segment filenames in subdirectories (such as `imported_projects/<project>/manifest.lkml`) do not have a spurious leading period inserted before the filename.

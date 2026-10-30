@@ -1,0 +1,38 @@
+{
+	"input": "view: my_view {\n  sql_table_name: t1 ;;\n  sql_table_name: t2 ;;\n  dimension: errors {\n    type: string\n  }\n  dimension: error {\n    type: string\n  }\n  dimension: info {\n    type: string\n  }\n}",
+	"expected": {
+		"view": {
+			"my_view": {
+				"$type": "view",
+				"$name": "my_view",
+				"sql_table_name": [
+					" t1 ",
+					" t2 "
+				],
+				"dimension": {
+					"errors": {
+						"$type": "dimension",
+						"$name": "errors",
+						"type": "string"
+					},
+					"error": {
+						"$type": "dimension",
+						"$name": "error",
+						"type": "string"
+					},
+					"info": {
+						"$type": "dimension",
+						"$name": "info",
+						"type": "string"
+					}
+				},
+				"$errors": [
+					{
+						"code": "DUPLICATE_SINGULAR_PROPERTY",
+						"property": "sql_table_name"
+					}
+				]
+			}
+		}
+	}
+}

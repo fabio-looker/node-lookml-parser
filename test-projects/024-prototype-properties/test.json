@@ -5,73 +5,73 @@
 	"expected": {
 		"file": {
 			"prototype-properties.model": {
-				"$toString": "top_toString",
-				"$valueOf": "top_valueOf",
-				"$hasOwnProperty": "top_hasOwnProperty",
-				"$isPrototypeOf": "top_isPrototypeOf",
-				"$propertyIsEnumerable": "top_propertyIsEnumerable",
-				"$toLocaleString": "top_toLocaleString",
-				"$__proto__": "top_proto",
-				"$constructor": "top_constructor",
-				"$prototype": "top_prototype",
+				"$_toString": "top_toString",
+				"$_valueOf": "top_valueOf",
+				"$_hasOwnProperty": "top_hasOwnProperty",
+				"$_isPrototypeOf": "top_isPrototypeOf",
+				"$_propertyIsEnumerable": "top_propertyIsEnumerable",
+				"$_toLocaleString": "top_toLocaleString",
+				"$___proto__": "top_proto",
+				"$_constructor": "top_constructor",
+				"$_prototype": "top_prototype",
 				"view": {
-					"$toString": {
+					"$_toString": {
 						"$type": "view",
 						"$name": "toString",
-						"$toString": "prop_toString",
-						"$valueOf": "prop_valueOf",
-						"$hasOwnProperty": "prop_hasOwnProperty",
-						"$isPrototypeOf": "prop_isPrototypeOf",
-						"$propertyIsEnumerable": "prop_propertyIsEnumerable",
-						"$toLocaleString": "prop_toLocaleString",
-						"$__proto__": "prop_proto",
-						"$constructor": "prop_constructor",
-						"$prototype": "prop_prototype",
+						"$_toString": "prop_toString",
+						"$_valueOf": "prop_valueOf",
+						"$_hasOwnProperty": "prop_hasOwnProperty",
+						"$_isPrototypeOf": "prop_isPrototypeOf",
+						"$_propertyIsEnumerable": "prop_propertyIsEnumerable",
+						"$_toLocaleString": "prop_toLocaleString",
+						"$___proto__": "prop_proto",
+						"$_constructor": "prop_constructor",
+						"$_prototype": "prop_prototype",
 						"dimension": {
 							"foo": {
 								"$type": "dimension",
 								"$name": "foo",
-								"$toString": "dim_toString",
-								"$valueOf": "dim_valueOf",
-								"$hasOwnProperty": "dim_hasOwnProperty",
-								"$isPrototypeOf": "dim_isPrototypeOf",
-								"$propertyIsEnumerable": "dim_propertyIsEnumerable",
-								"$toLocaleString": "dim_toLocaleString",
-								"$__proto__": "dim_proto",
-								"$constructor": "dim_constructor",
-								"$prototype": "dim_prototype"
+								"$_toString": "dim_toString",
+								"$_valueOf": "dim_valueOf",
+								"$_hasOwnProperty": "dim_hasOwnProperty",
+								"$_isPrototypeOf": "dim_isPrototypeOf",
+								"$_propertyIsEnumerable": "dim_propertyIsEnumerable",
+								"$_toLocaleString": "dim_toLocaleString",
+								"$___proto__": "dim_proto",
+								"$_constructor": "dim_constructor",
+								"$_prototype": "dim_prototype"
 							}
 						}
 					},
-					"$valueOf": {
+					"$_valueOf": {
 						"$type": "view",
 						"$name": "valueOf"
 					},
-					"$hasOwnProperty": {
+					"$_hasOwnProperty": {
 						"$type": "view",
 						"$name": "hasOwnProperty"
 					},
-					"$isPrototypeOf": {
+					"$_isPrototypeOf": {
 						"$type": "view",
 						"$name": "isPrototypeOf"
 					},
-					"$propertyIsEnumerable": {
+					"$_propertyIsEnumerable": {
 						"$type": "view",
 						"$name": "propertyIsEnumerable"
 					},
-					"$toLocaleString": {
+					"$_toLocaleString": {
 						"$type": "view",
 						"$name": "toLocaleString"
 					},
-					"$__proto__": {
+					"$___proto__": {
 						"$type": "view",
 						"$name": "__proto__"
 					},
-					"$constructor": {
+					"$_constructor": {
 						"$type": "view",
 						"$name": "constructor"
 					},
-					"$prototype": {
+					"$_prototype": {
 						"$type": "view",
 						"$name": "prototype"
 					}

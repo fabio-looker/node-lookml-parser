@@ -7,7 +7,7 @@
 			"__proto__.model": {
 				"polluted": "is_it",
 				"explore": {
-					"$__proto__": {
+					"$___proto__": {
 						"$type": "explore",
 						"$name": "__proto__",
 						"polluted": "is_it"
@@ -18,14 +18,14 @@
 				"$file_name": "__proto__",
 				"$file_type": "model"
 			},
-			"$$name.model": {
+			"$_$name.model": {
 				"cash": "name_test",
 				"$file_path": "$name.model.lkml",
 				"$file_rel": "$name",
 				"$file_name": "$name",
 				"$file_type": "model"
 			},
-			"$money.model": {
+			"$_$money.model": {
 				"cash": "money",
 				"$file_path": "$money.model.lkml",
 				"$file_rel": "$money",
@@ -34,7 +34,7 @@
 			},
 			"constructor.model": {
 				"polluted": "is_it",
-				"$prototype": {
+				"$_prototype": {
 					"polluted": {
 						"$type": "prototype",
 						"$name": "polluted"
@@ -77,7 +77,7 @@
 			}
 		},
 		"model": {
-			"$__proto__": {
+			"$___proto__": {
 				"$file_path": "__proto__.model.lkml",
 				"$file_rel": "__proto__",
 				"$file_name": "__proto__",
@@ -86,14 +86,14 @@
 				"$name": "__proto__",
 				"polluted": "is_it",
 				"explore": {
-					"$__proto__": {
+					"$___proto__": {
 						"$type": "explore",
 						"$name": "__proto__",
 						"polluted": "is_it"
 					}
 				}
 			},
-			"$money": {
+			"$_$money": {
 				"$file_path": "$money.model.lkml",
 				"$file_rel": "$money",
 				"$file_name": "$money",
@@ -102,7 +102,7 @@
 				"$type": "model",
 				"$name": "$money"
 			},
-			"$constructor": {
+			"$_constructor": {
 				"$file_path": "constructor.model.lkml",
 				"$file_rel": "constructor",
 				"$file_name": "constructor",
@@ -110,7 +110,7 @@
 				"$type": "model",
 				"$name": "constructor",
 				"polluted": "is_it",
-				"$prototype": {
+				"$_prototype": {
 					"polluted": {
 						"$type": "prototype",
 						"$name": "polluted"
@@ -131,7 +131,7 @@
 					}
 				}
 			},
-			"$prototype": {
+			"$_prototype": {
 				"$file_path": "prototype.model.lkml",
 				"$file_rel": "prototype",
 				"$file_name": "prototype",

@@ -19,7 +19,7 @@
 			"sub/manifest": {
 				"project_name": "sub_project",
 				"$file_type": "manifest",
-				"errors": [
+				"$errors": [
 					{
 						"code": "INVALID_PROPERTY_FOR_SCOPE",
 						"property": "project_name"

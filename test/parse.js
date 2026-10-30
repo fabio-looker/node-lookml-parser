@@ -2,6 +2,7 @@ const TestRunner = require('test-runner')
 const runner = new TestRunner()
 const deepExpect = require("./lib/deep-expect.js")
 const lookmlParser_parse = require("../lib/parse/index.js")
+const isMetaKey = require("../lib/common/is-meta-key.js")
 const util = require("util")
 const fs = require('fs')
 const pathLib = require('path')
@@ -122,9 +123,9 @@ function collectErrors(obj, visited = new Set()) {
 	if (!obj || typeof obj !== 'object' || visited.has(obj)) return []
 	visited.add(obj)
 	let errs = []
-	if (Array.isArray(obj.errors)) errs.push(...obj.errors)
+	if (Array.isArray(obj.$errors)) errs.push(...obj.$errors)
 	for (const key of Object.keys(obj)) {
-		if (key === 'errors' || key[0] === '$') continue
+		if (isMetaKey(key)) continue
 		errs.push(...collectErrors(obj[key], visited))
 	}
 	return errs
