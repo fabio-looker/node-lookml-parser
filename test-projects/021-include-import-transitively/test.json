@@ -7,10 +7,19 @@
 			}
 		},
 	"expected":{
+		"manifest":{
+			"project_name":"root_project"
+			},
 		"file":{
+			"manifest":{
+				"project_name":"root_project"
+				},
 			"my_model.model":{},
 			"views/my_view.view":{
 				"view":{"my_view":{}}
+				},
+			"imported_projects/my_remote_project/.manifest":{
+				"project_name":"my_remote_project"
 				},
 			"imported_projects/my_remote_project/remote.model":{},
 			"imported_projects/my_remote_project/views/remote.view":{

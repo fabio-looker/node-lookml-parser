@@ -3,6 +3,7 @@
 			"fileOutput":"by-name"
 	},
 	"expected":{
+		"manifest": null,
 		"model":{
 			"my_model":{
 				"view":{
@@ -24,6 +25,9 @@
 			},
 			"imported_projects/project_foo/remote_view.view": {
 				"view": {"remote_view":{}}
+			},
+			"imported_projects/project_foo/.manifest": {
+				"project_name": "project_foo"
 			}
 		}
 	}
