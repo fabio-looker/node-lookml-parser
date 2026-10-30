@@ -1,0 +1,25 @@
+{
+	"input": "view: alerts {\n  dimension: info {\n    type: string\n    sql: ${TABLE}.info ;;\n  }\n  measure: errors {\n    type: number\n    sql: COUNT(*) ;;\n  }\n}",
+	"expected": {
+		"view": {
+			"alerts": {
+				"dimension": {
+					"info": {
+						"$type": "dimension",
+						"$name": "info",
+						"type": "string",
+						"sql": " ${TABLE}.info "
+					}
+				},
+				"measure": {
+					"errors": {
+						"$type": "measure",
+						"$name": "errors",
+						"type": "number",
+						"sql": " COUNT(*) "
+					}
+				}
+			}
+		}
+	}
+}

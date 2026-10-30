@@ -10,7 +10,7 @@
 			},
 			{
 				"code": "DUPLICATE_SINGULAR_PROPERTY",
-				"property": "sql_table_name",
+				"property": "label",
 				"filePath": "bad_cardinality.view.lkml"
 			}
 		]
