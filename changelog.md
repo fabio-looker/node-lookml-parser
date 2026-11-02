@@ -109,3 +109,5 @@
 	- Fix extensions and refinements so repeatable properties (such as `filters`, `sorts`, `access_filter`, `link`, `action`, `allowed_value`, and `when`) and `extends` on refinements are accumulated rather than overwritten, and preserve root `$name` across refinements.
 	- Fix cardinality handling so multiple `+` refinements no longer cause base views or explores to be wrapped in arrays, duplicate `set`, `query`, and `aggregate_table` declarations are flagged as cardinality errors, and repeated NDT `column` / `derived_column` declarations are permitted without error.
 	- Fix base-project wildcard `include` patterns inadvertently matching files inside `imported_projects/`.
+- v
+	- Expanded schema coverage

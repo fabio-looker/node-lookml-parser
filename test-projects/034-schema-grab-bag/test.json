@@ -1,0 +1,266 @@
+{
+	"parseFileOptions": {
+		"conditionalCommentString": "PARSER",
+		"transformations": {
+			"removeAbstract": false
+		}
+	},
+	"expected": {
+		"manifest": {
+			"project_name": "lookml_sandbox",
+			"constant": {
+				"default_region": {
+					"value": "US",
+					"export": "override_optional"
+				}
+			},
+			"localization_settings": {
+				"default_locale": "en",
+				"localization_level": "permissive"
+			},
+			"local_dependency": [
+				{
+					"project": "sample_thelook_ecommerce",
+					"override_constant": {
+						"imported_region": {
+							"value": "EU"
+						}
+					}
+				}
+			],
+			"remote_dependency": {
+				"external_blocks": {
+					"url": "https://github.com/example/lookml-blocks.git",
+					"ref": "main",
+					"override_constant": {
+						"block_region": {
+							"value": "APAC"
+						}
+					}
+				}
+			},
+			"application": {
+				"order_manager": {
+					"label": "Order Manager",
+					"url": "https://example.com/bundle.js",
+					"mount_points": {
+						"dashboard_vis": true,
+						"dashboard_tile": true,
+						"standalone": true
+					},
+					"entitlements": {
+						"local_storage": true,
+						"navigation": true,
+						"new_window": true,
+						"use_form_submit": true,
+						"use_embeds": true,
+						"use_downloads": true,
+						"use_iframes": true,
+						"use_clipboard": true,
+						"core_api_methods": ["me"],
+						"external_api_urls": ["https://api.example.com"],
+						"oauth2_urls": ["https://auth.example.com/oauth"],
+						"global_user_attributes": ["id"],
+						"scoped_user_attributes": ["name"],
+						"new_window_external_urls": ["https://docs.example.com"]
+					}
+				},
+				"local_app": {
+					"label": "Local App",
+					"file": "bundle.js"
+				}
+			}
+		},
+		"model": {
+			"test": {
+				"connection": "default_bigquery_connection",
+				"datagroup": {
+					"daily_etl": {
+						"sql_trigger": " SELECT CURDATE() ",
+						"max_cache_age": "24 hours"
+					}
+				},
+				"explore": {
+					"orders": {
+						"access_filter": [
+							{
+								"field": "orders.status",
+								"user_attribute": "id"
+							}
+						],
+						"join": {
+							"orders_bound": {
+								"type": "left_outer",
+								"relationship": "many_to_one",
+								"sql_on": " ${orders.status} = ${orders_bound.status} "
+							}
+						}
+					},
+					"orders_rollup_base": {
+						"extension": "required",
+						"view_name": "orders",
+						"aggregate_table": {
+							"status_rollup": {
+								"query": {
+									"dimensions": ["orders.status"],
+									"measures": ["orders.count"]
+								},
+								"materialization": {
+									"datagroup_trigger": "daily_etl",
+									"increment_key": "status",
+									"increment_offset": "1"
+								}
+							},
+							"persist_rollup": {
+								"query": {
+									"dimensions": ["orders.status"],
+									"measures": ["orders.count"]
+								},
+								"materialization": {
+									"persist_for": "12 hours"
+								}
+							},
+							"trigger_rollup": {
+								"query": {
+									"dimensions": ["orders.status"],
+									"measures": ["orders.count"]
+								},
+								"materialization": {
+									"sql_trigger_value": " SELECT CURDATE() "
+								}
+							}
+						}
+					}
+				},
+				"test": {
+					"orders_count_positive": {
+						"explore_source": {
+							"orders": {
+								"column": {
+									"count": {
+										"field": "orders.count"
+									}
+								}
+							}
+						},
+						"assert": {
+							"count_is_positive": {
+								"expression": " ${orders.count} > 0 "
+							}
+						}
+					}
+				},
+				"view": {
+					"orders": {
+						"dimension": {
+							"status": {
+								"action": [
+									{
+										"label": "Update Status",
+										"url": "https://example.com/update",
+										"icon_url": "https://example.com/icon.png",
+										"form_url": "https://example.com/form",
+										"param": [
+											{
+												"name": "order_id",
+												"value": "{{ value }}"
+											}
+										],
+										"user_attribute_param": [
+											{
+												"user_attribute": "id",
+												"name": "user_id"
+											}
+										],
+										"form_param": [
+											{
+												"name": "new_status",
+												"type": "select",
+												"label": "New Status",
+												"required": true,
+												"default": "complete",
+												"description": "Select a status",
+												"option": [
+													{
+														"name": "complete",
+														"label": "Complete"
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						}
+					},
+					"orders_summary": {
+						"derived_table": {
+							"explore_source": {
+								"orders": {
+									"column": {
+										"status": {
+											"field": "orders.status"
+										},
+										"order_count": {
+											"field": "orders.count"
+										}
+									},
+									"derived_column": {
+										"double_count": {
+											"sql": " order_count * 2 "
+										}
+									},
+									"bind_filters": [
+										{
+											"from_field": "orders_summary.status",
+											"to_field": "orders.status"
+										}
+									],
+									"filters": [
+										{
+											"orders.status": "-cancelled"
+										}
+									],
+									"dev_filters": [
+										{
+											"orders.status": "complete"
+										}
+									],
+									"sorts": [
+										{
+											"orders.count": "desc"
+										}
+									]
+								}
+							}
+						}
+					},
+					"orders_bound": {
+						"derived_table": {
+							"explore_source": {
+								"orders": {
+									"column": {
+										"status": {
+											"field": "orders.status"
+										}
+									},
+									"bind_all_filters": true
+								}
+							}
+						}
+					},
+					"custom_pdt": {
+						"derived_table": {
+							"sql_trigger_value": " SELECT CURDATE() ",
+							"create_process": {
+								"sql_step": [
+									" CREATE TABLE ${SQL_TABLE_NAME} AS SELECT 99 AS id "
+								]
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
