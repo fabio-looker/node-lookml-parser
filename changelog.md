@@ -117,3 +117,4 @@
 	- Added limited "invalid property for scope" schema validation (`INVALID_PROPERTY_FOR_SCOPE`), reporting errors when known schema properties are declared in scopes where they are not expected.
 	- Fix `project.manifest` so it is only sourced from the root `manifest.lkml` file, ignoring manifests inside subdirectories or imported projects.
 	- Fix `project.file` keys so single-segment filenames in subdirectories (such as `imported_projects/<project>/manifest.lkml`) do not have a spurious leading period inserted before the filename.
+	- Fix backslash handling in quoted strings so only escaped double quotes (`\"`) consume the backslash while preserving backslashes before other characters (such as `@\{...}` escaped constants and `{\{` / `{\%` escaped Liquid tags), and fix position column offsets for strings containing escaped quotes.

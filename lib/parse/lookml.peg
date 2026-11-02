@@ -125,7 +125,7 @@ quotedStringElement =
 	}
 
 stringLiteralCharacter = [^"\\]
-stringEscapedCharacter = "\\" ch:. {return ch;}
+stringEscapedCharacter = "\\" ch:. {return ch === '"' ? '"' : "\\" + ch;}
 
 atomElement = 
 	chars:[-+_a-zA-Z0-9\.]+ maybeStar:"*"? 

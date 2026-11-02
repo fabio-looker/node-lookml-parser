@@ -1,0 +1,1361 @@
+{
+	"parseFileOptions": {
+		"constants": true,
+		"strings": true,
+		"positions": true
+	},
+	"expected": {
+		"file": {
+			"manifest": {
+				"project_name": "lookml_sandbox",
+				"constant": {
+					"my_const": {
+						"value": "RESOLVED_VAL"
+					}
+				}
+			},
+			"orders.view": {
+				"view": {
+					"orders": {
+						"sql_table_name": " `my_table` ",
+						"dimension": {
+							"const_unescaped": {
+								"label": "@{my_const}",
+								"sql": " '@{my_const}' "
+							},
+							"const_escaped_once": {
+								"label": "@\\{my_const}",
+								"sql": " '@\\{my_const}' "
+							},
+							"const_escaped_twice": {
+								"label": "@\\\\{my_const}",
+								"sql": " '@\\\\{my_const}' "
+							},
+							"const_escaped_undefined": {
+								"label": "@\\{nonexistent}",
+								"sql": " '@\\{nonexistent}' "
+							},
+							"const_incomplete": {
+								"label": "@\\{ and @\\\\{",
+								"sql": " '@\\{ and @\\\\{' "
+							},
+							"escaped_double_quote": {
+								"label": "before \" after",
+								"sql": " 'before \\\" after' "
+							},
+							"general_backslashes": {
+								"label": "\\a | \\n | \\t | \\\\ | \\{",
+								"sql": " '\\a | \\n | \\t | \\\\ | \\{' "
+							},
+							"liquid_output_inner_escape": {
+								"label": "{\\{ _user_attributes['id'] }}",
+								"sql": " '{\\{ _user_attributes[\"id\"] }}' "
+							},
+							"liquid_output_outer_escape": {
+								"label": "\\{{ _user_attributes['id'] }}",
+								"sql": " '\\{{ _user_attributes[\"id\"] }}' "
+							},
+							"liquid_tag_inner_escape": {
+								"label": "{\\% if true %}yes{\\% endif %}",
+								"sql": " '{\\% if true %}yes{\\% endif %}' "
+							},
+							"liquid_tag_outer_escape": {
+								"label": "\\{% if true %}yes\\{% endif %}",
+								"sql": " '\\{% if true %}yes\\{% endif %}' "
+							}
+						}
+					}
+				},
+				"$strings": {
+					"view": {
+						"orders": {
+							"sql_table_name": [
+								[
+									"$type"
+								],
+								":",
+								[
+									"$value"
+								],
+								";;"
+							],
+							"dimension": {
+								"const_unescaped": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"const_escaped_once": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"const_escaped_twice": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"const_escaped_undefined": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"const_incomplete": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"escaped_double_quote": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"general_backslashes": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"liquid_output_inner_escape": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"liquid_output_outer_escape": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"liquid_tag_inner_escape": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								},
+								"liquid_tag_outer_escape": {
+									"type": [
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$value"
+										]
+									],
+									"label": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										"\"",
+										[
+											"$value"
+										],
+										"\""
+									],
+									"sql": [
+										"\n    ",
+										[
+											"$type"
+										],
+										":",
+										[
+											"$value"
+										],
+										";;"
+									],
+									"$s": [
+										"\n\n  ",
+										[
+											"$type"
+										],
+										":",
+										" ",
+										[
+											"$name"
+										],
+										" ",
+										"{",
+										"\n    ",
+										[
+											"type"
+										],
+										[
+											"label"
+										],
+										[
+											"sql"
+										],
+										"\n  ",
+										"}"
+									]
+								}
+							},
+							"$s": [
+								[
+									"$type"
+								],
+								":",
+								" ",
+								[
+									"$name"
+								],
+								" ",
+								"{",
+								"\n  ",
+								[
+									"sql_table_name"
+								],
+								[
+									"dimension",
+									"const_unescaped"
+								],
+								[
+									"dimension",
+									"const_escaped_once"
+								],
+								[
+									"dimension",
+									"const_escaped_twice"
+								],
+								[
+									"dimension",
+									"const_escaped_undefined"
+								],
+								[
+									"dimension",
+									"const_incomplete"
+								],
+								[
+									"dimension",
+									"escaped_double_quote"
+								],
+								[
+									"dimension",
+									"general_backslashes"
+								],
+								[
+									"dimension",
+									"liquid_output_inner_escape"
+								],
+								[
+									"dimension",
+									"liquid_output_outer_escape"
+								],
+								[
+									"dimension",
+									"liquid_tag_inner_escape"
+								],
+								[
+									"dimension",
+									"liquid_tag_outer_escape"
+								],
+								"\n",
+								"}"
+							]
+						}
+					},
+					"$s": [
+						[
+							"view",
+							"orders"
+						],
+						"\n"
+					]
+				}
+			},
+			"test.model": {
+				"connection": "default_bigquery_connection",
+				"include": [
+					"orders.view.lkml"
+				],
+				"explore": {
+					"orders": {}
+				},
+				"$strings": {
+					"connection": [
+						[
+							"$type"
+						],
+						":",
+						" ",
+						"\"",
+						[
+							"$value"
+						],
+						"\""
+					],
+					"include": [
+						[
+							"\n",
+							[
+								"$type"
+							],
+							":",
+							" ",
+							"\"",
+							[
+								"$value"
+							],
+							"\""
+						]
+					],
+					"explore": {
+						"orders": {
+							"$s": [
+								"\n",
+								[
+									"$type"
+								],
+								":",
+								" ",
+								[
+									"$name"
+								],
+								" ",
+								"{",
+								"}"
+							]
+						}
+					},
+					"$s": [
+						[
+							"connection"
+						],
+						[
+							"include",
+							0
+						],
+						[
+							"explore",
+							"orders"
+						],
+						"\n"
+					]
+				}
+			}
+		},
+		"manifest": {
+			"project_name": "lookml_sandbox",
+			"constant": {
+				"my_const": {
+					"value": "RESOLVED_VAL",
+					"$type": "constant",
+					"$name": "my_const"
+				}
+			}
+		},
+		"model": {
+			"test": {
+				"$type": "model",
+				"$name": "test",
+				"connection": "default_bigquery_connection",
+				"include": [
+					"orders.view.lkml"
+				],
+				"explore": {
+					"orders": {
+						"$type": "explore",
+						"$name": "orders"
+					}
+				},
+				"view": {
+					"orders": {
+						"sql_table_name": " `my_table` ",
+						"dimension": {
+							"const_unescaped": {
+								"label": "RESOLVED_VAL",
+								"sql": " 'RESOLVED_VAL' "
+							},
+							"const_escaped_once": {
+								"label": "@\\{my_const}",
+								"sql": " '@\\{my_const}' "
+							},
+							"const_escaped_twice": {
+								"label": "@\\\\{my_const}",
+								"sql": " '@\\\\{my_const}' "
+							},
+							"const_escaped_undefined": {
+								"label": "@\\{nonexistent}",
+								"sql": " '@\\{nonexistent}' "
+							},
+							"const_incomplete": {
+								"label": "@\\{ and @\\\\{",
+								"sql": " '@\\{ and @\\\\{' "
+							},
+							"escaped_double_quote": {
+								"label": "before \" after",
+								"sql": " 'before \\\" after' "
+							},
+							"general_backslashes": {
+								"label": "\\a | \\n | \\t | \\\\ | \\{",
+								"sql": " '\\a | \\n | \\t | \\\\ | \\{' "
+							},
+							"liquid_output_inner_escape": {
+								"label": "{\\{ _user_attributes['id'] }}",
+								"sql": " '{\\{ _user_attributes[\"id\"] }}' "
+							},
+							"liquid_output_outer_escape": {
+								"label": "\\{{ _user_attributes['id'] }}",
+								"sql": " '\\{{ _user_attributes[\"id\"] }}' "
+							},
+							"liquid_tag_inner_escape": {
+								"label": "{\\% if true %}yes{\\% endif %}",
+								"sql": " '{\\% if true %}yes{\\% endif %}' "
+							},
+							"liquid_tag_outer_escape": {
+								"label": "\\{% if true %}yes\\{% endif %}",
+								"sql": " '\\{% if true %}yes\\{% endif %}' "
+							}
+						}
+					}
+				}
+			}
+		},
+		"positions": {
+			"file": {
+				"orders.view": {
+					"view": {
+						"orders": {
+							"sql_table_name": {
+								"$p": [
+									1,
+									2,
+									1,
+									31
+								]
+							},
+							"dimension": {
+								"const_unescaped": {
+									"type": {
+										"$p": [
+											4,
+											4,
+											4,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											5,
+											4,
+											5,
+											24
+										]
+									},
+									"sql": {
+										"$p": [
+											6,
+											4,
+											6,
+											25
+										]
+									},
+									"$p": [
+										3,
+										2,
+										7,
+										3
+									]
+								},
+								"const_escaped_once": {
+									"type": {
+										"$p": [
+											10,
+											4,
+											10,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											11,
+											4,
+											11,
+											25
+										]
+									},
+									"sql": {
+										"$p": [
+											12,
+											4,
+											12,
+											26
+										]
+									},
+									"$p": [
+										9,
+										2,
+										13,
+										3
+									]
+								},
+								"const_escaped_twice": {
+									"type": {
+										"$p": [
+											16,
+											4,
+											16,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											17,
+											4,
+											17,
+											26
+										]
+									},
+									"sql": {
+										"$p": [
+											18,
+											4,
+											18,
+											27
+										]
+									},
+									"$p": [
+										15,
+										2,
+										19,
+										3
+									]
+								},
+								"const_escaped_undefined": {
+									"type": {
+										"$p": [
+											22,
+											4,
+											22,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											23,
+											4,
+											23,
+											28
+										]
+									},
+									"sql": {
+										"$p": [
+											24,
+											4,
+											24,
+											29
+										]
+									},
+									"$p": [
+										21,
+										2,
+										25,
+										3
+									]
+								},
+								"const_incomplete": {
+									"type": {
+										"$p": [
+											28,
+											4,
+											28,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											29,
+											4,
+											29,
+											25
+										]
+									},
+									"sql": {
+										"$p": [
+											30,
+											4,
+											30,
+											26
+										]
+									},
+									"$p": [
+										27,
+										2,
+										31,
+										3
+									]
+								},
+								"escaped_double_quote": {
+									"type": {
+										"$p": [
+											34,
+											4,
+											34,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											35,
+											4,
+											35,
+											28
+										]
+									},
+									"sql": {
+										"$p": [
+											36,
+											4,
+											36,
+											29
+										]
+									},
+									"$p": [
+										33,
+										2,
+										37,
+										3
+									]
+								},
+								"general_backslashes": {
+									"type": {
+										"$p": [
+											40,
+											4,
+											40,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											41,
+											4,
+											41,
+											35
+										]
+									},
+									"sql": {
+										"$p": [
+											42,
+											4,
+											42,
+											36
+										]
+									},
+									"$p": [
+										39,
+										2,
+										43,
+										3
+									]
+								},
+								"liquid_output_inner_escape": {
+									"type": {
+										"$p": [
+											46,
+											4,
+											46,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											47,
+											4,
+											47,
+											42
+										]
+									},
+									"sql": {
+										"$p": [
+											48,
+											4,
+											48,
+											43
+										]
+									},
+									"$p": [
+										45,
+										2,
+										49,
+										3
+									]
+								},
+								"liquid_output_outer_escape": {
+									"type": {
+										"$p": [
+											52,
+											4,
+											52,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											53,
+											4,
+											53,
+											42
+										]
+									},
+									"sql": {
+										"$p": [
+											54,
+											4,
+											54,
+											43
+										]
+									},
+									"$p": [
+										51,
+										2,
+										55,
+										3
+									]
+								},
+								"liquid_tag_inner_escape": {
+									"type": {
+										"$p": [
+											58,
+											4,
+											58,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											59,
+											4,
+											59,
+											42
+										]
+									},
+									"sql": {
+										"$p": [
+											60,
+											4,
+											60,
+											43
+										]
+									},
+									"$p": [
+										57,
+										2,
+										61,
+										3
+									]
+								},
+								"liquid_tag_outer_escape": {
+									"type": {
+										"$p": [
+											64,
+											4,
+											64,
+											16
+										]
+									},
+									"label": {
+										"$p": [
+											65,
+											4,
+											65,
+											42
+										]
+									},
+									"sql": {
+										"$p": [
+											66,
+											4,
+											66,
+											43
+										]
+									},
+									"$p": [
+										63,
+										2,
+										67,
+										3
+									]
+								}
+							},
+							"$p": [
+								0,
+								0,
+								68,
+								1
+							]
+						}
+					},
+					"$p": [
+						0,
+						0,
+						69,
+						0
+					]
+				}
+			}
+		}
+	}
+}
