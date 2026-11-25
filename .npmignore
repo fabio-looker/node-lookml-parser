@@ -4,3 +4,6 @@ doc
 .lookml-cache/
 test/tmp_*
 tmp_*
+gha-creds-*.json
+manifest.json
+.npmrc

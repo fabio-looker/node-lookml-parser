@@ -8,10 +8,13 @@ on:
 
 permissions: {}
 
-# Serialize releases targeting the same ref without cancelling an in-flight run.
 concurrency:
   group: publish-${{ github.ref }}
   cancel-in-progress: false
+
+env:
+  REGISTRY: https://us-npm.pkg.dev/oss-exit-gate-prod/node-lookml-parser--npm/
+  MANIFEST_BUCKET: gs://oss-exit-gate-prod-projects-bucket/node-lookml-parser/npm/manifests
 
 jobs:
   publish:
@@ -20,9 +23,12 @@ jobs:
       contents: read
       id-token: write
     steps:
+      # Check out into a subdirectory so google-github-actions/auth writes
+      # gha-creds-*.json to $GITHUB_WORKSPACE, outside the package root.
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          path: repo
           persist-credentials: false
 
       - name: Set up Node.js
@@ -30,64 +36,34 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies and build generated parser
+      - name: Build and pack tarball before auth
+        id: pack
+        working-directory: repo
         shell: bash
         run: |
           set -euo pipefail
-          npm install
-          npm run build
-
-      - name: Read and validate package metadata
-        id: pkg
-        shell: bash
-        env:
-          REF_NAME: ${{ github.ref_name }}
-          REF_TYPE: ${{ github.ref_type }}
-        run: |
-          set -euo pipefail
-          PKG_NAME="$(jq -er '.name' package.json)"
-          PKG_VERSION="$(jq -er '.version' package.json)"
-          if [ -z "${PKG_NAME}" ] || [ -z "${PKG_VERSION}" ]; then
-            echo "::error::Failed to read name/version from package.json"
+          pkg_name="$(jq -er '.name' package.json)"
+          pkg_version="$(jq -er '.version' package.json)"
+          if [ "${GITHUB_REF_TYPE:-}" = "tag" ] && [ "${GITHUB_REF_NAME#v}" != "${pkg_version}" ]; then
+            echo "::error::Tag '${GITHUB_REF_NAME}' does not match package.json version '${pkg_version}'"
             exit 1
           fi
-          if [ "${REF_TYPE}" = "tag" ] && [ -n "${REF_NAME}" ]; then
-            tag_ver="${REF_NAME#v}"
-            if [ "${tag_ver}" != "${PKG_VERSION}" ]; then
-              echo "::error::Tag '${REF_NAME}' does not match package.json version '${PKG_VERSION}'"
-              exit 1
-            fi
-          fi
-          echo "name=${PKG_NAME}" >> "${GITHUB_OUTPUT}"
-          echo "version=${PKG_VERSION}" >> "${GITHUB_OUTPUT}"
-
-      - name: Pack tarball before cloud authentication
-        id: pack
-        shell: bash
-        run: |
-          set -euo pipefail
+          npm install
+          npm run build
           pack_dir="${RUNNER_TEMP}/npm-pack"
-          rm -rf "${pack_dir}"
-          mkdir -p "${pack_dir}"
+          rm -rf "${pack_dir}" && mkdir -p "${pack_dir}"
           npm pack --pack-destination "${pack_dir}" >/dev/null
           shopt -s nullglob
           tarballs=("${pack_dir}"/*.tgz)
-          if [ "${#tarballs[@]}" -ne 1 ]; then
-            echo "::error::Expected exactly 1 packed tarball in ${pack_dir}, found ${#tarballs[@]}"
+          [ "${#tarballs[@]}" -eq 1 ] || { echo "::error::Expected 1 tarball, found ${#tarballs[@]}"; exit 1; }
+          entries="$(tar -tzf "${tarballs[0]}")"
+          if printf '%s\n' "${entries}" | grep -Eq '(^|/)(gha-creds-[^/]*\.json|\.npmrc|manifest\.json)$'; then
+            echo "::error::Refusing to publish tarball containing credential or manifest file"
             exit 1
           fi
-          tarball="${tarballs[0]}"
-          tar_entries="$(tar -tzf "${tarball}")"
-          if printf '%s\n' "${tar_entries}" | grep -Eq '(^|/)(gha-creds-[^/]*\.json|\.npmrc|manifest\.json)$'; then
-            echo "::error::Refusing to publish tarball containing credentials or manifest metadata: ${tarball}"
-            printf '%s\n' "${tar_entries}"
-            exit 1
-          fi
-          echo "Packed clean tarball: ${tarball}"
-          echo "tarball=${tarball}" >> "${GITHUB_OUTPUT}"
+          printf 'name=%s\nversion=%s\ntarball=%s\n' "${pkg_name}" "${pkg_version}" "${tarballs[0]}" >> "${GITHUB_OUTPUT}"
 
       - name: Authenticate to Google Cloud (OSS Exit Gate)
-        id: auth
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
           workload_identity_provider: "projects/305452601764/locations/global/workloadIdentityPools/builders/providers/github"
@@ -95,72 +71,40 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
 
-      - name: Clean up incomplete staged version (if any)
+      - name: Stage tarball and upload release manifest
         shell: bash
         env:
-          PKG_NAME: ${{ steps.pkg.outputs.name }}
-          PKG_VERSION: ${{ steps.pkg.outputs.version }}
-        run: |
-          set -euo pipefail
-          existing="$(gcloud artifacts versions list \
-            --project="oss-exit-gate-prod" \
-            --location="us" \
-            --repository="node-lookml-parser--npm" \
-            --package="${PKG_NAME}" \
-            --format="value(name)" 2>/dev/null | awk -F/ '{print $NF}' | grep -Fx "${PKG_VERSION}" || true)"
-          if [ -n "${existing}" ]; then
-            echo "Deleting previous staged version ${PKG_NAME}@${PKG_VERSION} before re-upload..."
-            gcloud artifacts versions delete "${PKG_VERSION}" \
-              --package="${PKG_NAME}" \
-              --project="oss-exit-gate-prod" \
-              --location="us" \
-              --repository="node-lookml-parser--npm" \
-              --delete-tags \
-              --quiet
-          fi
-
-      - name: Stage package to Artifact Registry and submit OSS Exit Gate manifest
-        shell: bash
-        env:
-          PKG_NAME: ${{ steps.pkg.outputs.name }}
-          PKG_VERSION: ${{ steps.pkg.outputs.version }}
-          RUN_ID: ${{ github.run_id }}
-          RUN_ATTEMPT: ${{ github.run_attempt }}
+          PKG_NAME: ${{ steps.pack.outputs.name }}
+          PKG_VERSION: ${{ steps.pack.outputs.version }}
           TARBALL: ${{ steps.pack.outputs.tarball }}
         run: |
           set -euo pipefail
-          if [ ! -f "${TARBALL}" ]; then
-            echo "::error::Packed tarball not found: ${TARBALL}"
-            exit 1
+          npmrc="${RUNNER_TEMP}/exit-gate.npmrc"
+          manifest="${RUNNER_TEMP}/manifest.json"
+          trap 'rm -f "${npmrc}" "${manifest}" "${TARBALL}"' EXIT
+
+          # Delete only this exact version if a prior staging attempt failed.
+          if gcloud artifacts versions describe "${PKG_VERSION}" \
+            --project=oss-exit-gate-prod --location=us --repository=node-lookml-parser--npm \
+            --package="${PKG_NAME}" >/dev/null 2>&1; then
+            gcloud artifacts versions delete "${PKG_VERSION}" \
+              --project=oss-exit-gate-prod --location=us --repository=node-lookml-parser--npm \
+              --package="${PKG_NAME}" --delete-tags --quiet
           fi
 
-          ACCESS_TOKEN="$(gcloud auth print-access-token)"
-          echo "::add-mask::${ACCESS_TOKEN}"
-
-          npmrc_path="${RUNNER_TEMP}/exit-gate.npmrc"
-          manifest_path="${RUNNER_TEMP}/manifest.json"
-          trap 'rm -f "${npmrc_path}" "${manifest_path}" "${TARBALL}"' EXIT
+          access_token="$(gcloud auth print-access-token)"
+          echo "::add-mask::${access_token}"
           umask 077
-          cat > "${npmrc_path}" <<NPMRC
-          registry=https://us-npm.pkg.dev/oss-exit-gate-prod/node-lookml-parser--npm/
+          cat > "${npmrc}" <<NPMRC
+          registry=${REGISTRY}
           //us-npm.pkg.dev/oss-exit-gate-prod/node-lookml-parser--npm/:always-auth=true
-          //us-npm.pkg.dev/oss-exit-gate-prod/node-lookml-parser--npm/:_authToken=${ACCESS_TOKEN}
+          //us-npm.pkg.dev/oss-exit-gate-prod/node-lookml-parser--npm/:_authToken=${access_token}
           NPMRC
 
-          NPM_CONFIG_USERCONFIG="${npmrc_path}" npm publish "${TARBALL}" \
-            --registry="https://us-npm.pkg.dev/oss-exit-gate-prod/node-lookml-parser--npm/"
+          NPM_CONFIG_USERCONFIG="${npmrc}" npm publish "${TARBALL}" --registry="${REGISTRY}"
 
-          jq -n \
-            --arg name "${PKG_NAME}" \
-            --arg ver "${PKG_VERSION}" \
-            '{
-              publish_all: false,
-              publishing_groups: [
-                {
-                  packages: [{ name: $name, version: $ver }]
-                }
-              ]
-            }' > "${manifest_path}"
-
-          manifest_uri="gs://oss-exit-gate-prod-projects-bucket/node-lookml-parser/npm/manifests/manifest-${PKG_VERSION}-${RUN_ID}-${RUN_ATTEMPT}.json"
-          gcloud storage cp --if-generation-match=0 "${manifest_path}" "${manifest_uri}"
+          jq -n --arg name "${PKG_NAME}" --arg ver "${PKG_VERSION}" \
+            '{publish_all: false, publishing_groups: [{packages: [{name: $name, version: $ver}]}]}' \
+            > "${manifest}"
+          gcloud storage cp --if-generation-match=0 "${manifest}" \
+            "${MANIFEST_BUCKET}/manifest-${PKG_VERSION}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
